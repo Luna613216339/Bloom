@@ -5,8 +5,8 @@ public class Door : MonoBehaviour
 {
     [Header("Door Settings")]
     [SerializeField] private bool startsOpen = true;
-    [SerializeField] private Color closedColor = new Color(0.2f, 0.7f, 0.3f);
-    [SerializeField] private Color openColor = new Color(0.2f, 0.7f, 0.3f, 0.2f);
+    [SerializeField] private Color closedColor = new Color(0.35f, 0.35f, 0.35f);
+    [SerializeField] private Color openColor = new Color(0.5f, 0.5f, 0.5f, 0.03f);
 
     private bool isOpen;
     private SpriteRenderer sr;
@@ -15,8 +15,8 @@ public class Door : MonoBehaviour
     private bool isHovered;
 
     private const float HoverScaleMultiplier = 1.1f;
-    private const float HoverBrightness = 0.2f;
-    private const float HoverAlphaBoost = 0.15f;
+    private const float HoverBrightness = 0.15f;
+    private const float HoverAlphaBoost = 0.1f;
 
     void Awake()
     {
@@ -34,7 +34,6 @@ public class Door : MonoBehaviour
             sr = gameObject.AddComponent<SpriteRenderer>();
             sr.sortingOrder = 3;
         }
-        sr.sprite = SpriteHelper.Square;
 
         col = GetComponent<BoxCollider2D>();
         if (col == null)
@@ -101,6 +100,7 @@ public class Door : MonoBehaviour
     void ApplyVisual()
     {
         col.isTrigger = isOpen;
+        sr.sprite = isOpen ? SpriteHelper.Square : SpriteHelper.Crosshatch;
         Color c = isOpen ? openColor : closedColor;
         if (isHovered)
         {
@@ -113,5 +113,4 @@ public class Door : MonoBehaviour
         }
         sr.color = c;
     }
-
 }

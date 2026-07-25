@@ -6,6 +6,9 @@ public class Cage : MonoBehaviour
     [SerializeField] private float width = 3f;
     [SerializeField] private float height = 4f;
 
+    [Header("Door Gap")]
+    [SerializeField] private float doorGap = 1.2f;
+
     [Header("Wall Appearance")]
     [SerializeField] private float wallThickness = 0.15f;
     [SerializeField] private Color wallColor = Color.white;
@@ -18,11 +21,25 @@ public class Cage : MonoBehaviour
 
     void CreateWalls()
     {
-        float wallLength = width + wallThickness;
+        float fullWidth = width + wallThickness;
+
         CreateWallSegment("WallTop", new Vector2(0, height / 2f),
-            new Vector2(wallLength, wallThickness));
+            new Vector2(fullWidth, wallThickness));
         CreateWallSegment("WallBottom", new Vector2(0, -height / 2f),
-            new Vector2(wallLength, wallThickness));
+            new Vector2(fullWidth, wallThickness));
+
+        float sideSegment = (height - doorGap) / 2f;
+        float segOffset = (doorGap + sideSegment) / 2f;
+
+        CreateWallSegment("WallLeftUpper", new Vector2(-width / 2f, segOffset),
+            new Vector2(wallThickness, sideSegment));
+        CreateWallSegment("WallLeftLower", new Vector2(-width / 2f, -segOffset),
+            new Vector2(wallThickness, sideSegment));
+
+        CreateWallSegment("WallRightUpper", new Vector2(width / 2f, segOffset),
+            new Vector2(wallThickness, sideSegment));
+        CreateWallSegment("WallRightLower", new Vector2(width / 2f, -segOffset),
+            new Vector2(wallThickness, sideSegment));
     }
 
     void CreateWallSegment(string name, Vector2 localPos, Vector2 size)
@@ -47,21 +64,30 @@ public class Cage : MonoBehaviour
     {
         Gizmos.matrix = transform.localToWorldMatrix;
 
-        float wallLength = width + wallThickness;
+        float fullWidth = width + wallThickness;
+        float sideSegment = (height - doorGap) / 2f;
+        float segOffset = (doorGap + sideSegment) / 2f;
 
         Gizmos.color = new Color(wallColor.r, wallColor.g, wallColor.b, 0.8f);
+
         Gizmos.DrawCube(new Vector3(0, height / 2f, 0),
-            new Vector3(wallLength, wallThickness, 0.1f));
+            new Vector3(fullWidth, wallThickness, 0.1f));
         Gizmos.DrawCube(new Vector3(0, -height / 2f, 0),
-            new Vector3(wallLength, wallThickness, 0.1f));
+            new Vector3(fullWidth, wallThickness, 0.1f));
+
+        Gizmos.DrawCube(new Vector3(-width / 2f, segOffset, 0),
+            new Vector3(wallThickness, sideSegment, 0.1f));
+        Gizmos.DrawCube(new Vector3(-width / 2f, -segOffset, 0),
+            new Vector3(wallThickness, sideSegment, 0.1f));
+        Gizmos.DrawCube(new Vector3(width / 2f, segOffset, 0),
+            new Vector3(wallThickness, sideSegment, 0.1f));
+        Gizmos.DrawCube(new Vector3(width / 2f, -segOffset, 0),
+            new Vector3(wallThickness, sideSegment, 0.1f));
 
         Gizmos.color = new Color(0f, 1f, 0f, 0.25f);
         Gizmos.DrawWireCube(new Vector3(-width / 2f, 0, 0),
-            new Vector3(wallThickness, height, 0.1f));
+            new Vector3(wallThickness, doorGap, 0.1f));
         Gizmos.DrawWireCube(new Vector3(width / 2f, 0, 0),
-            new Vector3(wallThickness, height, 0.1f));
-
-        Gizmos.color = new Color(wallColor.r, wallColor.g, wallColor.b, 0.2f);
-        Gizmos.DrawWireCube(Vector3.zero, new Vector3(width, height, 0.1f));
+            new Vector3(wallThickness, doorGap, 0.1f));
     }
 }

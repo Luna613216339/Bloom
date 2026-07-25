@@ -4,6 +4,7 @@ public static class SpriteHelper
 {
     private static Sprite _circle;
     private static Sprite _square;
+    private static Sprite _crosshatch;
 
     public static Sprite Circle
     {
@@ -22,6 +23,16 @@ public static class SpriteHelper
             if (_square == null)
                 _square = CreateSquareSprite(32);
             return _square;
+        }
+    }
+
+    public static Sprite Crosshatch
+    {
+        get
+        {
+            if (_crosshatch == null)
+                _crosshatch = CreateCrosshatchSprite(64);
+            return _crosshatch;
         }
     }
 
@@ -55,6 +66,27 @@ public static class SpriteHelper
 
         tex.Apply();
         tex.filterMode = FilterMode.Point;
+        return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
+    }
+
+    static Sprite CreateCrosshatchSprite(int resolution)
+    {
+        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false);
+        int spacing = resolution / 6;
+        int lineWidth = Mathf.Max(1, resolution / 32);
+
+        for (int y = 0; y < resolution; y++)
+        {
+            for (int x = 0; x < resolution; x++)
+            {
+                bool onLine = (x + y) % spacing < lineWidth
+                           || (x - y + resolution * 2) % spacing < lineWidth;
+                tex.SetPixel(x, y, onLine ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+            }
+        }
+
+        tex.Apply();
+        tex.filterMode = FilterMode.Bilinear;
         return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
     }
 }
