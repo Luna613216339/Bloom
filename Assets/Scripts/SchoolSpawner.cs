@@ -18,8 +18,6 @@ public class SchoolSpawner : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 1.5f;
     [SerializeField] private bool loopPath = true;
-    [SerializeField] private float idleDriftRadius = 0.8f;
-    [SerializeField] private float idleDriftSpeed = 1.5f;
 
     [Header("Ball Params")]
     [SerializeField] private float reactionMaxScale = 1.3f;
@@ -34,8 +32,6 @@ public class SchoolSpawner : MonoBehaviour
     private List<Ball> spawnedBalls = new List<Ball>();
     private ContactFilter2D wallFilter;
     private RaycastHit2D[] rayResults = new RaycastHit2D[4];
-    private Vector2[] stalledPositions;
-    private Vector2[] stalledFleeDir;
     private bool[] stalled;
 
     private static readonly Color[] BallColors =
@@ -66,8 +62,6 @@ public class SchoolSpawner : MonoBehaviour
         headDistance = (ballCount - 1) * ballSpacing;
         SpawnSchool();
 
-        stalledPositions = new Vector2[ballCount];
-        stalledFleeDir = new Vector2[ballCount];
         stalled = new bool[ballCount];
     }
 
@@ -181,6 +175,7 @@ public class SchoolSpawner : MonoBehaviour
         {
             if (spawnedBalls[i] == null) continue;
             if (spawnedBalls[i].CurrentState != Ball.BallState.Moving) continue;
+            if (stalled[i]) continue;
 
             float dist = headDistance - i * ballSpacing;
             Vector2 targetPos = GetPositionAtDistance(dist);
@@ -190,59 +185,35 @@ public class SchoolSpawner : MonoBehaviour
             targetPos += perp * wave;
 
             var rb = spawnedBalls[i].GetComponent<Rigidbody2D>();
-            Vector2 checkOrigin = stalled[i] ? stalledPositions[i] : rb.position;
-            Vector2 moveVec = targetPos - checkOrigin;
+            Vector2 currentPos = rb.position;
+            Vector2 moveVec = targetPos - currentPos;
             float moveDist = moveVec.magnitude;
 
-            bool blocked = false;
             if (moveDist > 0.001f)
             {
-                int hitCount = Physics2D.Raycast(checkOrigin, moveVec.normalized,
+                int hitCount = Physics2D.Raycast(currentPos, moveVec.normalized,
                     wallFilter, rayResults, moveDist);
                 if (hitCount > 0)
-                    blocked = true;
-            }
-
-            if (blocked && !stalled[i])
-            {
-                stalled[i] = true;
-                stalledPositions[i] = rb.position;
-                float pathDist = headDistance - i * ballSpacing;
-                stalledFleeDir[i] = -GetDirectionAtDistance(pathDist);
-            }
-
-            if (stalled[i])
-            {
-                float seed = i * 1.7f;
-                float t = Time.time;
-
-                Vector2 flee = stalledFleeDir[i];
-                float fleeMag = (Mathf.Sin(t * idleDriftSpeed * 0.4f + seed) * 0.5f + 0.5f)
-                    * idleDriftRadius;
-
-                Vector2 perpDir = Vector2.Perpendicular(flee);
-                float perpMag = Mathf.Sin(t * idleDriftSpeed + seed * 2.3f)
-                    * idleDriftRadius * 0.4f;
-
-                Vector2 driftOffset = flee * fleeMag + perpDir * perpMag;
-                Vector2 driftTarget = stalledPositions[i] + driftOffset;
-
-                float driftDist = driftOffset.magnitude;
-                if (driftDist > 0.001f)
                 {
-                    int driftHits = Physics2D.Raycast(stalledPositions[i],
-                        driftOffset.normalized, wallFilter, rayResults, driftDist);
-                    if (driftHits > 0)
-                        driftTarget = stalledPositions[i];
+                    stalled[i] = true;
+                    rb.bodyType = RigidbodyType2D.Dynamic;
+                    Vector2 pathDir = GetDirectionAtDistance(dist);
+                    float angle = Random.Range(-60f, 60f);
+                    rb.linearVelocity = RotateVector(-pathDir, angle) * moveSpeed;
+                    continue;
                 }
+            }
 
-                rb.MovePosition(driftTarget);
-            }
-            else
-            {
-                rb.MovePosition(targetPos);
-            }
+            rb.MovePosition(targetPos);
         }
+    }
+
+    static Vector2 RotateVector(Vector2 v, float degrees)
+    {
+        float rad = degrees * Mathf.Deg2Rad;
+        float cos = Mathf.Cos(rad);
+        float sin = Mathf.Sin(rad);
+        return new Vector2(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
     }
 
 #if UNITY_EDITOR
