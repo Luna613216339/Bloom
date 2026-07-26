@@ -366,11 +366,11 @@ MonoBehaviour:
   reactionMaxScale: 1.3
   reactionDuration: 1.5
   levels:
-  - levelName: Level 6
+  - levelName: Level 9
     ballCount: 8
     targetCount: 8
-  nextScene: Level7
-  globalLevelStart: 6
+  nextScene: 
+  globalLevelStart: 9
 --- !u!28 &564557182
 Texture2D:
   m_ObjectHideFlags: 0
@@ -448,37 +448,6 @@ Transform:
   m_Children:
   - {fileID: 260547510}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &649642073
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 649642074}
-  m_Layer: 0
-  m_Name: Waypoint_2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &649642074
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 649642073}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12.84, y: 5.36, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 895389716}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!213 &656310551
 Sprite:
@@ -716,12 +685,10 @@ Transform:
   m_GameObject: {fileID: 895389714}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.7, y: -2.19, z: 0}
+  m_LocalPosition: {x: -3.26, y: -0.27, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1171848131}
-  - {fileID: 649642074}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &895389717
@@ -736,10 +703,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeb4d2f559d344791a531bd2efdfc098, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SchoolSpawner
-  ballSpacing: 0.69
+  ballSpacing: 0.53
   waveAmplitude: 0.3
   waveSpeed: 3
-  enableWave: 1
+  enableWave: 0
   ballSize: 0.35
   escapeBallCount: 0
   dangerRadius: 2
@@ -747,44 +714,13 @@ MonoBehaviour:
   escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
   moveSpeed: 1.69
   loopPath: 1
-  useCirclePath: 0
-  circleRadius: 2
+  useCirclePath: 1
+  circleRadius: 2.68
   clockwise: 0
-  overrideBallCount: 0
+  overrideBallCount: 9
   reactionMaxScale: 1.3
   reactionDuration: 1.5
   expandSpeed: 1.5
---- !u!1 &1171848130
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1171848131}
-  m_Layer: 0
-  m_Name: Waypoint_1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1171848131
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1171848130}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.4, y: -2.08, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 895389716}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1209696641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1141,6 +1077,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1561204698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1561204700}
+  - component: {fileID: 1561204699}
+  m_Layer: 0
+  m_Name: SchoolSpawner (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1561204699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561204698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb4d2f559d344791a531bd2efdfc098, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SchoolSpawner
+  ballSpacing: 0.53
+  waveAmplitude: 0.3
+  waveSpeed: 3
+  enableWave: 0
+  ballSize: 0.35
+  escapeBallCount: 0
+  dangerRadius: 2
+  fleeSpeed: 6
+  escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  moveSpeed: 1.69
+  loopPath: 1
+  useCirclePath: 1
+  circleRadius: 2.68
+  clockwise: 1
+  overrideBallCount: 9
+  reactionMaxScale: 1.3
+  reactionDuration: 1.5
+  expandSpeed: 1.5
+--- !u!4 &1561204700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561204698}
+  serializedVersion: 2
+  m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
+  m_LocalPosition: {x: 3.29, y: -0.27, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
 --- !u!1 &1632684052
 GameObject:
   m_ObjectHideFlags: 0
@@ -1194,5 +1192,6 @@ SceneRoots:
   - {fileID: 562173472}
   - {fileID: 393403490}
   - {fileID: 895389716}
+  - {fileID: 1561204700}
   - {fileID: 632450703}
   - {fileID: 1632684054}

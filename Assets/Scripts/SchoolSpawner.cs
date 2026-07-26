@@ -7,6 +7,7 @@ public class SchoolSpawner : MonoBehaviour
     [SerializeField] private float ballSpacing = 0.5f;
     [SerializeField] private float waveAmplitude = 0.3f;
     [SerializeField] private float waveSpeed = 3f;
+    [SerializeField] private bool enableWave = true;
     [SerializeField] private float ballSize = 0.35f;
 
     [Header("Escape Balls")]
@@ -18,6 +19,15 @@ public class SchoolSpawner : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 1.5f;
     [SerializeField] private bool loopPath = true;
+
+    [Header("Circle Path")]
+    [SerializeField] private bool useCirclePath = false;
+    [SerializeField] private float circleRadius = 2f;
+    [SerializeField] private bool clockwise = false;
+
+    [Header("Ball Count")]
+    [Tooltip("If > 0, use this instead of GameManager's ballCount")]
+    [SerializeField] private int overrideBallCount = 0;
 
     [Header("Ball Params")]
     [SerializeField] private float reactionMaxScale = 1.3f;
@@ -48,8 +58,9 @@ public class SchoolSpawner : MonoBehaviour
     public void Init()
     {
         spawnedBalls.Clear();
-        ballCount = GameManager.Instance.CurrentBallCount;
-        CollectWaypoints();
+        ballCount = overrideBallCount > 0 ? overrideBallCount : GameManager.Instance.CurrentBallCount;
+        if (!useCirclePath)
+            CollectWaypoints();
         ComputePathLengths();
 
         wallFilter = new ContactFilter2D();
@@ -57,7 +68,7 @@ public class SchoolSpawner : MonoBehaviour
         wallFilter.useLayerMask = true;
         wallFilter.layerMask = 1;
 
-        if (waypoints.Length < 2) return;
+        if (!useCirclePath && (waypoints == null || waypoints.Length < 2)) return;
 
         headDistance = (ballCount - 1) * ballSpacing;
         SpawnSchool();
@@ -67,10 +78,10 @@ public class SchoolSpawner : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (waypoints == null || waypoints.Length < 2) return;
+        if (!useCirclePath && (waypoints == null || waypoints.Length < 2)) return;
 
         headDistance += moveSpeed * Time.fixedDeltaTime;
-        if (loopPath && headDistance > totalPathLength)
+        if ((loopPath || useCirclePath) && headDistance > totalPathLength)
             headDistance -= totalPathLength;
 
         UpdateBallPositions();
@@ -89,7 +100,12 @@ public class SchoolSpawner : MonoBehaviour
 
     void ComputePathLengths()
     {
-        if (waypoints.Length < 2) return;
+        if (useCirclePath)
+        {
+            totalPathLength = 2f * Mathf.PI * circleRadius;
+            return;
+        }
+        if (waypoints == null || waypoints.Length < 2) return;
 
         int segCount = loopPath ? waypoints.Length : waypoints.Length - 1;
         segmentLengths = new float[segCount];
@@ -105,6 +121,15 @@ public class SchoolSpawner : MonoBehaviour
 
     Vector2 GetPositionAtDistance(float dist)
     {
+        if (useCirclePath)
+        {
+            float angle = dist / circleRadius;
+            if (clockwise) angle = -angle;
+            angle += transform.eulerAngles.z * Mathf.Deg2Rad;
+            Vector2 center = transform.position;
+            return center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * circleRadius;
+        }
+
         if (loopPath)
         {
             dist %= totalPathLength;
@@ -148,8 +173,11 @@ public class SchoolSpawner : MonoBehaviour
             Vector2 pos = GetPositionAtDistance(dist);
             Vector2 dir = GetDirectionAtDistance(dist);
             Vector2 perp = Vector2.Perpendicular(dir);
-            float wave = Mathf.Sin(i * ballSpacing * 2f) * waveAmplitude;
-            pos += perp * wave;
+            if (enableWave)
+            {
+                float wave = Mathf.Sin(i * ballSpacing * 2f) * waveAmplitude;
+                pos += perp * wave;
+            }
 
             Color color = BallColors[i % BallColors.Length];
 
@@ -181,8 +209,11 @@ public class SchoolSpawner : MonoBehaviour
             Vector2 targetPos = GetPositionAtDistance(dist);
             Vector2 dir = GetDirectionAtDistance(dist);
             Vector2 perp = Vector2.Perpendicular(dir);
-            float wave = Mathf.Sin(Time.time * waveSpeed + i * ballSpacing * 2f) * waveAmplitude;
-            targetPos += perp * wave;
+            if (enableWave)
+            {
+                float wave = Mathf.Sin(Time.time * waveSpeed + i * ballSpacing * 2f) * waveAmplitude;
+                targetPos += perp * wave;
+            }
 
             var rb = spawnedBalls[i].GetComponent<Rigidbody2D>();
             Vector2 currentPos = rb.position;
@@ -219,6 +250,7 @@ public class SchoolSpawner : MonoBehaviour
 #if UNITY_EDITOR
     int GetGizmoBallCount()
     {
+        if (overrideBallCount > 0) return overrideBallCount;
         var gm = FindFirstObjectByType<GameManager>();
         if (gm != null)
         {
@@ -230,6 +262,12 @@ public class SchoolSpawner : MonoBehaviour
 
     void OnDrawGizmos()
     {
+        if (useCirclePath)
+        {
+            DrawCircleGizmos();
+            return;
+        }
+
         var wps = new List<Transform>();
         foreach (Transform child in transform)
         {
@@ -287,7 +325,7 @@ public class SchoolSpawner : MonoBehaviour
                 acc += segLens[s];
             }
 
-            float wave = Mathf.Sin(i * ballSpacing * 2f) * waveAmplitude;
+            float wave = enableWave ? Mathf.Sin(i * ballSpacing * 2f) * waveAmplitude : 0f;
             // Get direction for perpendicular offset
             float d2 = (dist + 0.1f) % pathLen;
             acc = 0f;
@@ -306,6 +344,62 @@ public class SchoolSpawner : MonoBehaviour
             Vector2 forward = ((Vector2)(pos2 - pos)).normalized;
             Vector2 perpDir = Vector2.Perpendicular(forward);
             pos += (Vector3)(perpDir * wave);
+
+            bool isEscape = i >= normalCount;
+            if (isEscape)
+            {
+                Gizmos.color = new Color(escapeBallColor.r, escapeBallColor.g,
+                    escapeBallColor.b, 0.9f);
+                Gizmos.DrawWireSphere(pos, ballSize * 0.5f + 0.05f);
+                Gizmos.color = new Color(escapeBallColor.r, escapeBallColor.g,
+                    escapeBallColor.b, 0.4f);
+            }
+            else
+            {
+                Color c = BallColors[i % BallColors.Length];
+                Gizmos.color = new Color(c.r, c.g, c.b, 0.5f);
+            }
+
+            Gizmos.DrawSphere(pos, ballSize * 0.5f);
+        }
+    }
+
+    void DrawCircleGizmos()
+    {
+        Vector2 center = transform.position;
+
+        Gizmos.color = new Color(0.3f, 0.6f, 1f, 0.6f);
+        int segments = 48;
+        for (int i = 0; i < segments; i++)
+        {
+            float a1 = i * Mathf.PI * 2f / segments;
+            float a2 = (i + 1) * Mathf.PI * 2f / segments;
+            Vector3 p1 = (Vector3)center + new Vector3(Mathf.Cos(a1), Mathf.Sin(a1)) * circleRadius;
+            Vector3 p2 = (Vector3)center + new Vector3(Mathf.Cos(a2), Mathf.Sin(a2)) * circleRadius;
+            Gizmos.DrawLine(p1, p2);
+        }
+
+        Gizmos.color = new Color(0.3f, 0.6f, 1f, 0.8f);
+        Gizmos.DrawWireSphere(center, 0.1f);
+
+        int count = GetGizmoBallCount();
+        int normalCount = count - escapeBallCount;
+
+        for (int i = 0; i < count; i++)
+        {
+            float dist = (count - 1 - i) * ballSpacing;
+            float angle = dist / circleRadius;
+            if (clockwise) angle = -angle;
+            angle += transform.eulerAngles.z * Mathf.Deg2Rad;
+
+            Vector3 pos = (Vector3)center + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * circleRadius;
+
+            if (enableWave)
+            {
+                float wave = Mathf.Sin(i * ballSpacing * 2f) * waveAmplitude;
+                Vector2 radial = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                pos += (Vector3)(radial * wave);
+            }
 
             bool isEscape = i >= normalCount;
             if (isEscape)

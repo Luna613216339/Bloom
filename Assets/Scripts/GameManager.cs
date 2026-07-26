@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public static int RequestedStartLevel = 0;
 
     public enum GameState { WaitingForInput, ChainReacting, LevelComplete }
     public GameState State { get; private set; }
@@ -37,11 +38,13 @@ public class GameManager : MonoBehaviour
 
     [Header("Level Flow")]
     [SerializeField] private string nextScene = "";
+    [SerializeField] private int globalLevelStart = 1;
 
     private int currentLevel;
     private int triggeredCount;
     private int activeReactions;
     private Camera cam;
+    private const float GameAspect = 16f / 9f;
     private readonly List<GameObject> screenBounds = new List<GameObject>();
 
     private LevelConfig Config => levels[currentLevel];
@@ -70,7 +73,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        currentLevel = 0;
+        currentLevel = RequestedStartLevel;
+        RequestedStartLevel = 0;
         StartLevel();
     }
 
@@ -85,9 +89,12 @@ public class GameManager : MonoBehaviour
         GameUI.Instance.ShowGameplay(Config.levelName, Config.targetCount, Config.ballCount);
         CreateScreenBounds();
 
-        var school = FindFirstObjectByType<SchoolSpawner>();
-        if (school != null)
-            school.Init();
+        var schools = FindObjectsByType<SchoolSpawner>(FindObjectsSortMode.None);
+        if (schools.Length > 0)
+        {
+            foreach (var school in schools)
+                school.Init();
+        }
         else
             SpawnBalls();
     }
@@ -117,7 +124,7 @@ public class GameManager : MonoBehaviour
     void CreateScreenBounds()
     {
         float h = 2f * cam.orthographicSize;
-        float w = h * cam.aspect;
+        float w = h * GameAspect;
         float thickness = 1f;
 
         CreateWall("BoundTop",    new Vector2(0, h / 2f + thickness / 2f),  new Vector2(w + thickness * 2, thickness));
@@ -140,8 +147,8 @@ public class GameManager : MonoBehaviour
     void SpawnBalls()
     {
         float h = 2f * cam.orthographicSize;
-        float w = h * cam.aspect;
-        float margin = 1.5f;
+        float w = h * GameAspect;
+        float margin = 0.5f;
 
         for (int i = 0; i < Config.ballCount; i++)
         {
@@ -200,6 +207,10 @@ public class GameManager : MonoBehaviour
             State = GameState.LevelComplete;
             bool passed = triggeredCount >= Config.targetCount;
             bool hasNext = currentLevel < levels.Length - 1 || !string.IsNullOrEmpty(nextScene);
+
+            if (passed)
+                ProgressManager.CompleteLevel(globalLevelStart + currentLevel);
+
             GameUI.Instance.ShowResult(passed, triggeredCount, Config.targetCount, hasNext);
         }
     }

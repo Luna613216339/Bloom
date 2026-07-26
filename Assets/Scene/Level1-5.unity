@@ -376,12 +376,13 @@ MonoBehaviour:
     ballCount: 40
     targetCount: 10
   - levelName: Level 4
-    ballCount: 50
-    targetCount: 15
+    ballCount: 55
+    targetCount: 12
   - levelName: Level 5
     ballCount: 60
-    targetCount: 20
-  nextScene: 
+    targetCount: 16
+  nextScene: Level6
+  globalLevelStart: 1
 --- !u!28 &564557182
 Texture2D:
   m_ObjectHideFlags: 0
