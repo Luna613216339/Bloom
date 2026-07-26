@@ -179,7 +179,7 @@ public class Door : MonoBehaviour
             {
                 sr.enabled = true;
                 sr.sprite = SpriteHelper.Crosshatch;
-                float alpha = Mathf.Lerp(0.1f, 0.22f, pulse);
+                float alpha = Mathf.Lerp(0.18f, 0.35f, pulse);
                 sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, alpha);
                 float s = Mathf.Lerp(0.95f, 1.05f, pulse);
                 transform.localScale = baseScale * s;
