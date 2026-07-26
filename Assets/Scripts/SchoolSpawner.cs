@@ -34,6 +34,11 @@ public class SchoolSpawner : MonoBehaviour
     [SerializeField] private float reactionDuration = 1.5f;
     [SerializeField] private float expandSpeed = 1.5f;
 
+    [Header("Path Visualization")]
+    [SerializeField] private bool showPathLine = false;
+    [SerializeField] private Color pathLineColor = new Color(0.3f, 0.6f, 1f, 0.3f);
+    [SerializeField] private float pathLineWidth = 0.03f;
+
     private int ballCount;
     private Transform[] waypoints;
     private float[] segmentLengths;
@@ -54,6 +59,48 @@ public class SchoolSpawner : MonoBehaviour
         new Color(0.7f, 0.5f, 1f),
         new Color(1f, 0.5f, 0.8f),
     };
+
+    void Start()
+    {
+        if (showPathLine)
+            CreatePathLine();
+    }
+
+    void CreatePathLine()
+    {
+        var lineGO = new GameObject("PathLine");
+        lineGO.transform.SetParent(transform, false);
+        var lr = lineGO.AddComponent<LineRenderer>();
+        lr.useWorldSpace = true;
+        lr.startWidth = pathLineWidth;
+        lr.endWidth = pathLineWidth;
+        lr.material = new Material(Shader.Find("Sprites/Default"));
+        lr.startColor = pathLineColor;
+        lr.endColor = pathLineColor;
+        lr.sortingOrder = -1;
+
+        if (useCirclePath)
+        {
+            int segments = 64;
+            lr.positionCount = segments + 1;
+            Vector2 center = transform.position;
+            for (int i = 0; i <= segments; i++)
+            {
+                float a = i * Mathf.PI * 2f / segments;
+                Vector3 p = (Vector3)center + new Vector3(Mathf.Cos(a), Mathf.Sin(a)) * circleRadius;
+                lr.SetPosition(i, p);
+            }
+        }
+        else if (waypoints != null && waypoints.Length >= 2)
+        {
+            int count = loopPath ? waypoints.Length + 1 : waypoints.Length;
+            lr.positionCount = count;
+            for (int i = 0; i < waypoints.Length; i++)
+                lr.SetPosition(i, waypoints[i].position);
+            if (loopPath)
+                lr.SetPosition(waypoints.Length, waypoints[0].position);
+        }
+    }
 
     public void Init()
     {

@@ -369,7 +369,7 @@ MonoBehaviour:
   - levelName: Level 9
     ballCount: 8
     targetCount: 8
-  nextScene: 
+  nextScene: Level10
   globalLevelStart: 9
 --- !u!28 &564557182
 Texture2D:
@@ -721,6 +721,9 @@ MonoBehaviour:
   reactionMaxScale: 1.3
   reactionDuration: 1.5
   expandSpeed: 1.5
+  showPathLine: 1
+  pathLineColor: {r: 0.3, g: 0.6, b: 1, a: 0.3}
+  pathLineWidth: 0.04
 --- !u!1 &1209696641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1124,6 +1127,9 @@ MonoBehaviour:
   reactionMaxScale: 1.3
   reactionDuration: 1.5
   expandSpeed: 1.5
+  showPathLine: 1
+  pathLineColor: {r: 0.3, g: 0.6, b: 1, a: 0.3}
+  pathLineWidth: 0.04
 --- !u!4 &1561204700
 Transform:
   m_ObjectHideFlags: 0

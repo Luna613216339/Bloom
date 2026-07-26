@@ -108,26 +108,42 @@ public class GameUI : MonoBehaviour
         float py = (sh - 200) / 2f;
         float px = (sw - pw) / 2f;
 
-        resultTextStyle.normal.textColor = passed
-            ? new Color(0.4f, 1f, 0.5f)
-            : new Color(1f, 0.4f, 0.4f);
-
-        string msg = passed
-            ? $"Passed!  {currentCount} / {targetCount}"
-            : $"Try Again  {currentCount} / {targetCount}";
-        GUI.Label(new Rect(px, py, pw, 80), msg, resultTextStyle);
-
         float btnW = 140;
         float btnH = 45;
-        float btnY = py + 100;
-        float gap = 20f;
-        float totalBtnW = btnW * 2 + gap;
-        float btnStartX = px + (pw - totalBtnW) / 2f;
 
-        if (GUI.Button(new Rect(btnStartX, btnY, btnW, btnH), "Replay", buttonStyle))
-            GameManager.Instance.Retry();
+        if (passed && !hasNextLevel)
+        {
+            resultTextStyle.fontSize = 48;
+            resultTextStyle.normal.textColor = new Color(0.4f, 1f, 0.5f);
+            GUI.Label(new Rect(px, py - 20, pw, 80), "Congratulations!", resultTextStyle);
+            resultTextStyle.fontSize = 36;
 
-        if (GUI.Button(new Rect(btnStartX + btnW + gap, btnY, btnW, btnH), "Menu", buttonStyle))
-            SceneManager.LoadScene("MainMenu");
+            float btnY = py + 80;
+            float btnX = px + (pw - btnW) / 2f;
+            if (GUI.Button(new Rect(btnX, btnY, btnW, btnH), "Menu", buttonStyle))
+                SceneManager.LoadScene("MainMenu");
+        }
+        else
+        {
+            resultTextStyle.normal.textColor = passed
+                ? new Color(0.4f, 1f, 0.5f)
+                : new Color(1f, 0.4f, 0.4f);
+
+            string msg = passed
+                ? $"Passed!  {currentCount} / {targetCount}"
+                : $"Try Again  {currentCount} / {targetCount}";
+            GUI.Label(new Rect(px, py, pw, 80), msg, resultTextStyle);
+
+            float btnY = py + 100;
+            float gap = 20f;
+            float totalBtnW = btnW * 2 + gap;
+            float btnStartX = px + (pw - totalBtnW) / 2f;
+
+            if (GUI.Button(new Rect(btnStartX, btnY, btnW, btnH), "Replay", buttonStyle))
+                GameManager.Instance.Retry();
+
+            if (GUI.Button(new Rect(btnStartX + btnW + gap, btnY, btnW, btnH), "Menu", buttonStyle))
+                SceneManager.LoadScene("MainMenu");
+        }
     }
 }

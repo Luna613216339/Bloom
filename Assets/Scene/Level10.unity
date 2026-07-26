@@ -363,26 +363,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   ballSpeed: 1.8
   ballSize: 0.4
-  reactionMaxScale: 1.48
+  reactionMaxScale: 1.3
   reactionDuration: 1.5
   levels:
-  - levelName: Level 1
-    ballCount: 20
-    targetCount: 3
-  - levelName: Level 2
-    ballCount: 25
-    targetCount: 5
-  - levelName: Level 3
+  - levelName: Level 10
     ballCount: 40
-    targetCount: 8
-  - levelName: Level 4
-    ballCount: 55
-    targetCount: 12
-  - levelName: Level 5
-    ballCount: 60
-    targetCount: 16
-  nextScene: Level6
-  globalLevelStart: 1
+    targetCount: 40
+  nextScene: 
+  globalLevelStart: 10
 --- !u!28 &564557182
 Texture2D:
   m_ObjectHideFlags: 0
@@ -429,6 +417,71 @@ Texture2D:
     offset: 0
     size: 0
     path: 
+--- !u!1 &589913897
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 589913899}
+  - component: {fileID: 589913898}
+  m_Layer: 0
+  m_Name: SchoolSpawner_E
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &589913898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589913897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb4d2f559d344791a531bd2efdfc098, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SchoolSpawner
+  ballSpacing: 0.5
+  waveAmplitude: 0.3
+  waveSpeed: 3
+  enableWave: 0
+  ballSize: 0.35
+  escapeBallCount: 0
+  dangerRadius: 2
+  fleeSpeed: 6
+  escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  moveSpeed: 1.5
+  loopPath: 1
+  useCirclePath: 1
+  circleRadius: 2.5
+  clockwise: 0
+  overrideBallCount: 8
+  reactionMaxScale: 1.3
+  reactionDuration: 1.5
+  expandSpeed: 1.5
+  showPathLine: 1
+  pathLineColor: {r: 0.3, g: 0.6, b: 1, a: 0.3}
+  pathLineWidth: 0.04
+--- !u!4 &589913899
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589913897}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: -0.24053822, w: 0.9706397}
+  m_LocalPosition: {x: 2.3576415, y: 0.5725424, z: 0}
+  m_LocalScale: {x: 0.7375, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &632450702
 GameObject:
   m_ObjectHideFlags: 0
@@ -671,6 +724,136 @@ Sprite:
   m_Bones: []
   m_ScriptableObjects: []
   m_SpriteID: 
+--- !u!1 &733705544
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 733705546}
+  - component: {fileID: 733705545}
+  m_Layer: 0
+  m_Name: SchoolSpawner_B
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &733705545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733705544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb4d2f559d344791a531bd2efdfc098, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SchoolSpawner
+  ballSpacing: 0.5
+  waveAmplitude: 0.3
+  waveSpeed: 3
+  enableWave: 0
+  ballSize: 0.35
+  escapeBallCount: 0
+  dangerRadius: 2
+  fleeSpeed: 6
+  escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  moveSpeed: 1.5
+  loopPath: 1
+  useCirclePath: 1
+  circleRadius: 2.5
+  clockwise: 0
+  overrideBallCount: 8
+  reactionMaxScale: 1.3
+  reactionDuration: 1.5
+  expandSpeed: 1.5
+  showPathLine: 1
+  pathLineColor: {r: 0.3, g: 0.6, b: 1, a: 0.3}
+  pathLineWidth: 0.04
+--- !u!4 &733705546
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733705544}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.84880275, w: 0.52870965}
+  m_LocalPosition: {x: -2.3976412, y: 0.57254255, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &895389714
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 895389716}
+  - component: {fileID: 895389717}
+  m_Layer: 0
+  m_Name: SchoolSpawner_A
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &895389716
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895389714}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.37592822, w: 0.9266488}
+  m_LocalPosition: {x: -0.02, y: 2.3, z: 0}
+  m_LocalScale: {x: 0.7375, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &895389717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895389714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb4d2f559d344791a531bd2efdfc098, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SchoolSpawner
+  ballSpacing: 0.5
+  waveAmplitude: 0.3
+  waveSpeed: 3
+  enableWave: 0
+  ballSize: 0.35
+  escapeBallCount: 0
+  dangerRadius: 2
+  fleeSpeed: 6
+  escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  moveSpeed: 1.5
+  loopPath: 1
+  useCirclePath: 1
+  circleRadius: 2.5
+  clockwise: 0
+  overrideBallCount: 8
+  reactionMaxScale: 1.3
+  reactionDuration: 1.5
+  expandSpeed: 1.5
+  showPathLine: 1
+  pathLineColor: {r: 0.3, g: 0.6, b: 1, a: 0.3}
+  pathLineWidth: 0.04
 --- !u!1 &1209696641
 GameObject:
   m_ObjectHideFlags: 0
@@ -935,6 +1118,136 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!1 &1288015730
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1288015732}
+  - component: {fileID: 1288015731}
+  m_Layer: 0
+  m_Name: SchoolSpawner_C
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1288015731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288015730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb4d2f559d344791a531bd2efdfc098, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SchoolSpawner
+  ballSpacing: 0.5
+  waveAmplitude: 0.3
+  waveSpeed: 3
+  enableWave: 0
+  ballSize: 0.35
+  escapeBallCount: 0
+  dangerRadius: 2
+  fleeSpeed: 6
+  escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  moveSpeed: 1.5
+  loopPath: 1
+  useCirclePath: 1
+  circleRadius: 2.5
+  clockwise: 0
+  overrideBallCount: 8
+  reactionMaxScale: 1.3
+  reactionDuration: 1.5
+  expandSpeed: 1.5
+  showPathLine: 1
+  pathLineColor: {r: 0.3, g: 0.6, b: 1, a: 0.3}
+  pathLineWidth: 0.04
+--- !u!4 &1288015732
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288015730}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.9974636, w: -0.07117856}
+  m_LocalPosition: {x: -1.4894634, y: -2.222542, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1411059957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1411059959}
+  - component: {fileID: 1411059958}
+  m_Layer: 0
+  m_Name: SchoolSpawner_D
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1411059958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1411059957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb4d2f559d344791a531bd2efdfc098, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SchoolSpawner
+  ballSpacing: 0.5
+  waveAmplitude: 0.3
+  waveSpeed: 3
+  enableWave: 0
+  ballSize: 0.35
+  escapeBallCount: 0
+  dangerRadius: 2
+  fleeSpeed: 6
+  escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  moveSpeed: 1.5
+  loopPath: 1
+  useCirclePath: 1
+  circleRadius: 2.5
+  clockwise: 0
+  overrideBallCount: 8
+  reactionMaxScale: 1.3
+  reactionDuration: 1.5
+  expandSpeed: 1.5
+  showPathLine: 1
+  pathLineColor: {r: 0.3, g: 0.6, b: 1, a: 0.3}
+  pathLineWidth: 0.04
+--- !u!4 &1411059959
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1411059957}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.76512736, w: -0.643879}
+  m_LocalPosition: {x: 1.4494628, y: -2.2225428, z: 0}
+  m_LocalScale: {x: 0.7375, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1539204090
 GameObject:
   m_ObjectHideFlags: 0
@@ -1079,5 +1392,10 @@ SceneRoots:
   - {fileID: 1539204093}
   - {fileID: 562173472}
   - {fileID: 393403490}
+  - {fileID: 895389716}
   - {fileID: 632450703}
   - {fileID: 1632684054}
+  - {fileID: 733705546}
+  - {fileID: 1288015732}
+  - {fileID: 1411059959}
+  - {fileID: 589913899}

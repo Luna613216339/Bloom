@@ -20,6 +20,7 @@ public class MainMenuUI : MonoBehaviour
         new LevelEntry { sceneName = "Level7", startIndex = 0 },
         new LevelEntry { sceneName = "Level8", startIndex = 0 },
         new LevelEntry { sceneName = "Level9", startIndex = 0 },
+        new LevelEntry { sceneName = "Level10", startIndex = 0 },
     };
 
     private GUIStyle titleStyle;
@@ -61,6 +62,14 @@ public class MainMenuUI : MonoBehaviour
         int unlocked = ProgressManager.UnlockedLevel;
 
         GUI.Label(new Rect(0, sh * 0.2f, sw, 60), "Prototype", titleStyle);
+
+        var authorStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 18,
+            alignment = TextAnchor.MiddleCenter,
+            normal = { textColor = new Color(0.45f, 0.45f, 0.45f) }
+        };
+        GUI.Label(new Rect(0, sh * 0.2f + 55, sw, 30), "Author: Jie Li", authorStyle);
 
         if (unlocked <= 1)
         {
