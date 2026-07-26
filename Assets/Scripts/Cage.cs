@@ -67,7 +67,8 @@ public class Cage : MonoBehaviour
         var rb = go.AddComponent<Rigidbody2D>();
         rb.bodyType = RigidbodyType2D.Static;
 
-        go.AddComponent<BoxCollider2D>();
+        var col = go.AddComponent<BoxCollider2D>();
+        col.sharedMaterial = Ball.bounceMat;
     }
 
     void OnDrawGizmos()

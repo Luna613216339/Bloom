@@ -637,7 +637,7 @@ MonoBehaviour:
   levels:
   - levelName: Level 8
     ballCount: 12
-    targetCount: 11
+    targetCount: 12
   nextScene: Level9
   globalLevelStart: 8
 --- !u!1 &632450702

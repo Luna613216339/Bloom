@@ -67,7 +67,7 @@ public class ClickReaction : MonoBehaviour
         for (int i = balls.Count - 1; i >= 0; i--)
         {
             var ball = balls[i];
-            if (ball.CurrentState != Ball.BallState.Moving) continue;
+            if (ball.CurrentState != Ball.BallState.Moving && ball.CurrentState != Ball.BallState.Fleeing) continue;
             float ballRadius = ball.transform.localScale.x * 0.5f;
             float dist = Vector2.Distance(transform.position, ball.transform.position);
             if (dist < myRadius + ballRadius)

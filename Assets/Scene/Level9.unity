@@ -167,7 +167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Door
   startsOpen: 0
   closedColor: {r: 0.55, g: 0.35, b: 0.18, a: 1}
-  openColor: {r: 0.55, g: 0.35, b: 0.18, a: 0.2}
+  animDuration: 0.15
 --- !u!61 &260547512
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -367,8 +367,8 @@ MonoBehaviour:
   reactionDuration: 1.5
   levels:
   - levelName: Level 9
-    ballCount: 8
-    targetCount: 8
+    ballCount: 18
+    targetCount: 18
   nextScene: Level10
   globalLevelStart: 9
 --- !u!28 &564557182

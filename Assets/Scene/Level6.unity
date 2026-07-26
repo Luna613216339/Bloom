@@ -167,7 +167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Door
   startsOpen: 0
   closedColor: {r: 0.55, g: 0.35, b: 0.18, a: 1}
-  openColor: {r: 0.55, g: 0.35, b: 0.18, a: 0.2}
+  animDuration: 0.15
 --- !u!61 &260547512
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -754,6 +754,9 @@ MonoBehaviour:
   reactionMaxScale: 1.3
   reactionDuration: 1.5
   expandSpeed: 1.5
+  showPathLine: 0
+  pathLineColor: {r: 0.3, g: 0.6, b: 1, a: 0.3}
+  pathLineWidth: 0.03
 --- !u!1 &1171848130
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,7 +782,7 @@ Transform:
   m_GameObject: {fileID: 1171848130}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.4, y: -2.08, z: 0}
+  m_LocalPosition: {x: -0.7, y: -0.97, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

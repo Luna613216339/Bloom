@@ -370,7 +370,7 @@ MonoBehaviour:
     ballCount: 20
     targetCount: 3
   - levelName: Level 2
-    ballCount: 25
+    ballCount: 28
     targetCount: 5
   - levelName: Level 3
     ballCount: 40

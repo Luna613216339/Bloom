@@ -41,6 +41,8 @@ public class Door : MonoBehaviour
         col = GetComponent<BoxCollider2D>();
         if (col == null)
             col = gameObject.AddComponent<BoxCollider2D>();
+        if (Ball.bounceMat != null)
+            col.sharedMaterial = Ball.bounceMat;
 
         var rb = GetComponent<Rigidbody2D>();
         if (rb == null)

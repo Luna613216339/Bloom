@@ -14,7 +14,7 @@ public class Ball : MonoBehaviour
     private float fleeSpeed = 6f;
     private Vector2 preferredFleeDir;
 
-    private static PhysicsMaterial2D bounceMat;
+    public static PhysicsMaterial2D bounceMat;
 
     private SpriteRenderer sr;
     private Rigidbody2D rb;
@@ -27,6 +27,13 @@ public class Ball : MonoBehaviour
     public static void SetupPhysics()
     {
         Physics2D.IgnoreLayerCollision(BallLayer, BallLayer, true);
+        Physics2D.bounceThreshold = 0f;
+        if (bounceMat == null)
+        {
+            bounceMat = new PhysicsMaterial2D("BallBounce");
+            bounceMat.bounciness = 1f;
+            bounceMat.friction = 0f;
+        }
     }
 
     public static Ball Create(Vector2 position, Vector2 velocity, Color color,

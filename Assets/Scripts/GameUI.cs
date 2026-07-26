@@ -31,14 +31,14 @@ public class GameUI : MonoBehaviour
 
         hudLabelStyle = new GUIStyle(GUI.skin.label)
         {
-            fontSize = 16,
+            fontSize = 28,
             alignment = TextAnchor.UpperRight,
             normal = { textColor = new Color(0.55f, 0.55f, 0.55f) }
         };
 
         hudCountStyle = new GUIStyle(GUI.skin.label)
         {
-            fontSize = 22,
+            fontSize = 38,
             alignment = TextAnchor.UpperRight,
             fontStyle = FontStyle.Bold,
             normal = { textColor = new Color(0.3f, 0.3f, 0.3f) }
@@ -46,13 +46,13 @@ public class GameUI : MonoBehaviour
 
         resultTextStyle = new GUIStyle(GUI.skin.label)
         {
-            fontSize = 36,
+            fontSize = 52,
             alignment = TextAnchor.MiddleCenter
         };
 
         buttonStyle = new GUIStyle(GUI.skin.button)
         {
-            fontSize = 22
+            fontSize = 30
         };
     }
 
@@ -91,12 +91,15 @@ public class GameUI : MonoBehaviour
     {
         InitStyles();
 
-        float sw = Screen.width;
-        float sh = Screen.height;
+        float scale = Screen.height / 600f;
+        GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(scale, scale, 1));
+
+        float sw = Screen.width / scale;
+        float sh = Screen.height / scale;
         float pad = 15f;
 
-        GUI.Label(new Rect(0, pad, sw - pad, 22), levelName, hudLabelStyle);
-        GUI.Label(new Rect(0, pad + 22, sw - pad, 28), $"{currentCount} / {targetCount}", hudCountStyle);
+        GUI.Label(new Rect(0, pad, sw - pad, 35), levelName, hudLabelStyle);
+        GUI.Label(new Rect(0, pad + 35, sw - pad, 45), $"{currentCount} / {targetCount}", hudCountStyle);
 
         if (!showResult) return;
 
@@ -104,21 +107,21 @@ public class GameUI : MonoBehaviour
         GUI.DrawTexture(new Rect(0, 0, sw, sh), Texture2D.whiteTexture);
         GUI.color = Color.white;
 
-        float pw = 400;
-        float py = (sh - 200) / 2f;
+        float pw = 500;
+        float py = (sh - 250) / 2f;
         float px = (sw - pw) / 2f;
 
-        float btnW = 140;
-        float btnH = 45;
+        float btnW = 180;
+        float btnH = 55;
 
         if (passed && !hasNextLevel)
         {
-            resultTextStyle.fontSize = 48;
+            resultTextStyle.fontSize = 60;
             resultTextStyle.normal.textColor = new Color(0.4f, 1f, 0.5f);
-            GUI.Label(new Rect(px, py - 20, pw, 80), "Congratulations!", resultTextStyle);
-            resultTextStyle.fontSize = 36;
+            GUI.Label(new Rect(px, py - 20, pw, 90), "Congratulations!", resultTextStyle);
+            resultTextStyle.fontSize = 52;
 
-            float btnY = py + 80;
+            float btnY = py + 100;
             float btnX = px + (pw - btnW) / 2f;
             if (GUI.Button(new Rect(btnX, btnY, btnW, btnH), "Menu", buttonStyle))
                 SceneManager.LoadScene("MainMenu");
@@ -132,10 +135,10 @@ public class GameUI : MonoBehaviour
             string msg = passed
                 ? $"Passed!  {currentCount} / {targetCount}"
                 : $"Try Again  {currentCount} / {targetCount}";
-            GUI.Label(new Rect(px, py, pw, 80), msg, resultTextStyle);
+            GUI.Label(new Rect(px, py, pw, 90), msg, resultTextStyle);
 
-            float btnY = py + 100;
-            float gap = 20f;
+            float btnY = py + 120;
+            float gap = 25f;
             float totalBtnW = btnW * 2 + gap;
             float btnStartX = px + (pw - totalBtnW) / 2f;
 

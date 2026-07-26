@@ -141,6 +141,7 @@ public class GameManager : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Static;
         var col = go.AddComponent<BoxCollider2D>();
         col.size = size;
+        col.sharedMaterial = Ball.bounceMat;
         screenBounds.Add(go);
     }
 

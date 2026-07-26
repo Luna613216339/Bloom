@@ -57,8 +57,11 @@ public class MainMenuUI : MonoBehaviour
     {
         InitStyles();
 
-        float sw = Screen.width;
-        float sh = Screen.height;
+        float scale = Screen.height / 600f;
+        GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(scale, scale, 1));
+
+        float sw = Screen.width / scale;
+        float sh = Screen.height / scale;
         int unlocked = ProgressManager.UnlockedLevel;
 
         GUI.Label(new Rect(0, sh * 0.2f, sw, 60), "Bloom", titleStyle);
