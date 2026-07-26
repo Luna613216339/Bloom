@@ -78,6 +78,7 @@ public class Ball : MonoBehaviour
         IsEscapeBall = true;
         this.dangerRadius = dangerRadius;
         this.fleeSpeed = fleeSpeed;
+        sr.sprite = SpriteHelper.StripedCircle;
         sr.color = color;
     }
 

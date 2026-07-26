@@ -61,7 +61,7 @@ public class MainMenuUI : MonoBehaviour
         float sh = Screen.height;
         int unlocked = ProgressManager.UnlockedLevel;
 
-        GUI.Label(new Rect(0, sh * 0.2f, sw, 60), "Prototype", titleStyle);
+        GUI.Label(new Rect(0, sh * 0.2f, sw, 60), "Bloom", titleStyle);
 
         var authorStyle = new GUIStyle(GUI.skin.label)
         {

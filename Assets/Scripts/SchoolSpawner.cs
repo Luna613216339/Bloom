@@ -14,7 +14,7 @@ public class SchoolSpawner : MonoBehaviour
     [SerializeField] private int escapeBallCount = 0;
     [SerializeField] private float dangerRadius = 2f;
     [SerializeField] private float fleeSpeed = 6f;
-    [SerializeField] private Color escapeBallColor = new Color(1f, 0.2f, 0.2f);
+    [SerializeField] private Color escapeBallColor = new Color(0.25f, 0.08f, 0.35f);
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 1.5f;

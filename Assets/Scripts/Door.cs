@@ -1,29 +1,32 @@
+using System.Collections;
 using UnityEngine;
 
 [ExecuteAlways]
 public class Door : MonoBehaviour
 {
     [Header("Door Settings")]
-    [SerializeField] private bool startsOpen = true;
+    [SerializeField] private bool startsOpen = false;
     [SerializeField] private Color closedColor = new Color(0.35f, 0.35f, 0.35f);
-    [SerializeField] private Color openColor = new Color(0.5f, 0.5f, 0.5f, 0.03f);
+    [SerializeField] private float animDuration = 0.15f;
 
     private bool isOpen;
     private SpriteRenderer sr;
     private BoxCollider2D col;
     private Vector3 baseScale;
     private bool isHovered;
+    private Coroutine animCoroutine;
 
-    private const float HoverScaleMultiplier = 1.1f;
-    private const float HoverBrightness = 0.15f;
-    private const float HoverAlphaBoost = 0.1f;
+    private static readonly Color HoverColor = new Color(0.2f, 1f, 0.4f);
+    private const float PulseSpeed = 5f;
+    private const float PulseScaleMin = 1.05f;
+    private const float PulseScaleMax = 1.2f;
 
     void Awake()
     {
         EnsureComponents();
         isOpen = startsOpen;
         baseScale = transform.localScale;
-        ApplyVisual();
+        ApplyVisual(instant: true);
     }
 
     void EnsureComponents()
@@ -53,13 +56,70 @@ public class Door : MonoBehaviour
     public void Toggle()
     {
         isOpen = !isOpen;
-        ApplyVisual();
+        col.isTrigger = isOpen;
+
+        if (Application.isPlaying)
+        {
+            if (animCoroutine != null)
+                StopCoroutine(animCoroutine);
+            animCoroutine = StartCoroutine(AnimateToggle());
+        }
+        else
+        {
+            ApplyVisual(instant: true);
+        }
     }
 
     public void ResetState()
     {
+        if (animCoroutine != null)
+        {
+            StopCoroutine(animCoroutine);
+            animCoroutine = null;
+        }
         isOpen = startsOpen;
-        ApplyVisual();
+        isHovered = false;
+        ApplyVisual(instant: true);
+    }
+
+    IEnumerator AnimateToggle()
+    {
+        float elapsed = 0f;
+
+        if (isOpen)
+        {
+            sr.sprite = SpriteHelper.Crosshatch;
+            while (elapsed < animDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / animDuration;
+                float alpha = Mathf.Lerp(closedColor.a, 0f, t);
+                float scale = Mathf.Lerp(1f, 0.6f, t);
+                sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, alpha);
+                transform.localScale = baseScale * scale;
+                yield return null;
+            }
+            sr.enabled = false;
+            transform.localScale = baseScale;
+        }
+        else
+        {
+            sr.enabled = true;
+            sr.sprite = SpriteHelper.Crosshatch;
+            while (elapsed < animDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / animDuration;
+                float alpha = Mathf.Lerp(0f, closedColor.a, t);
+                float scale = Mathf.Lerp(0.6f, 1f, t);
+                sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, alpha);
+                transform.localScale = baseScale * scale;
+                yield return null;
+            }
+            ApplyVisual(instant: true);
+        }
+
+        animCoroutine = null;
     }
 
     void OnMouseEnter()
@@ -70,47 +130,84 @@ public class Door : MonoBehaviour
         if (state != GameManager.GameState.WaitingForInput &&
             state != GameManager.GameState.ChainReacting) return;
         isHovered = true;
-        baseScale = transform.localScale;
-        transform.localScale = baseScale * HoverScaleMultiplier;
-        ApplyVisual();
     }
 
     void OnMouseExit()
     {
         if (!Application.isPlaying || !isHovered) return;
         isHovered = false;
-        transform.localScale = baseScale;
-        ApplyVisual();
+        if (animCoroutine == null)
+        {
+            if (isOpen)
+            {
+                sr.enabled = false;
+            }
+            else
+            {
+                transform.localScale = baseScale;
+                sr.color = closedColor;
+            }
+        }
     }
 
     void Update()
     {
-        if (!Application.isPlaying || !isHovered) return;
-        if (GameManager.Instance == null) return;
-        var state = GameManager.Instance.State;
-        if (state != GameManager.GameState.WaitingForInput &&
-            state != GameManager.GameState.ChainReacting)
+        if (!Application.isPlaying) return;
+
+        if (isHovered)
         {
-            isHovered = false;
-            transform.localScale = baseScale;
-            ApplyVisual();
+            if (GameManager.Instance == null) return;
+            var state = GameManager.Instance.State;
+            if (state != GameManager.GameState.WaitingForInput &&
+                state != GameManager.GameState.ChainReacting)
+            {
+                isHovered = false;
+                if (animCoroutine == null)
+                {
+                    transform.localScale = baseScale;
+                    if (isOpen) sr.enabled = false;
+                    else sr.color = closedColor;
+                }
+                return;
+            }
+
+            if (animCoroutine != null) return;
+
+            float pulse = (Mathf.Sin(Time.time * PulseSpeed) + 1f) * 0.5f;
+
+            if (isOpen)
+            {
+                sr.enabled = true;
+                sr.sprite = SpriteHelper.Crosshatch;
+                float alpha = Mathf.Lerp(0.1f, 0.22f, pulse);
+                sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, alpha);
+                float s = Mathf.Lerp(0.95f, 1.05f, pulse);
+                transform.localScale = baseScale * s;
+            }
+            else
+            {
+                float s = Mathf.Lerp(PulseScaleMin, PulseScaleMax, pulse);
+                transform.localScale = baseScale * s;
+                Color c = Color.Lerp(closedColor, HoverColor, 0.5f + pulse * 0.5f);
+                sr.color = c;
+            }
         }
     }
 
-    void ApplyVisual()
+    void ApplyVisual(bool instant)
     {
         col.isTrigger = isOpen;
-        sr.sprite = isOpen ? SpriteHelper.Square : SpriteHelper.Crosshatch;
-        Color c = isOpen ? openColor : closedColor;
-        if (isHovered)
+
+        if (isOpen)
         {
-            c = new Color(
-                Mathf.Min(1f, c.r + HoverBrightness),
-                Mathf.Min(1f, c.g + HoverBrightness),
-                Mathf.Min(1f, c.b + HoverBrightness),
-                Mathf.Clamp01(c.a + HoverAlphaBoost)
-            );
+            sr.enabled = false;
         }
-        sr.color = c;
+        else
+        {
+            sr.enabled = true;
+            sr.sprite = SpriteHelper.Crosshatch;
+            sr.color = closedColor;
+            transform.localScale = baseScale;
+        }
     }
 }
