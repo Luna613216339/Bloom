@@ -55,6 +55,28 @@ public static class Loc
     public static string F(string key, params object[] args) => string.Format(T(key), args);
 
     /// <summary>
+    /// 汉字之间插一个空格，把字距撑开。中文两三个字挤在按钮正中间显得很局促，
+    /// 拉开之后才像个标签而不是一坨。
+    ///
+    /// 只在相邻的两个汉字之间插 —— 所以英文原样返回，标点前后也不动。
+    /// 用普通空格而不是更细的 U+2009：那个字要单独进字体子集，
+    /// 而普通空格本来就在 ASCII 里，不会有缺字风险。
+    /// </summary>
+    public static string Spaced(string t)
+    {
+        if (string.IsNullOrEmpty(t)) return t;
+        var sb = new System.Text.StringBuilder(t.Length * 2);
+        for (int i = 0; i < t.Length; i++)
+        {
+            if (i > 0 && IsHan(t[i - 1]) && IsHan(t[i])) sb.Append(' ');
+            sb.Append(t[i]);
+        }
+        return sb.ToString();
+    }
+
+    static bool IsHan(char c) => c >= 0x4E00 && c <= 0x9FFF;
+
+    /// <summary>
     /// "N 关" / "N level(s)"。单独拎出来是因为英文有单复数：
     /// 写死 "levels" 会出现 "1 levels"，而这一行里有两个各自独立的数字，
     /// 没法在一条格式串里判断。中文没这个问题，量词恒定。

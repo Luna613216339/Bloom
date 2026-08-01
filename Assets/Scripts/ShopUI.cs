@@ -202,7 +202,7 @@ public class ShopUI : MonoBehaviour
 
         DrawCurrentPanel(new Rect(sw - padRight - panelW, gridY, panelW, 260));
 
-        if (AudioManager.Button(new Rect(padLeft, sh - 60, 150, 42), Loc.T("shop.back"), buttonStyle))
+        if (AudioManager.Button(new Rect(padLeft, sh - 60, 150, 42), Loc.Spaced(Loc.T("shop.back")), buttonStyle))
             SceneManager.LoadScene("MainMenu");
     }
 
@@ -324,12 +324,12 @@ public class ShopUI : MonoBehaviour
         if (equipped)
         {
             GUI.enabled = false;
-            AudioManager.Button(btnRect, Loc.T("shop.equipped"), buttonStyle);
+            AudioManager.Button(btnRect, Loc.Spaced(Loc.T("shop.equipped")), buttonStyle);
             GUI.enabled = true;
         }
         else if (owned)
         {
-            if (AudioManager.Button(btnRect, Loc.T("shop.equip"), buttonStyle))
+            if (AudioManager.Button(btnRect, Loc.Spaced(Loc.T("shop.equip")), buttonStyle))
             {
                 ProgressManager.EquippedTheme = index;
                 if (AudioManager.Instance != null) AudioManager.Instance.PlayEquip();
@@ -340,7 +340,7 @@ public class ShopUI : MonoBehaviour
             // 买不起时按钮置灰。差额不另外写出来 —— 右上角的价签和右上角的钱包
             // 已经把两个数都摆在那儿了，中间再算一遍是重复
             GUI.enabled = ProgressManager.Coins >= price;
-            if (AudioManager.Button(btnRect, Loc.T("shop.unlock"), buttonStyle))
+            if (AudioManager.Button(btnRect, Loc.Spaced(Loc.T("shop.unlock")), buttonStyle))
             {
                 if (ProgressManager.TrySpendCoins(price))
                 {
