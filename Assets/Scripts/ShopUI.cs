@@ -74,6 +74,7 @@ public class ShopUI : MonoBehaviour
     private GUIStyle titleStyle;
     private GUIStyle nameStyle;
     private GUIStyle chipStyle;
+    private GUIStyle priceStyle;
     private GUIStyle smallStyle;
     private GUIStyle buttonStyle;
     private int styleVersion = -1;
@@ -113,6 +114,12 @@ public class ShopUI : MonoBehaviour
         chipStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 15,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleCenter
+        });
+        priceStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 22,
             fontStyle = FontStyle.Bold,
             alignment = TextAnchor.MiddleCenter
         });
@@ -365,13 +372,17 @@ public class ShopUI : MonoBehaviour
         GUI.Label(chip, content, chipStyle);
     }
 
-    /// <summary>价签：近白底 + 深藏青数字，右上角右对齐。绿色只由钞票图标提供</summary>
+    /// <summary>
+    /// 价签：近白底 + 深藏青数字，右上角右对齐。绿色只由钞票图标提供。
+    /// 用自己的 priceStyle 而不是 chipStyle —— 价签要比左上角那枚 ✓ 角标醒目，
+    /// 两个共用一个样式的话就没法分别调大小了。
+    /// </summary>
     void DrawPriceChip(float right, float top, int price)
     {
-        chipStyle.normal.textColor = Money.Ink;
-        float iconH = 15f;
-        float w = Money.Width(price, chipStyle, iconH) + 16f;
-        float h = 24f;
+        SetTextColor(priceStyle, Money.Ink);
+        float iconH = 22f;
+        float w = Money.Width(price, priceStyle, iconH) + 22f;
+        float h = 36f;
         var chip = new Rect(right - w, top, w, h);
 
         GUI.color = Money.Chip;
@@ -379,7 +390,7 @@ public class ShopUI : MonoBehaviour
         GUI.color = Color.white;
         DrawBox(chip, new Color(0f, 0f, 0f, 0.12f));   // 一圈极淡的边，压在浅色预览图上也不会糊掉
 
-        Money.Draw(chip.x + 8f, chip.center.y, price, chipStyle, iconH);
+        Money.Draw(chip.x + 11f, chip.center.y, price, priceStyle, iconH);
     }
 
     /// <summary>

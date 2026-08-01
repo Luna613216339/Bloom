@@ -24,6 +24,12 @@ public class GameUI : MonoBehaviour
     private GUIStyle coinStyle;
     private int styleVersion = -1;
 
+    // ---- 右上角 HUD 的纵向排布 ----
+    const float HudTop = 24f;       // 第一行顶边
+    const float HudGap1 = 0f;       // 关卡名 → 计数。贴紧：这两行是同一件事的两半
+    const float HudGap2 = 26f;      // 计数 → 钱。拉开：钱是另一码事
+    const float MoneyIconH = 30f;   // 钞票图标高，字号跟着它走
+
     void Awake()
     {
         Instance = this;
@@ -124,8 +130,12 @@ public class GameUI : MonoBehaviour
         float sh = Screen.height / scale;
         float pad = 15f;
 
-        GUI.Label(new Rect(0, pad, sw - pad, 35), levelName, hudLabelStyle);
-        GUI.Label(new Rect(0, pad + 35, sw - pad, 45), $"{currentCount} / {targetCount}", hudCountStyle);
+        // 右上角三行：关卡名 / 计数 / 钱，都靠右。
+        // 两个间距是分开的：前两行贴紧（"第几关"和"打了几颗"是同一件事的两半），
+        // 第三行拉开（钱是另一码事，挤在一起会被当成同一组读）。
+        GUI.Label(new Rect(0, HudTop, sw - pad, 35), levelName, hudLabelStyle);
+        GUI.Label(new Rect(0, HudTop + 35 + HudGap1, sw - pad, 45),
+                  $"{currentCount} / {targetCount}", hudCountStyle);
 
         var gm = GameManager.Instance;
         if (gm != null && gm.IsEndless)
@@ -133,11 +143,13 @@ public class GameUI : MonoBehaviour
             if (coinStyle == null)
                 coinStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
                 {
-                    fontSize = 22,
+                    fontSize = 33,
                     alignment = TextAnchor.MiddleLeft,
                     normal = { textColor = Money.InkFor(gm.IsDarkBackground) }
                 });
-            Money.DrawRightAligned(sw - pad, pad + 96, gm.CoinsThisRun, coinStyle, 20f);
+            // 前两行给的是顶边，钱这一行给的是中心线，所以要多算半个图标高
+            float moneyCenter = HudTop + 35 + HudGap1 + 45 + HudGap2 + MoneyIconH / 2f;
+            Money.DrawRightAligned(sw - pad, moneyCenter, gm.CoinsThisRun, coinStyle, MoneyIconH);
         }
 
         if (showRunOver)
