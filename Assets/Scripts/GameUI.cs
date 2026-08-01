@@ -216,7 +216,8 @@ public class GameUI : MonoBehaviour
             normal = { textColor = new Color(0.9f, 0.9f, 0.9f) }
         });
         GUI.Label(new Rect(px, py + 75, pw, 35),
-            Loc.F("run.cleared", roundsCleared, ProgressManager.BestRound), lineStyle);
+            Loc.F("run.cleared", Loc.Levels(roundsCleared), Loc.Levels(ProgressManager.BestRound)),
+            lineStyle);
 
         // 结算页是黑色遮罩，用钞票的浅绿。这里不写"金币"两个字了 ——
         // 图标就是币种本身，再加个名字反而要维护两套说法

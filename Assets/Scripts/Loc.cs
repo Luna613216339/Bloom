@@ -54,6 +54,17 @@ public static class Loc
 
     public static string F(string key, params object[] args) => string.Format(T(key), args);
 
+    /// <summary>
+    /// "N 关" / "N level(s)"。单独拎出来是因为英文有单复数：
+    /// 写死 "levels" 会出现 "1 levels"，而这一行里有两个各自独立的数字，
+    /// 没法在一条格式串里判断。中文没这个问题，量词恒定。
+    /// </summary>
+    public static string Levels(int n)
+    {
+        if (IsZh) return $"{n} 关";
+        return n == 1 ? "1 level" : $"{n} levels";
+    }
+
     // ---- 字体 ----
 
     static Font font;
@@ -102,13 +113,13 @@ public static class Loc
         { "menu.author",     new[]{ "Author: Jie Li",  "作者：李洁" } },
         { "menu.endless",    new[]{ "Endless",         "无尽模式" } },
         { "menu.shop",       new[]{ "Shop",            "商店" } },
-        { "menu.stats",      new[]{ "Best: Round {0}", "最高记录：第 {0} 关" } },
+        { "menu.stats",      new[]{ "Best: Level {0}", "最高记录：第 {0} 关" } },
         { "menu.nofont",     new[]{ "Chinese needs a font — see Resources/Fonts/README",
                                     "Chinese needs a font — see Resources/Fonts/README" } },
 
         // 游戏内
         { "game.level",      new[]{ "Level {0}",       "第 {0} 关" } },
-        { "game.round",      new[]{ "Endless · Round {0}", "无尽 · 第 {0} 关" } },
+        { "game.round",      new[]{ "Endless · Level {0}", "无尽 · 第 {0} 关" } },
         { "game.congrats",   new[]{ "Congratulations!", "全部通关！" } },
         { "game.passed",     new[]{ "Passed!  {0} / {1}",   "过关！  {0} / {1}" } },
         { "game.tryagain",   new[]{ "Try Again  {0} / {1}", "再试一次  {0} / {1}" } },
@@ -118,7 +129,7 @@ public static class Loc
 
         // 无尽模式结算
         { "run.over",        new[]{ "Game Over",       "游戏结束" } },
-        { "run.cleared",     new[]{ "This run {0}     Best {1}", "本局 {0} 关     历史最高 {1} 关" } },
+        { "run.cleared",     new[]{ "This run {0}     Best {1}", "本局 {0}     历史最高 {1}" } },
         { "run.new",         new[]{ "New Run",         "重新开始" } },
 
         // 商店
