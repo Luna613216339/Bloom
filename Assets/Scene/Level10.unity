@@ -455,7 +455,7 @@ MonoBehaviour:
   dangerRadius: 2
   fleeSpeed: 6
   escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
-  moveSpeed: 1.5
+  moveSpeed: 1.65
   loopPath: 1
   useCirclePath: 1
   circleRadius: 2.5
@@ -762,7 +762,7 @@ MonoBehaviour:
   dangerRadius: 2
   fleeSpeed: 6
   escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
-  moveSpeed: 1.5
+  moveSpeed: 1.65
   loopPath: 1
   useCirclePath: 1
   circleRadius: 2.5
@@ -842,7 +842,7 @@ MonoBehaviour:
   dangerRadius: 2
   fleeSpeed: 6
   escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
-  moveSpeed: 1.5
+  moveSpeed: 1.65
   loopPath: 1
   useCirclePath: 1
   circleRadius: 2.5
@@ -1156,7 +1156,7 @@ MonoBehaviour:
   dangerRadius: 2
   fleeSpeed: 6
   escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
-  moveSpeed: 1.5
+  moveSpeed: 1.65
   loopPath: 1
   useCirclePath: 1
   circleRadius: 2.5
@@ -1221,7 +1221,7 @@ MonoBehaviour:
   dangerRadius: 2
   fleeSpeed: 6
   escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
-  moveSpeed: 1.5
+  moveSpeed: 1.65
   loopPath: 1
   useCirclePath: 1
   circleRadius: 2.5

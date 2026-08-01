@@ -49,17 +49,6 @@ public class SchoolSpawner : MonoBehaviour
     private RaycastHit2D[] rayResults = new RaycastHit2D[4];
     private bool[] stalled;
 
-    private static readonly Color[] BallColors =
-    {
-        new Color(1f, 0.35f, 0.35f),
-        new Color(1f, 0.6f, 0.2f),
-        new Color(1f, 0.9f, 0.3f),
-        new Color(0.4f, 1f, 0.5f),
-        new Color(0.3f, 0.8f, 1f),
-        new Color(0.7f, 0.5f, 1f),
-        new Color(1f, 0.5f, 0.8f),
-    };
-
     void Start()
     {
         if (showPathLine)
@@ -213,6 +202,7 @@ public class SchoolSpawner : MonoBehaviour
     void SpawnSchool()
     {
         int normalCount = ballCount - escapeBallCount;
+        Color[] palette = GameManager.Instance.Palette;
 
         for (int i = 0; i < ballCount; i++)
         {
@@ -226,7 +216,8 @@ public class SchoolSpawner : MonoBehaviour
                 pos += perp * wave;
             }
 
-            Color color = BallColors[i % BallColors.Length];
+            // 渐变只铺在彩球上，队尾的逃跑球随后会被 SetAsEscapeBall 覆盖成固定色
+            Color color = BallPalette.Ramp(palette, i, normalCount);
 
             Ball ball = Ball.Create(pos, Vector2.zero, color,
                 ballSize, reactionMaxScale, reactionDuration, expandSpeed);
@@ -307,6 +298,16 @@ public class SchoolSpawner : MonoBehaviour
         return 15;
     }
 
+    /// <summary>编辑器预览用。GameManager.Instance 只在运行时有值，这里直接找场景里的组件</summary>
+    Color[] GizmoPalette
+    {
+        get
+        {
+            var gm = FindFirstObjectByType<GameManager>();
+            return gm != null ? gm.Palette : BallPalette.ForLevel(1);
+        }
+    }
+
     void OnDrawGizmos()
     {
         if (useCirclePath)
@@ -349,6 +350,7 @@ public class SchoolSpawner : MonoBehaviour
         // Draw balls along path
         int count = GetGizmoBallCount();
         int normalCount = count - escapeBallCount;
+        Color[] palette = GizmoPalette;
 
         for (int i = 0; i < count; i++)
         {
@@ -403,7 +405,7 @@ public class SchoolSpawner : MonoBehaviour
             }
             else
             {
-                Color c = BallColors[i % BallColors.Length];
+                Color c = BallPalette.Ramp(palette, i, normalCount);
                 Gizmos.color = new Color(c.r, c.g, c.b, 0.5f);
             }
 
@@ -431,6 +433,7 @@ public class SchoolSpawner : MonoBehaviour
 
         int count = GetGizmoBallCount();
         int normalCount = count - escapeBallCount;
+        Color[] palette = GizmoPalette;
 
         for (int i = 0; i < count; i++)
         {
@@ -459,7 +462,7 @@ public class SchoolSpawner : MonoBehaviour
             }
             else
             {
-                Color c = BallColors[i % BallColors.Length];
+                Color c = BallPalette.Ramp(palette, i, normalCount);
                 Gizmos.color = new Color(c.r, c.g, c.b, 0.5f);
             }
 

@@ -78,7 +78,7 @@ public class MainMenuUI : MonoBehaviour
         {
             float btnW = 180;
             float btnH = 55;
-            if (GUI.Button(new Rect((sw - btnW) / 2f, sh * 0.45f, btnW, btnH), "Play", playBtnStyle))
+            if (AudioManager.Button(new Rect((sw - btnW) / 2f, sh * 0.45f, btnW, btnH), "Play", playBtnStyle))
                 LoadLevel(0);
         }
         else
@@ -100,17 +100,56 @@ public class MainMenuUI : MonoBehaviour
 
                 if (levelNum <= unlocked)
                 {
-                    if (GUI.Button(new Rect(x, y, btnSize, btnSize), levelNum.ToString(), levelBtnStyle))
+                    if (AudioManager.Button(new Rect(x, y, btnSize, btnSize), levelNum.ToString(), levelBtnStyle))
                         LoadLevel(i);
                 }
                 else
                 {
                     GUI.enabled = false;
-                    GUI.Button(new Rect(x, y, btnSize, btnSize), levelNum.ToString(), levelBtnStyle);
+                    AudioManager.Button(new Rect(x, y, btnSize, btnSize), levelNum.ToString(), levelBtnStyle);
                     GUI.enabled = true;
                 }
             }
+
+            DrawEndlessSection(sw, startY + 2 * (btnSize + gap) + 28);
         }
+    }
+
+    /// <summary>
+    /// 通关十关之前按钮是灰的，不是藏起来的 —— 玩家第一次进菜单就该知道后面还有东西。
+    /// </summary>
+    void DrawEndlessSection(float sw, float y)
+    {
+        var dividerColor = new Color(0.85f, 0.85f, 0.85f);
+        float lineW = 400;
+        GUI.color = dividerColor;
+        GUI.DrawTexture(new Rect((sw - lineW) / 2f, y, lineW, 1), Texture2D.whiteTexture);
+        GUI.color = Color.white;
+
+        bool unlocked = ProgressManager.EndlessUnlocked;
+        float btnW = 170;
+        float btnH = 50;
+        float gap = 16f;
+        float totalW = btnW * 2 + gap;
+        float startX = (sw - totalW) / 2f;
+
+        GUI.enabled = unlocked;
+        if (AudioManager.Button(new Rect(startX, y + 22, btnW, btnH), "Endless", playBtnStyle) && unlocked)
+            SceneManager.LoadScene("Endless");
+        if (AudioManager.Button(new Rect(startX + btnW + gap, y + 22, btnW, btnH), "Shop", playBtnStyle) && unlocked)
+            SceneManager.LoadScene("Shop");
+        GUI.enabled = true;
+
+        var hintStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 16,
+            alignment = TextAnchor.MiddleCenter,
+            normal = { textColor = new Color(0.5f, 0.5f, 0.5f) }
+        };
+        string hint = unlocked
+            ? $"Best: Round {ProgressManager.BestRound}     Pollen {ProgressManager.Coins}"
+            : "Clear all 10 levels to unlock";
+        GUI.Label(new Rect(0, y + 22 + btnH + 6, sw, 24), hint, hintStyle);
     }
 
     void LoadLevel(int index)

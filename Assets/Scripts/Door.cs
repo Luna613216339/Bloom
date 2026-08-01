@@ -60,6 +60,9 @@ public class Door : MonoBehaviour
         isOpen = !isOpen;
         col.isTrigger = isOpen;
 
+        if (Application.isPlaying && AudioManager.Instance != null)
+            AudioManager.Instance.PlayDoor(isOpen);
+
         if (Application.isPlaying)
         {
             if (animCoroutine != null)

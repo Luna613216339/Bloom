@@ -26,6 +26,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/Level10.unity
     guid: 26cdfde9bc9f6413cb72d351de0a832c
+  - enabled: 1
+    path: Assets/Scene/Endless.unity
+    guid: b7fa3c9245ad24ce6a260918c42893ed
+  - enabled: 1
+    path: Assets/Scene/Shop.unity
+    guid: ee9388ab79ed4060944310e910f72e13
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
   m_UseUCBPForAssetBundles: 0

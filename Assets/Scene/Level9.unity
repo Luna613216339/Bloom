@@ -712,7 +712,7 @@ MonoBehaviour:
   dangerRadius: 2
   fleeSpeed: 6
   escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
-  moveSpeed: 1.69
+  moveSpeed: 2.28
   loopPath: 1
   useCirclePath: 1
   circleRadius: 2.68
@@ -1118,7 +1118,7 @@ MonoBehaviour:
   dangerRadius: 2
   fleeSpeed: 6
   escapeBallColor: {r: 1, g: 0.2, b: 0.2, a: 1}
-  moveSpeed: 1.69
+  moveSpeed: 2.28
   loopPath: 1
   useCirclePath: 1
   circleRadius: 2.68

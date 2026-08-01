@@ -40,26 +40,55 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string nextScene = "";
     [SerializeField] private int globalLevelStart = 1;
 
+    [Header("Endless Mode（勾上之后，上面的 Levels 数组不生效）")]
+    [Tooltip("参数逐轮由下面的公式生成，失败即结束整轮挑战")]
+    [SerializeField] private bool endlessMode = false;
+    [SerializeField] private EndlessConfig endless = new EndlessConfig();
+
     private int currentLevel;
     private int triggeredCount;
+    private int goldThisRound;
     private int activeReactions;
     private Camera cam;
     private const float GameAspect = 16f / 9f;
     private readonly List<GameObject> screenBounds = new List<GameObject>();
 
-    private LevelConfig Config => levels[currentLevel];
-    public int CurrentBallCount => levels != null && levels.Length > 0 ? levels[Mathf.Clamp(currentLevel, 0, levels.Length - 1)].ballCount : 20;
+    private readonly LevelConfig endlessConfig = new LevelConfig();
 
-    private static readonly Color[] BallColors =
-    {
-        new Color(1f, 0.35f, 0.35f),
-        new Color(1f, 0.6f, 0.2f),
-        new Color(1f, 0.9f, 0.3f),
-        new Color(0.4f, 1f, 0.5f),
-        new Color(0.3f, 0.8f, 1f),
-        new Color(0.7f, 0.5f, 1f),
-        new Color(1f, 0.5f, 0.8f),
-    };
+    public bool IsEndless => endlessMode;
+
+    /// <summary>无尽模式当前轮次，从 1 起</summary>
+    public int Round { get; private set; } = 1;
+
+    /// <summary>本轮挑战累计的金币，失败结算时才真正入账</summary>
+    public int CoinsThisRun { get; private set; }
+
+    private LevelConfig Config => endlessMode
+        ? endlessConfig
+        : levels[Mathf.Clamp(currentLevel, 0, levels.Length - 1)];
+
+    public int CurrentBallCount => Config.ballCount;
+
+    /// <summary>全局关卡号（1-10），Level1-5 场景里随 currentLevel 递增</summary>
+    public int GlobalLevel => globalLevelStart + currentLevel;
+
+    /// <summary>
+    /// 球的配色。正式关卡锁死作者配色，无尽模式才用商店买的主题。
+    /// SchoolSpawner 也从这里取。
+    /// </summary>
+    public Color[] Palette => endlessMode
+        ? BallPalette.ForTheme(ProgressManager.EquippedTheme)
+        : BallPalette.ForLevel(GlobalLevel);
+
+#if UNITY_EDITOR
+    // 给 Editor/BalanceSimulator 读参数用。模拟器必须和 Inspector 上的值完全一致，
+    // 否则算出来的通关率是假的。
+    public EndlessConfig EditorEndless => endless;
+    public float EditorBallSpeed => ballSpeed;
+    public float EditorBallSize => ballSize;
+    public float EditorReactionMaxScale => reactionMaxScale;
+    public float EditorReactionDuration => reactionDuration;
+#endif
 
     void Awake()
     {
@@ -82,10 +111,17 @@ public class GameManager : MonoBehaviour
     {
         ClearBalls();
         triggeredCount = 0;
+        goldThisRound = 0;
         activeReactions = 0;
         State = GameState.WaitingForInput;
 
-        bool hasNext = currentLevel < levels.Length - 1 || !string.IsNullOrEmpty(nextScene);
+        if (endlessMode)
+        {
+            endlessConfig.levelName = $"Endless · Round {Round}";
+            endlessConfig.ballCount = endless.BallCount(Round);
+            endlessConfig.targetCount = endless.TargetCount(Round);
+        }
+
         GameUI.Instance.ShowGameplay(Config.levelName, Config.targetCount, Config.ballCount);
         CreateScreenBounds();
 
@@ -151,16 +187,37 @@ public class GameManager : MonoBehaviour
         float w = h * GameAspect;
         float margin = 0.5f;
 
+        // 金球是这批球里随机的几颗，不是额外加的 —— 否则场上总数变了，平衡数值全乱
+        var goldIndices = PickGoldIndices(Config.ballCount);
+
         for (int i = 0; i < Config.ballCount; i++)
         {
             float x = UnityEngine.Random.Range(-w / 2f + margin, w / 2f - margin);
             float y = UnityEngine.Random.Range(-h / 2f + margin, h / 2f - margin);
             Vector2 dir = UnityEngine.Random.insideUnitCircle.normalized;
-            Color color = BallColors[i % BallColors.Length];
+            Color color = BallPalette.Cycle(Palette, i);
 
-            Ball.Create(new Vector2(x, y), dir * ballSpeed, color,
+            var ball = Ball.Create(new Vector2(x, y), dir * ballSpeed, color,
                 ballSize, reactionMaxScale, reactionDuration);
+
+            if (goldIndices != null && goldIndices.Contains(i))
+                ball.SetAsGoldBall();
         }
+    }
+
+    /// <summary>
+    /// 随机挑几颗当金球。位置纯随机，不刻意摆在边角制造取舍 ——
+    /// 玩家看不见那种设计，只会觉得游戏怪怪的。金球是彩蛋，不是考题。
+    /// </summary>
+    HashSet<int> PickGoldIndices(int ballCount)
+    {
+        if (!endlessMode || endless.goldBallCount <= 0) return null;
+
+        var set = new HashSet<int>();
+        int want = Mathf.Min(endless.goldBallCount, ballCount);
+        while (set.Count < want)
+            set.Add(UnityEngine.Random.Range(0, ballCount));
+        return set;
     }
 
     void Update()
@@ -192,9 +249,25 @@ public class GameManager : MonoBehaviour
     public void RegisterBall(Ball ball) => AllBalls.Add(ball);
     public void UnregisterBall(Ball ball) => AllBalls.Remove(ball);
 
-    public void OnBallTriggered()
+    public void OnBallTriggered(Ball ball)
     {
         triggeredCount++;
+
+        bool isGold = ball != null && ball.IsGoldBall;
+
+        if (AudioManager.Instance != null)
+        {
+            if (isGold) AudioManager.Instance.PlayGold();
+            else AudioManager.Instance.PlayChain(triggeredCount);
+        }
+
+        // 金球算进通关数（它就是一颗普通球外加奖励），否则玩家看着数字对不上会困惑
+        if (endlessMode && isGold)
+        {
+            goldThisRound++;
+            CoinsThisRun += endless.goldBallReward;
+        }
+
         GameUI.Instance.UpdateCount(triggeredCount);
     }
 
@@ -207,6 +280,13 @@ public class GameManager : MonoBehaviour
         {
             State = GameState.LevelComplete;
             bool passed = triggeredCount >= Config.targetCount;
+
+            if (endlessMode)
+            {
+                EndRound(passed);
+                return;
+            }
+
             bool hasNext = currentLevel < levels.Length - 1 || !string.IsNullOrEmpty(nextScene);
 
             if (passed)
@@ -216,8 +296,32 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>无尽模式一轮结束。过了就无缝进下一轮，没过整轮挑战就到此为止</summary>
+    void EndRound(bool passed)
+    {
+        if (passed)
+        {
+            CoinsThisRun += endless.OverkillReward(triggeredCount, Config.targetCount);
+            CoinsThisRun += endless.MilestoneBonus(Round);
+            ProgressManager.ReportClearedRound(Round);
+            GameUI.Instance.ShowResult(true, triggeredCount, Config.targetCount, true);
+        }
+        else
+        {
+            ProgressManager.AddCoins(CoinsThisRun);
+            GameUI.Instance.ShowRunOver(Round - 1, CoinsThisRun);
+        }
+    }
+
     public void NextLevel()
     {
+        if (endlessMode)
+        {
+            Round++;
+            StartLevel();
+            return;
+        }
+
         if (currentLevel < levels.Length - 1)
         {
             currentLevel++;
@@ -229,8 +333,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>正式关卡是重玩本关；无尽模式是从第 1 轮重开一整轮，否则最高记录就没意义了</summary>
     public void Retry()
     {
+        if (endlessMode)
+        {
+            Round = 1;
+            CoinsThisRun = 0;
+        }
         StartLevel();
     }
 }

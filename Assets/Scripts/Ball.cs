@@ -5,6 +5,20 @@ public class Ball : MonoBehaviour
     public enum BallState { Moving, Triggered, Shrinking, Fleeing }
     public BallState CurrentState { get; private set; } = BallState.Moving;
     public bool IsEscapeBall { get; private set; }
+    public bool IsGoldBall { get; private set; }
+
+    // 金球在静止的球阵里是唯一会"呼吸"的东西，眼睛一定先找到它。
+    // 这比任何颜色都管用 —— 平涂的金色在一堆彩球里只是"又一个颜色"。
+    const float PulseAmplitude = 0.06f;
+    const float PulseSpeed = 3.6f;
+    const float GoldSizeBoost = 1.18f;   // 金币比普通球大一圈，否则视觉上反而显小
+    const float SpinSpeedMin = 40f;      // 度/秒，让美元符号在飞行中缓慢自转
+    const float SpinSpeedMax = 90f;
+    static readonly Color GoldColor = new Color(1f, 0.78f, 0.22f);
+
+    private float baseScale;
+    private float pulsePhase;
+    private float spinSpeed;
 
     private const int BallLayer = 6;
     private const float ShrinkSpeed = 4f;
@@ -80,6 +94,20 @@ public class Ball : MonoBehaviour
         return ball;
     }
 
+    public void SetAsGoldBall()
+    {
+        IsGoldBall = true;
+        baseScale = currentScale * GoldSizeBoost;
+        currentScale = baseScale;
+        transform.localScale = Vector3.one * baseScale;
+        pulsePhase = Random.Range(0f, Mathf.PI * 2f);
+        spinSpeed = Random.Range(SpinSpeedMin, SpinSpeedMax) * (Random.value < 0.5f ? -1f : 1f);
+        // 金币的颜色是烤进贴图里的（外环/内盘/符号三段），所以这里不染色
+        sr.sprite = SpriteHelper.Coin;
+        sr.color = Color.white;
+        sr.sortingOrder = 2;
+    }
+
     public void SetAsEscapeBall(float dangerRadius, float fleeSpeed, Color color)
     {
         IsEscapeBall = true;
@@ -98,6 +126,17 @@ public class Ball : MonoBehaviour
     {
         if (IsEscapeBall && CurrentState == BallState.Moving)
             CheckForDanger();
+
+        if (IsGoldBall && CurrentState == BallState.Moving)
+        {
+            pulsePhase += Time.deltaTime * PulseSpeed;
+            float s = baseScale * (1f + Mathf.Sin(pulsePhase) * PulseAmplitude);
+            currentScale = s;
+            transform.localScale = Vector3.one * s;
+
+            // Rigidbody 勾了 FreezeRotation，物理不会转它，所以直接改 transform 就行
+            transform.Rotate(0f, 0f, spinSpeed * Time.deltaTime);
+        }
 
         switch (CurrentState)
         {
@@ -202,9 +241,17 @@ public class Ball : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Kinematic;
         col.enabled = false;
         triggerTimer = reactionDuration;
+
+        if (IsGoldBall)
+        {
+            // 金球膨胀时换回普通圆形，否则高光会被拉得很怪
+            sr.sprite = SpriteHelper.Circle;
+            GoldBurst.Create(transform.position, GoldColor, currentScale);
+        }
+
         var c = sr.color;
         sr.color = new Color(c.r, c.g, c.b, 0.45f);
-        GameManager.Instance.OnBallTriggered();
+        GameManager.Instance.OnBallTriggered(this);
         GameManager.Instance.ReactionStarted();
     }
 }
