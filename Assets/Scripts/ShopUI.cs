@@ -35,7 +35,27 @@ public class ShopUI : MonoBehaviour
     // 装备该主题跑一局无尽模式的截图。高度由宽度算出来，改宽度不用手动补高度
     float PreviewH => (cardW - 2f) * 9f / 16f;
     float PanelPreviewH => (panelW - 2f) * 9f / 16f;
-    const float CardChromeH = 102f;              // 预览图下面的色板 + 名字 + 按钮
+    // ---- 卡片下半部分的纵向排布，全部相对预览图底边 ----
+    const float SwatchSize = 18f;
+    const float SwatchTop = 9f;     // 预览图底边 → 色板条
+    const float RowTop = 46f;       // → 名字和按钮那一行（色板条和它之间有第二条分隔线）
+    const float RowH = 34f;
+    const float CardChromeH = 92f;  // 预览图下面这一整块的高度
+
+    const float BtnW = 96f;         // 按钮宽
+    const float BtnRight = 12f;     // 按钮右边距
+    const float NameLeft = 12f;     // 名字左边距
+    const float NameBtnGap = 10f;   // 名字和按钮之间至少留这么多
+
+    /// <summary>主题名可用的宽度：整张卡减掉两侧边距、按钮、以及中间的间隙</summary>
+    float NameWidth => cardW - NameLeft - BtnW - BtnRight - NameBtnGap;
+
+    // 名字字号：在不挤到按钮的前提下取最大值。所有卡用同一个字号 ——
+    // 每张卡各自算的话，短名字大、长名字小，网格看着就散了。
+    // 只有语言或卡片宽度变了才需要重算。
+    private int nameFontSize;
+    private int fontFitVersion = -1;
+    private float fontFitWidth = -1f;
     float CardH => PreviewH + CardChromeH;
 
     private GUIStyle titleStyle;
@@ -72,7 +92,9 @@ public class ShopUI : MonoBehaviour
         });
         nameStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
-            fontSize = 20,
+            fontSize = 24,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleLeft,
             normal = { textColor = Ink }
         });
         chipStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
@@ -87,11 +109,39 @@ public class ShopUI : MonoBehaviour
             normal = { textColor = Muted }
         });
         buttonStyle = Loc.Fit(new GUIStyle(GUI.skin.button) { fontSize = 17 });
+
+        // 上面的对象初始化器只设了 normal，其余状态还是内置 skin 的透明色。
+        // 统一补一遍，免得哪个标签一碰鼠标就消失
+        SetTextColor(titleStyle, Ink);
+        SetTextColor(nameStyle, Ink);
+        SetTextColor(smallStyle, Muted);
+    }
+
+    /// <summary>
+    /// 找出"所有主题名都塞得下"的最大字号。逐档往下试，第一个全部通过的就是答案。
+    /// 上限 32 是给短名字（糖霜、极光）封顶，再大就比按钮还抢眼了。
+    /// </summary>
+    void FitNameFont()
+    {
+        if (fontFitVersion == Loc.Version && Mathf.Approximately(fontFitWidth, NameWidth)) return;
+        fontFitVersion = Loc.Version;
+        fontFitWidth = NameWidth;
+
+        for (nameFontSize = 32; nameFontSize > 11; nameFontSize--)
+        {
+            nameStyle.fontSize = nameFontSize;
+            bool allFit = true;
+            for (int i = 0; i < BallPalette.ThemeCount && allFit; i++)
+                allFit = nameStyle.CalcSize(new GUIContent(BallPalette.ThemeName(i))).x <= NameWidth;
+            if (allFit) break;
+        }
+        nameStyle.fontSize = nameFontSize;
     }
 
     void OnGUI()
     {
         InitStyles();
+        FitNameFont();
 
         float scale = Screen.height / 600f;
         GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(scale, scale, 1));
@@ -154,7 +204,9 @@ public class ShopUI : MonoBehaviour
         bool equipped = ProgressManager.EquippedTheme == index;
         int price = BallPalette.ThemePrices[index];
 
-        DrawBox(r, equipped ? Ink : Line, equipped ? 2 : 1);
+        // 所有卡统一 1px 浅边。已装备靠左上角那枚 ✓ 角标和按钮文案区分就够了 ——
+        // 原来给它加 2px 深色描边，边框还会把色板条的两条分隔线一起压黑
+        DrawBox(r, Line, 1);
 
         var preview = new Rect(r.x + 1, r.y + 1, r.width - 2, PreviewH);
         DrawThemePreview(preview, index);
@@ -164,25 +216,37 @@ public class ShopUI : MonoBehaviour
         else if (!owned)
             DrawPriceChip(preview.xMax - 8, preview.y + 8, price);
 
+        // 预览图和下半张卡之间的分隔线：预览是"这个主题长什么样"，
+        // 下面是"它叫什么、多少钱" —— 两种信息，给一条线隔开
+        GUI.color = Line;
+        GUI.DrawTexture(new Rect(r.x + 1, preview.yMax, r.width - 2, 1), Texture2D.whiteTexture);
+        GUI.color = Color.white;
+
         // 色板条：按明度从浅到深排，读起来是一条色阶而不是一把散色。
         // 排的是副本 —— 数组本身的顺序不能动，蛇形关（6-10）靠 BallPalette.Ramp
         // 沿着这个顺序插值成蛇的身体，涩谷夜那套还特意把琥珀放在队首，
         // 免得渐变经过灰绿。展示顺序和取色顺序是两件事。
         var colors = BallPalette.ForTheme(index).OrderByDescending(Luminance).ToArray();
-        float swatchY = preview.yMax + 8;
-        float swatchSize = 18f;
+        float swatchY = preview.yMax + SwatchTop;
         float swatchGap = 6f;
-        float totalW = colors.Length * swatchSize + (colors.Length - 1) * swatchGap;
+        float totalW = colors.Length * SwatchSize + (colors.Length - 1) * swatchGap;
         float startX = r.x + (r.width - totalW) / 2f;
         for (int i = 0; i < colors.Length; i++)
-            DrawCircle(new Rect(startX + i * (swatchSize + swatchGap), swatchY, swatchSize, swatchSize), colors[i]);
+            DrawCircle(new Rect(startX + i * (SwatchSize + swatchGap), swatchY, SwatchSize, SwatchSize), colors[i]);
 
-        float textY = swatchY + swatchSize + 10;
-        // 没买的主题连名字都退一档，让"这张还不是你的"多一层弱信号
-        nameStyle.normal.textColor = owned ? Ink : Muted;
-        GUI.Label(new Rect(r.x + 12, textY, r.width - 24, 26), BallPalette.ThemeName(index), nameStyle);
+        // 色板条下面再来一条线，把它夹成一个独立的带子 ——
+        // 色板是"这套有哪些颜色"，和上面的预览、下面的名字都不是一回事
+        GUI.color = Line;
+        GUI.DrawTexture(new Rect(r.x + 1, swatchY + SwatchSize + SwatchTop, r.width - 2, 1), Texture2D.whiteTexture);
+        GUI.color = Color.white;
 
-        var btnRect = new Rect(r.x + r.width - 108, textY + 28, 96, 34);
+        // 名字和按钮同一行：名字靠左、按钮靠右
+        float rowY = preview.yMax + RowTop;
+        SetTextColor(nameStyle, owned ? Ink : Muted);   // 没买的退一档灰，多一层弱信号
+        GUI.Label(new Rect(r.x + NameLeft, rowY, NameWidth, RowH),
+                  BallPalette.ThemeName(index), nameStyle);
+
+        var btnRect = new Rect(r.xMax - BtnRight - BtnW, rowY, BtnW, RowH);
 
         if (equipped)
         {
@@ -200,13 +264,9 @@ public class ShopUI : MonoBehaviour
         }
         else
         {
-            // 买不起的时候把差额说出来，比一个灰按钮有用 —— 玩家知道还差多少才会去打
-            int gap = price - ProgressManager.Coins;
-            if (gap > 0)
-                GUI.Label(new Rect(r.x + 12, textY + 32, r.width - 120, 22),
-                          Loc.F("shop.short", gap), smallStyle);
-
-            GUI.enabled = gap <= 0;
+            // 买不起时按钮置灰。差额不另外写出来 —— 右上角的价签和右上角的钱包
+            // 已经把两个数都摆在那儿了，中间再算一遍是重复
+            GUI.enabled = ProgressManager.Coins >= price;
             if (AudioManager.Button(btnRect, Loc.T("shop.unlock"), buttonStyle))
             {
                 if (ProgressManager.TrySpendCoins(price))
@@ -300,7 +360,7 @@ public class ShopUI : MonoBehaviour
         DrawThemePreview(new Rect(box.x + 1, box.y + 1, box.width - 2, PanelPreviewH), ProgressManager.EquippedTheme);
 
         // DrawCard 会按"买没买"改 nameStyle 的颜色，这里必须自己设回来
-        nameStyle.normal.textColor = Ink;
+        SetTextColor(nameStyle, Ink);
         GUI.Label(new Rect(box.x + 12, box.yMax - 34, box.width - 24, 26),
             BallPalette.ThemeName(ProgressManager.EquippedTheme), nameStyle);
 
@@ -316,6 +376,26 @@ public class ShopUI : MonoBehaviour
         GUI.DrawTexture(new Rect(r.x, r.y, t, r.height), Texture2D.whiteTexture);
         GUI.DrawTexture(new Rect(r.xMax - t, r.y, t, r.height), Texture2D.whiteTexture);
         GUI.color = Color.white;
+    }
+
+    /// <summary>
+    /// 给一个 GUIStyle 的**所有状态**设同一个文字色。
+    ///
+    /// 必须全设：GUIStyle 的 normal / hover / active / focused 是各自独立的，
+    /// 而内置 skin 里除 normal 之外几乎都是透明的。只设 normal 的话，
+    /// IMGUI 一旦走到别的状态（鼠标悬停在控件上就会），文字直接凭空消失。
+    /// 2026-08-02 踩过：商店卡片的主题名一碰鼠标就没了。
+    /// </summary>
+    static void SetTextColor(GUIStyle s, Color c)
+    {
+        s.normal.textColor = c;
+        s.hover.textColor = c;
+        s.active.textColor = c;
+        s.focused.textColor = c;
+        s.onNormal.textColor = c;
+        s.onHover.textColor = c;
+        s.onActive.textColor = c;
+        s.onFocused.textColor = c;
     }
 
     /// <summary>感知亮度，只用来给色板条排序</summary>

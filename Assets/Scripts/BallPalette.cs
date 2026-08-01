@@ -162,14 +162,14 @@ public static class BallPalette
     public static readonly string[] ThemeNames =
     {
         "Hazy Summer", "Emerald", "Sakura", "Tiffany", "Shibuya Night", "Rainbow",
-        "Shibuya Night · Dark", "Aurora", "Midnight Garden", "Hellfire", "Frosting",
+        "Shibuya Dark", "Aurora", "Midnight Garden", "Hellfire", "Frosting",
     };
 
     /// <summary>主题名的中文版，索引和 ThemeNames 一一对应。取名走 Loc.ThemeName(i)</summary>
     public static readonly string[] ThemeNamesZh =
     {
         "朦胧夏日", "翡翠林", "樱花藕粉", "蒂芙尼", "涩谷夜", "原版彩虹",
-        "涩谷夜 · 深色版", "极光", "午夜植物园", "地狱火", "糖霜",
+        "涩谷夜·暗", "极光", "午夜植物园", "地狱火", "糖霜",
     };
 
     /// <summary>按当前语言取主题名</summary>

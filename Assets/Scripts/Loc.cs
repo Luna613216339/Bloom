@@ -138,7 +138,6 @@ public static class Loc
         { "shop.equipped",   new[]{ "Equipped",        "使用中" } },
         { "shop.equip",      new[]{ "Equip",           "使用" } },
         { "shop.unlock",     new[]{ "Unlock",          "解锁" } },
-        { "shop.short",      new[]{ "Need {0} more",   "还差 {0}" } },
         { "shop.current",    new[]{ "Current Theme",   "当前主题" } },
         { "shop.note",       new[]{ "Skins apply to Endless only.", "皮肤效果只作用于无尽模式" } },
     };
