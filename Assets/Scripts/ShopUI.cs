@@ -47,6 +47,16 @@ public class ShopUI : MonoBehaviour
     const float NameLeft = 12f;     // 名字左边距
     const float NameBtnGap = 10f;   // 名字和按钮之间至少留这么多
 
+    [Header("预览图里的球")]
+    [Tooltip("横向几个格子。画面切成格子，每格放一颗球，保证铺满")]
+    [SerializeField] int previewCols = 5;
+    [Tooltip("纵向几个格子")]
+    [SerializeField] int previewRows = 3;
+    [Tooltip("球的最大直径，相对格子的短边。调小 = 球变小、更疏")]
+    [Range(0.2f, 0.9f)][SerializeField] float previewBallScale = 0.42f;
+    [Tooltip("球在格子里的抖动幅度。0 = 规规矩矩的方阵，越大越乱")]
+    [Range(0f, 0.9f)][SerializeField] float previewJitter = 0.55f;
+
     /// <summary>主题名可用的宽度：整张卡减掉两侧边距、按钮、以及中间的间隙</summary>
     float NameWidth => cardW - NameLeft - BtnW - BtnRight - NameBtnGap;
 
@@ -321,6 +331,10 @@ public class ShopUI : MonoBehaviour
     /// 在游戏里的样子。刻意不用外部图片：全项目的图形都是代码生成的，
     /// 而且这样加新主题就是加一行配色，不用再配一张图。
     ///
+    /// 球位用**分层抖动**，不是纯随机：把画面切成 previewCols × previewRows 的格子，
+    /// 每格放一颗、在格内随机偏移。纯随机在这么小的画面里必然出现团块和偏向一侧
+    /// （经典的"随机看起来不随机"），分层之后铺满有保证，抖动又让它不像方阵。
+    ///
     /// 随机种子由 index 决定，所以每个主题的球位固定不变，不会每帧乱跳。
     /// </summary>
     void DrawThemePreview(Rect r, int index)
@@ -334,14 +348,48 @@ public class ShopUI : MonoBehaviour
         GUI.DrawTexture(r, Texture2D.whiteTexture);
         GUI.color = Color.white;
 
-        int count = 14;
         var rng = new System.Random(index * 7919 + 13);
-        for (int i = 0; i < count; i++)
+
+        // 左下角那格空着 —— 卡片的名字就在预览图正下方偏左，
+        // 那个位置有球会和名字挤在一起
+        bool Skip(int row, int col) => row == previewRows - 1 && col == 0;
+
+        int count = previewCols * previewRows;
+        for (int row = 0; row < previewRows; row++)
+            for (int col = 0; col < previewCols; col++)
+                if (Skip(row, col)) count--;
+
+        // 颜色：先按顺序铺满再洗牌。直接用 i % colors.Length 会按列排出竖条纹
+        // （5 列碰上 5 色就是每列一个颜色），洗过之后每种颜色出现次数仍然均等
+        var picks = new Color[count];
+        for (int i = 0; i < count; i++) picks[i] = colors[i % colors.Length];
+        for (int i = count - 1; i > 0; i--)
         {
-            float size = 16f + (float)rng.NextDouble() * 12f;
-            float x = r.x + 8 + (float)rng.NextDouble() * (r.width - 16 - size);
-            float y = r.y + 8 + (float)rng.NextDouble() * (r.height - 16 - size);
-            DrawCircle(new Rect(x, y, size, size), colors[i % colors.Length]);
+            int j = rng.Next(i + 1);
+            (picks[i], picks[j]) = (picks[j], picks[i]);
+        }
+
+        float cellW = r.width / previewCols;
+        float cellH = r.height / previewRows;
+        float maxD = Mathf.Min(cellW, cellH) * previewBallScale;
+
+        int n = 0;
+        for (int row = 0; row < previewRows; row++)
+        {
+            for (int col = 0; col < previewCols; col++)
+            {
+                if (Skip(row, col)) continue;
+
+                float d = maxD * (0.62f + (float)rng.NextDouble() * 0.38f);
+                float cx = r.x + (col + 0.5f) * cellW + (float)(rng.NextDouble() - 0.5) * cellW * previewJitter;
+                float cy = r.y + (row + 0.5f) * cellH + (float)(rng.NextDouble() - 0.5) * cellH * previewJitter;
+
+                // 外圈的格子抖出去会把球切掉，夹回框内
+                cx = Mathf.Clamp(cx, r.x + d / 2f + 2f, r.xMax - d / 2f - 2f);
+                cy = Mathf.Clamp(cy, r.y + d / 2f + 2f, r.yMax - d / 2f - 2f);
+
+                DrawCircle(new Rect(cx - d / 2f, cy - d / 2f, d, d), picks[n++]);
+            }
         }
 
     }
