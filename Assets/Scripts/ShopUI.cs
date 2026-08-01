@@ -235,20 +235,21 @@ public class ShopUI : MonoBehaviour
         GUI.Label(chip, content, chipStyle);
     }
 
-    /// <summary>价签：钞票浅绿底 + 深藏青数字，右上角右对齐</summary>
+    /// <summary>价签：近白底 + 深藏青数字，右上角右对齐。绿色只由钞票图标提供</summary>
     void DrawPriceChip(float right, float top, int price)
     {
         chipStyle.normal.textColor = Money.Ink;
         float iconH = 15f;
-        float w = Money.Width(price, chipStyle, iconH) + 14f;
+        float w = Money.Width(price, chipStyle, iconH) + 16f;
         float h = 24f;
         var chip = new Rect(right - w, top, w, h);
 
         GUI.color = Money.Chip;
         GUI.DrawTexture(chip, Texture2D.whiteTexture);
         GUI.color = Color.white;
+        DrawBox(chip, new Color(0f, 0f, 0f, 0.12f));   // 一圈极淡的边，压在浅色预览图上也不会糊掉
 
-        Money.Draw(chip.x + 7f, chip.center.y, price, chipStyle, iconH);
+        Money.Draw(chip.x + 8f, chip.center.y, price, chipStyle, iconH);
     }
 
     // Resources.Load 每帧调一次太浪费，查过一次就记住结果（包括"没这张图"）

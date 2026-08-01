@@ -21,15 +21,20 @@ public static class Money
     /// <summary>深底上的钱数用钞票的浅绿</summary>
     public static readonly Color Bright = new Color(0.66f, 0.85f, 0.47f);
 
-    /// <summary>价签底色，取钞票的浅绿</summary>
-    public static readonly Color Chip = new Color(0.66f, 0.85f, 0.47f);
+    /// <summary>
+    /// 价签底色：近白，不是绿的。
+    /// 钞票图标本身已经是绿的了 —— 底色再用绿，颜色就重复了一遍，
+    /// 而且会和身后那张预览图的配色打架（每个主题的颜色都不一样）。
+    /// 中性底让钞票成为这枚标签上唯一的彩色元素。
+    /// </summary>
+    public static readonly Color Chip = new Color(1f, 1f, 1f, 0.93f);
 
     public static Color InkFor(bool darkBackground) => darkBackground ? Bright : Ink;
 
     /// <summary>图标 + 数字的总宽度，用来做右对齐或居中</summary>
     public static float Width(int amount, GUIStyle numberStyle, float iconH)
     {
-        float gap = iconH * 0.35f;
+        float gap = iconH * 0.5f;
         return iconH * Aspect + gap + numberStyle.CalcSize(new GUIContent(amount.ToString())).x;
     }
 
@@ -40,7 +45,7 @@ public static class Money
     public static float Draw(float x, float centerY, int amount, GUIStyle numberStyle, float iconH)
     {
         float iconW = iconH * Aspect;
-        float gap = iconH * 0.35f;
+        float gap = iconH * 0.5f;
 
         var tex = SpriteHelper.Banknote;
         if (tex != null)
