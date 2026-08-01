@@ -10,7 +10,30 @@ public static class ProgressManager
     private const string ThemeOwnedKey = "ThemeOwned_";
     private const string ThemeEquippedKey = "ThemeEquipped";
 
+    /// <summary>
+    /// 主题表的版本号。存档存的是**索引**不是名字，所以一旦 BallPalette 里
+    /// 增删主题或调顺序，老存档的"已购买/已装备"就会指到别的主题上。
+    /// 改动主题表时把这个数 +1，下次启动会把主题相关的存档清掉重来。
+    ///
+    /// 只清主题，不动金币和关卡进度 —— 玩家攒的钱不该因为我改配色而蒸发。
+    /// v2：2026-08-02 从 16 套砍到 9 套。
+    /// </summary>
+    private const int ThemeSchema = 2;
+    private const string ThemeSchemaKey = "ThemeSchema";
+
     private const int StoryLevelCount = 10;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void MigrateThemesIfNeeded()
+    {
+        if (PlayerPrefs.GetInt(ThemeSchemaKey, 1) == ThemeSchema) return;
+
+        for (int i = 0; i < 32; i++) PlayerPrefs.DeleteKey(ThemeOwnedKey + i);
+        PlayerPrefs.DeleteKey(ThemeEquippedKey);
+        PlayerPrefs.SetInt(ThemeSchemaKey, ThemeSchema);
+        PlayerPrefs.Save();
+        Debug.Log("[Bloom] 主题表变了，已重置主题存档（金币和关卡进度不受影响）");
+    }
 
     public static int UnlockedLevel
     {

@@ -72,19 +72,7 @@ public static class BallPalette
     // ---- 2026-08-01 新增。全部按"爆炸态对比度"筛过：白底 ≥1.30，深色底 ≥3.0。
     //      基准锚是实机观感 —— 涩谷夜 1.41 好看，马卡龙 1.16 太浅 ----
 
-    // 岩浆：纯暖色域，酒红 → 朱红 → 橙 → 琥珀金。原来没有一套是单纯的暖色
-    static readonly Color[] Magma =
-    {
-        C("#8E1B2E"), C("#C21E28"), C("#E24417"), C("#F26B0A"),
-        C("#D99411"), C("#A8321F"), C("#6B1F3A"),
-    };
 
-    // 糖果霓虹：马卡龙的同位替身，七色分布一样，饱和度拉满、明度压下来
-    static readonly Color[] CandyNeon =
-    {
-        C("#FF2E74"), C("#F2610F"), C("#D19400"), C("#4FA82A"),
-        C("#00A88F"), C("#2E8BFF"), C("#9A3FE0"),
-    };
 
     // 翡翠林：绿为主角。色相图上最大的一块空白
     static readonly Color[] Emerald =
@@ -93,28 +81,8 @@ public static class BallPalette
         C("#8CC220"), C("#0FA588"), C("#046B62"),
     };
 
-    // 葡萄夜：紫为主角。白底方案里对比度最高的一套（2.05）
-    static readonly Color[] Grape =
-    {
-        C("#4A1E8C"), C("#6A22A8"), C("#8B25B8"), C("#B02BA8"),
-        C("#C92D8A"), C("#7A28C4"), C("#3A2496"),
-    };
 
-    // 复古海报：七十年代印刷品，砖红 / 芥末 / 橄榄 / 鸭青。
-    // 饱和度中等但明度压得低，白底上照样立得住
-    static readonly Color[] RetroPoster =
-    {
-        C("#B8402C"), C("#DE7020"), C("#C79213"), C("#8A9A2B"),
-        C("#3D7A66"), C("#A2472A"), C("#5F7A3A"),
-    };
 
-    // 包豪斯：红黄蓝三原色 + 一颗近黑。
-    // 那颗黑球是全场对比度最高的一颗 —— 别的球爆炸时在褪色，它在变清楚
-    static readonly Color[] Bauhaus =
-    {
-        C("#D62828"), C("#D98B0A"), C("#1D5FA8"), C("#2A2A2A"),
-        C("#C1121F"), C("#3E7A3A"), C("#14487A"),
-    };
 
     // 极光（深色）：薄荷 → 青绿 → 靛 → 紫，一条连续冷色渐变
     static readonly Color[] Aurora =
@@ -162,32 +130,29 @@ public static class BallPalette
     // ---- 商店主题。只在无尽模式生效，正式关卡永远用 ByLevel 表 ----
 
     // 0 号是免费初始主题，玩家一进商店就已经装备着它。
-    // ⚠️ 只能往后追加，不能插队或调顺序 —— 存档里的"已购买/已装备"存的是索引，
-    // 顺序一变，玩家买过的主题就会错位到别的主题上
+    // 排列顺序：先白底后深色，深色排最后 —— 商店从左上往右下扫过去，
+    // 观感是"由浅入深"，最后那三张黑卡自成一组，不会和白底卡混在一起。
+    //
+    // ⚠️ 改动这几个数组会打乱存档索引（存档存的是索引号，不是名字）。
+    // ProgressManager 有个 ThemeSchema 版本号，改完记得 +1，
+    // 否则老玩家会"拥有"错位的主题。
     static readonly Color[][] ThemePalettes =
     {
-        ShibuyaNight, TealOrange, HazySummer, Macaron, Sakura, Tiffany, Rainbow,
-        ShibuyaNightDark,
-        CandyNeon, Magma, Emerald, Grape, RetroPoster, Bauhaus,
-        Aurora, MidnightGarden,
+        HazySummer, Emerald, Sakura, Tiffany, ShibuyaNight, Rainbow,
+        ShibuyaNightDark, Aurora, MidnightGarden,
     };
 
-    // TODO 名字是占位，等美术定了再改
     public static readonly string[] ThemeNames =
     {
-        "Shibuya Night", "Teal & Orange", "Hazy Summer", "Macaron", "Sakura", "Tiffany", "Rainbow",
-        "Shibuya Night · Dark",
-        "Candy Neon", "Magma", "Emerald", "Grape", "Retro Poster", "Bauhaus",
-        "Aurora", "Midnight Garden",
+        "Hazy Summer", "Emerald", "Sakura", "Tiffany", "Shibuya Night", "Rainbow",
+        "Shibuya Night · Dark", "Aurora", "Midnight Garden",
     };
 
     /// <summary>主题名的中文版，索引和 ThemeNames 一一对应。取名走 Loc.ThemeName(i)</summary>
     public static readonly string[] ThemeNamesZh =
     {
-        "涩谷夜", "青橙对撞", "朦胧夏日", "马卡龙", "樱花藕粉", "蒂芙尼", "原版彩虹",
-        "涩谷夜 · 深色版",
-        "糖果霓虹", "岩浆", "翡翠林", "葡萄夜", "复古海报", "包豪斯",
-        "极光", "午夜植物园",
+        "朦胧夏日", "翡翠林", "樱花藕粉", "蒂芙尼", "涩谷夜", "原版彩虹",
+        "涩谷夜 · 深色版", "极光", "午夜植物园",
     };
 
     /// <summary>按当前语言取主题名</summary>
@@ -203,23 +168,24 @@ public static class BallPalette
     /// </summary>
     public static readonly string[] ThemeIds =
     {
-        "shibuya-night", "teal-orange", "hazy-summer", "macaron", "sakura", "tiffany", "rainbow",
-        "shibuya-night-dark",
-        "candy-neon", "magma", "emerald", "grape", "retro-poster", "bauhaus",
-        "aurora", "midnight-garden",
+        "hazy-summer", "emerald", "sakura", "tiffany", "shibuya-night", "rainbow",
+        "shibuya-night-dark", "aurora", "midnight-garden",
     };
 
     /// <summary>
     /// 深色主题定在 300：换深色不是换配色，是换掉整个游戏的观感，价值不是一个档次。
-    /// 但涩谷夜·深色版留 0 —— 先让玩家白拿一套尝到"原来还能这样"，
-    /// 才会为第二套深色掏钱。免费的那套是品类的样品，不是施舍。
+    /// 但涩谷夜·深色版只要 50 —— 它是**深色这个品类的入场券**：
+    /// 便宜到几乎不构成决策，玩家买了才知道原来还能这样，
+    /// 另外两套 300 的深色才有人考虑。
+    /// 刻意不做成免费：白送的东西玩家不会认真看，花 50 买的才会去用。
+    ///
+    /// 50 同时也是全场最低价，为了让第一次购买发生在第一局之内 ——
+    /// 商店如果第一局摸不到，玩家就当它是装饰，之后不会再点。
     /// </summary>
     public static readonly int[] ThemePrices =
     {
-        0, 50, 100, 100, 200, 200, 300,
-        0,
-        150, 150, 150, 200, 200, 250,
-        300, 300,
+        0, 50, 100, 100, 150, 300,
+        50, 300, 300,
     };
 
     /// <summary>
@@ -230,13 +196,10 @@ public static class BallPalette
     /// </summary>
     static readonly Color[] ThemeBackgrounds =
     {
-        Color.white, Color.white, Color.white, Color.white,
-        Color.white, Color.white, Color.white,
-        C("#15121E"),                                     // 涩谷夜·深色版
-        Color.white, Color.white, Color.white,            // 糖果霓虹 / 岩浆 / 翡翠林
-        Color.white, Color.white, Color.white,            // 葡萄夜 / 复古海报 / 包豪斯
-        C("#0A1024"),                                     // 极光：近黑的夜蓝
-        C("#0D1512"),                                     // 午夜植物园：墨绿黑
+        Color.white, Color.white, Color.white, Color.white, Color.white, Color.white,
+        C("#15121E"),   // 涩谷夜·深色版：近黑的紫调
+        C("#0A1024"),   // 极光：近黑的夜蓝
+        C("#0D1512"),   // 午夜植物园：墨绿黑
     };
 
     public static int ThemeCount => ThemePalettes.Length;
