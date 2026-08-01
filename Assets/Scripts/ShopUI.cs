@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -63,7 +64,9 @@ public class ShopUI : MonoBehaviour
     // 名字字号：在不挤到按钮的前提下取最大值。所有卡用同一个字号 ——
     // 每张卡各自算的话，短名字大、长名字小，网格看着就散了。
     // 只有语言或卡片宽度变了才需要重算。
+    const int NameFontMax = 27;
     private int nameFontSize;
+    private int panelFontSize;
     private int fontFitVersion = -1;
     private float fontFitWidth = -1f;
     float CardH => PreviewH + CardChromeH;
@@ -129,23 +132,30 @@ public class ShopUI : MonoBehaviour
 
     /// <summary>
     /// 找出"所有主题名都塞得下"的最大字号。逐档往下试，第一个全部通过的就是答案。
-    /// 上限 32 是给短名字（糖霜、极光）封顶，再大就比按钮还抢眼了。
+    /// 上限 27：中文名短，不封顶会一路顶到三十几号，比按钮还抢眼；
+    /// 英文名长，本来就到不了上限，所以这个数实际只影响中文界面。
     /// </summary>
     void FitNameFont()
     {
         if (fontFitVersion == Loc.Version && Mathf.Approximately(fontFitWidth, NameWidth)) return;
         fontFitVersion = Loc.Version;
         fontFitWidth = NameWidth;
+        nameFontSize = LargestFitting(NameWidth);
+        panelFontSize = LargestFitting(panelW - 24f);
+    }
 
-        for (nameFontSize = 32; nameFontSize > 11; nameFontSize--)
+    /// <summary>能让**所有**主题名都塞进 width 的最大字号，逐档往下试</summary>
+    int LargestFitting(float width)
+    {
+        for (int size = NameFontMax; size > 11; size--)
         {
-            nameStyle.fontSize = nameFontSize;
+            nameStyle.fontSize = size;
             bool allFit = true;
             for (int i = 0; i < BallPalette.ThemeCount && allFit; i++)
-                allFit = nameStyle.CalcSize(new GUIContent(BallPalette.ThemeName(i))).x <= NameWidth;
-            if (allFit) break;
+                allFit = nameStyle.CalcSize(new GUIContent(BallPalette.ThemeName(i))).x <= width;
+            if (allFit) return size;
         }
-        nameStyle.fontSize = nameFontSize;
+        return 12;
     }
 
     void OnGUI()
@@ -165,18 +175,20 @@ public class ShopUI : MonoBehaviour
         float gridY = gridTop;
         float gridW = columns * cardW + (columns - 1) * cardGap;
 
-        int rows = Mathf.CeilToInt(BallPalette.ThemeCount / (float)columns);
+        var order = DisplayOrder();
+        int rows = Mathf.CeilToInt(order.Length / (float)columns);
         float contentH = rows * (CardH + cardGap);
         var viewport = new Rect(gridX, gridY, gridW + 20f, sh - gridY - gridBottom);
 
         scroll = GUI.BeginScrollView(viewport, scroll,
             new Rect(0, 0, gridW, contentH));
 
-        for (int i = 0; i < BallPalette.ThemeCount; i++)
+        for (int i = 0; i < order.Length; i++)
         {
+            if (order[i] < 0) continue;                 // 那一列已经排完了，留个空位
             float x = (i % columns) * (cardW + cardGap);
             float y = (i / columns) * (CardH + cardGap);
-            DrawCard(new Rect(x, y, cardW, CardH), i);
+            DrawCard(new Rect(x, y, cardW, CardH), order[i]);
         }
 
         GUI.EndScrollView();
@@ -187,15 +199,48 @@ public class ShopUI : MonoBehaviour
             SceneManager.LoadScene("MainMenu");
     }
 
+    /// <summary>
+    /// 卡片的显示顺序。两列时左列全排浅色主题、右列全排深色 ——
+    /// 浅和深是两种完全不同的观感，混在一起扫的时候眼睛要不停切换。
+    /// 某一边先排完就留空位（-1），另一边继续往下走。
+    /// 列数不是 2 时退回原来的顺序排列。
+    ///
+    /// 排的是显示顺序，不是存档索引 —— 存档存的还是 BallPalette 里的原始下标。
+    /// </summary>
+    int[] DisplayOrder()
+    {
+        int n = BallPalette.ThemeCount;
+        if (columns != 2)
+        {
+            var seq = new int[n];
+            for (int i = 0; i < n; i++) seq[i] = i;
+            return seq;
+        }
+
+        var light = new List<int>();
+        var dark = new List<int>();
+        for (int i = 0; i < n; i++)
+            (BallPalette.IsDarkTheme(i) ? dark : light).Add(i);
+
+        int rows = Mathf.Max(light.Count, dark.Count);
+        var order = new int[rows * 2];
+        for (int row = 0; row < rows; row++)
+        {
+            order[row * 2]     = row < light.Count ? light[row] : -1;
+            order[row * 2 + 1] = row < dark.Count ? dark[row] : -1;
+        }
+        return order;
+    }
+
     void DrawWallet(Rect r)
     {
         var style = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
-            fontSize = 24,
+            fontSize = 32,
             alignment = TextAnchor.MiddleLeft,
             normal = { textColor = Money.Ink }
         });
-        Money.DrawRightAligned(r.xMax, r.y + 14, ProgressManager.Coins, style, 24f);
+        Money.DrawRightAligned(r.xMax, r.y + 14, ProgressManager.Coins, style, 32f);
     }
 
     /// <summary>
@@ -252,6 +297,7 @@ public class ShopUI : MonoBehaviour
 
         // 名字和按钮同一行：名字靠左、按钮靠右
         float rowY = preview.yMax + RowTop;
+        nameStyle.fontSize = nameFontSize;              // 面板会临时改字号，画卡片前设回来
         SetTextColor(nameStyle, owned ? Ink : Muted);   // 没买的退一档灰，多一层弱信号
         GUI.Label(new Rect(r.x + NameLeft, rowY, NameWidth, RowH),
                   BallPalette.ThemeName(index), nameStyle);
@@ -403,13 +449,16 @@ public class ShopUI : MonoBehaviour
                 normal = { textColor = Ink }
             }));
 
-        var box = new Rect(r.x, r.y + 34, r.width, PanelPreviewH + 42);
+        var box = new Rect(r.x, r.y + 34, r.width, PanelPreviewH + panelFontSize + 18f);
         DrawBox(box, Line);
         DrawThemePreview(new Rect(box.x + 1, box.y + 1, box.width - 2, PanelPreviewH), ProgressManager.EquippedTheme);
 
-        // DrawCard 会按"买没买"改 nameStyle 的颜色，这里必须自己设回来
+        // DrawCard 会改 nameStyle 的颜色和字号，这里必须自己设回来。
+        // 字号单独按面板宽度算 —— 面板比卡片窄，用卡片的字号会顶出框
         SetTextColor(nameStyle, Ink);
-        GUI.Label(new Rect(box.x + 12, box.yMax - 34, box.width - 24, 26),
+        nameStyle.fontSize = panelFontSize;
+        float nameH = panelFontSize + 10f;
+        GUI.Label(new Rect(box.x + 12, box.yMax - nameH - 6f, box.width - 24, nameH),
             BallPalette.ThemeName(ProgressManager.EquippedTheme), nameStyle);
 
         GUI.Label(new Rect(r.x, box.yMax + 10, r.width, 40),
