@@ -98,6 +98,28 @@ public static class BallPalette
         C("#FFD046"), C("#FF8C42"), C("#FF5B7F"),
     };
 
+    // 地狱火（深色）：骨白 → 烬灰 → 火橙 → 朱红 → 血红，近黑带红的底。
+    //
+    // 只有 5 色，不是凑不够 —— 是加不了。能再加的只剩更暗的红，
+    // 而暗红在黑底上必然沉底（试过第六颗绛红，整套对比度掉到 2.56）。
+    // 五色是这个主题在深色底上的天花板，不是妥协。
+    //
+    // 骨白那颗不是硬塞的：火焰最热的芯本来就是白的，往外才是黄橙红。
+    // 白底上"重"的球是黑的，黑底上就该是白的 —— 和包豪斯那条是同一个道理。
+    static readonly Color[] Hellfire =
+    {
+        C("#F2E9DC"), C("#9E8B86"), C("#FF7A2E"), C("#FF442E"), C("#FF2148"),
+    };
+
+    // 糖霜（深色）：粉彩上黑底。
+    // 来历有点意思 —— 粉彩在白底上必然失败（马卡龙就是这么死的，爆炸态对比度 1.16），
+    // 但在黑底上它是最强的一档，因为全是高明度。同一批颜色换个底就从最差变最好
+    static readonly Color[] Frosting =
+    {
+        C("#FFA8C4"), C("#FFCB9E"), C("#FBEF9E"), C("#9CE8C2"),
+        C("#9AD4FF"), C("#B7A6F5"), C("#F0A6DC"),
+    };
+
     // 原版彩虹，只留给第 10 关
     static readonly Color[] Rainbow =
     {
@@ -139,20 +161,20 @@ public static class BallPalette
     static readonly Color[][] ThemePalettes =
     {
         HazySummer, Emerald, Sakura, Tiffany, ShibuyaNight, Rainbow,
-        ShibuyaNightDark, Aurora, MidnightGarden,
+        ShibuyaNightDark, Aurora, MidnightGarden, Hellfire, Frosting,
     };
 
     public static readonly string[] ThemeNames =
     {
         "Hazy Summer", "Emerald", "Sakura", "Tiffany", "Shibuya Night", "Rainbow",
-        "Shibuya Night · Dark", "Aurora", "Midnight Garden",
+        "Shibuya Night · Dark", "Aurora", "Midnight Garden", "Hellfire", "Frosting",
     };
 
     /// <summary>主题名的中文版，索引和 ThemeNames 一一对应。取名走 Loc.ThemeName(i)</summary>
     public static readonly string[] ThemeNamesZh =
     {
         "朦胧夏日", "翡翠林", "樱花藕粉", "蒂芙尼", "涩谷夜", "原版彩虹",
-        "涩谷夜 · 深色版", "极光", "午夜植物园",
+        "涩谷夜 · 深色版", "极光", "午夜植物园", "地狱火", "糖霜",
     };
 
     /// <summary>按当前语言取主题名</summary>
@@ -169,7 +191,7 @@ public static class BallPalette
     public static readonly string[] ThemeIds =
     {
         "hazy-summer", "emerald", "sakura", "tiffany", "shibuya-night", "rainbow",
-        "shibuya-night-dark", "aurora", "midnight-garden",
+        "shibuya-night-dark", "aurora", "midnight-garden", "hellfire", "frosting",
     };
 
     /// <summary>
@@ -185,7 +207,7 @@ public static class BallPalette
     public static readonly int[] ThemePrices =
     {
         0, 50, 100, 100, 150, 300,
-        50, 300, 300,
+        50, 300, 300, 200, 150,
     };
 
     /// <summary>
@@ -200,6 +222,8 @@ public static class BallPalette
         C("#15121E"),   // 涩谷夜·深色版：近黑的紫调
         C("#0A1024"),   // 极光：近黑的夜蓝
         C("#0D1512"),   // 午夜植物园：墨绿黑
+        C("#0C0304"),   // 地狱火：近纯黑，带一点红
+        C("#16131C"),   // 糖霜：近黑微紫
     };
 
     public static int ThemeCount => ThemePalettes.Length;
