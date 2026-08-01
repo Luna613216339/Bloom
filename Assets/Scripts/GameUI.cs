@@ -134,10 +134,10 @@ public class GameUI : MonoBehaviour
                 coinStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
                 {
                     fontSize = 22,
-                    alignment = TextAnchor.UpperRight,
-                    normal = { textColor = new Color(0.85f, 0.65f, 0.15f) }
+                    alignment = TextAnchor.MiddleLeft,
+                    normal = { textColor = Money.InkFor(gm.IsDarkBackground) }
                 });
-            GUI.Label(new Rect(0, pad + 82, sw - pad, 30), $"◆ {gm.CoinsThisRun}", coinStyle);
+            Money.DrawRightAligned(sw - pad, pad + 96, gm.CoinsThisRun, coinStyle, 20f);
         }
 
         if (showRunOver)
@@ -218,8 +218,15 @@ public class GameUI : MonoBehaviour
         GUI.Label(new Rect(px, py + 75, pw, 35),
             Loc.F("run.cleared", roundsCleared, ProgressManager.BestRound), lineStyle);
 
-        lineStyle.normal.textColor = new Color(1f, 0.85f, 0.35f);
-        GUI.Label(new Rect(px, py + 115, pw, 35), Loc.F("run.coins", coinsEarned), lineStyle);
+        // 结算页是黑色遮罩，用钞票的浅绿。这里不写"金币"两个字了 ——
+        // 图标就是币种本身，再加个名字反而要维护两套说法
+        var moneyStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 28,
+            alignment = TextAnchor.MiddleLeft,
+            normal = { textColor = Money.Bright }
+        });
+        Money.DrawCentered(px + pw / 2f, py + 132, coinsEarned, moneyStyle, 26f);
 
         // 死亡当下是玩家最想花钱的时刻，商店入口不能少
         float btnW = 165;

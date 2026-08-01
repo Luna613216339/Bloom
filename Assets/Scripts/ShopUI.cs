@@ -48,7 +48,6 @@ public class ShopUI : MonoBehaviour
 
     static readonly Color Ink = new Color(0.15f, 0.15f, 0.15f);
     static readonly Color Muted = new Color(0.5f, 0.5f, 0.5f);
-    static readonly Color Gold = new Color(0.85f, 0.65f, 0.15f);
     static readonly Color Line = new Color(0.8f, 0.8f, 0.8f);
 
     void Awake()
@@ -129,21 +128,18 @@ public class ShopUI : MonoBehaviour
 
     void DrawWallet(Rect r)
     {
-        // 用 ◆ 字形而不是画个圆：游戏内 HUD、卡片价签用的都是这个符号，
-        // 钱包再画一个圆就成了两种货币图标
         var style = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 24,
             alignment = TextAnchor.MiddleLeft,
-            normal = { textColor = Gold }
+            normal = { textColor = Money.Ink }
         });
-        GUI.Label(new Rect(r.x + r.width - 150, r.y, 190, 28),
-                  $"◆ {ProgressManager.Coins}", style);
+        Money.DrawRightAligned(r.xMax, r.y + 14, ProgressManager.Coins, style, 24f);
     }
 
     /// <summary>
     /// 三个状态要在余光里就能分开，不能靠读右下角那个词：
-    ///   未解锁      → 预览图角上一枚金色价签
+    ///   未解锁      → 预览图角上一枚绿色价签（钞票 + 数字）
     ///   已解锁未装备 → 什么都没有（没价签 = 已经是你的了，货架常识）
     ///   已装备      → 整张卡 2px 深色描边 + 一枚 ✓ 角标
     ///
@@ -165,8 +161,7 @@ public class ShopUI : MonoBehaviour
         if (equipped)
             DrawChip(new Rect(preview.x + 8, preview.y + 8, 0, 0), "✓ " + Loc.T("shop.equipped"), Ink, Color.white);
         else if (!owned)
-            DrawChip(new Rect(preview.xMax - 8, preview.y + 8, 0, 0), $"◆ {price}",
-                     Gold, new Color(0.16f, 0.11f, 0.01f), rightAligned: true);
+            DrawPriceChip(preview.xMax - 8, preview.y + 8, price);
 
         // 色板条
         var colors = BallPalette.ForTheme(index);
@@ -238,6 +233,22 @@ public class ShopUI : MonoBehaviour
 
         chipStyle.normal.textColor = fg;
         GUI.Label(chip, content, chipStyle);
+    }
+
+    /// <summary>价签：钞票浅绿底 + 深藏青数字，右上角右对齐</summary>
+    void DrawPriceChip(float right, float top, int price)
+    {
+        chipStyle.normal.textColor = Money.Ink;
+        float iconH = 15f;
+        float w = Money.Width(price, chipStyle, iconH) + 14f;
+        float h = 24f;
+        var chip = new Rect(right - w, top, w, h);
+
+        GUI.color = Money.Chip;
+        GUI.DrawTexture(chip, Texture2D.whiteTexture);
+        GUI.color = Color.white;
+
+        Money.Draw(chip.x + 7f, chip.center.y, price, chipStyle, iconH);
     }
 
     // Resources.Load 每帧调一次太浪费，查过一次就记住结果（包括"没这张图"）

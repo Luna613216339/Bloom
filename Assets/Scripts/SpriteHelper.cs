@@ -8,6 +8,7 @@ public static class SpriteHelper
     private static Sprite _stripedCircle;
     private static Sprite _coin;
     private static Sprite _dollar;
+    private static Texture2D _banknote;
 
     public static Sprite Circle
     {
@@ -51,6 +52,23 @@ public static class SpriteHelper
             if (_coin == null)
                 _coin = CreateCoinSprite(256);
             return _coin;
+        }
+    }
+
+    /// <summary>
+    /// 商店货币：经典绿钞。这是本项目唯一一张外部图（其余全是代码生成），
+    /// 放在 Assets/Resources/UI/banknote.png。
+    ///
+    /// 它和金币刻意长得不一样：金币是无描边的金属分区，钞票是深描边的像素画。
+    /// 兑换关系（一枚金币 = 10 块钱）不用解释 —— 金币上本来就印着 $。
+    /// </summary>
+    public static Texture2D Banknote
+    {
+        get
+        {
+            if (_banknote == null)
+                _banknote = Resources.Load<Texture2D>("UI/banknote");
+            return _banknote;
         }
     }
 

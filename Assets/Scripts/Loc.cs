@@ -119,7 +119,6 @@ public static class Loc
         // 无尽模式结算
         { "run.over",        new[]{ "Game Over",       "游戏结束" } },
         { "run.cleared",     new[]{ "This run {0}     Best {1}", "本局 {0} 关     历史最高 {1} 关" } },
-        { "run.coins",       new[]{ "Coins +{0}",      "金币 +{0}" } },
         { "run.new",         new[]{ "New Run",         "重新开始" } },
 
         // 商店
@@ -128,7 +127,7 @@ public static class Loc
         { "shop.equipped",   new[]{ "Equipped",        "使用中" } },
         { "shop.equip",      new[]{ "Equip",           "使用" } },
         { "shop.unlock",     new[]{ "Unlock",          "解锁" } },
-        { "shop.short",      new[]{ "◆ {0} more",      "还差 {0}" } },
+        { "shop.short",      new[]{ "Need {0} more",   "还差 {0}" } },
         { "shop.current",    new[]{ "Current Theme",   "当前主题" } },
         { "shop.note",       new[]{ "Skins apply to Endless only.", "皮肤效果只作用于无尽模式" } },
         { "shop.placeholder",new[]{ "preview placeholder", "预览图待补" } },
