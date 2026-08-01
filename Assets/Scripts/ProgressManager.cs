@@ -97,9 +97,30 @@ public static class ProgressManager
         }
     }
 
-    // 以前这里有个 RuntimeInitializeOnLoadMethod，每次进 Play 自动清空关卡进度。
-    // 问题是直接开 Endless 场景测试时，它会把解锁状态一起清掉，死亡回主界面就只剩
-    // 一个 Play 按钮。改成 Tools/Bloom 菜单里手动触发，见 Editor/ProgressMenu.cs。
+    /// <summary>
+    /// "每次 Play 自动重置全部进度"的开关，**默认开启**，存在 EditorPrefs 里。
+    ///
+    /// 整段被 #if UNITY_EDITOR 包着，**不会编译进任何构建版本** ——
+    /// itch.io 上的玩家进度照常保存，只有编辑器里每次 Play 从零开始。
+    ///
+    /// 要测无尽模式或商店时记得先关掉（Tools → Bloom → Auto Reset On Play），
+    /// 否则金币和解锁状态每次 Play 都会被清空。
+    /// </summary>
+    public const string AutoResetPrefKey = "Bloom.AutoResetOnPlay";
+    public const bool AutoResetDefault = true;
+
+#if UNITY_EDITOR
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void AutoResetOnPlay()
+    {
+        if (!UnityEditor.EditorPrefs.GetBool(AutoResetPrefKey, AutoResetDefault)) return;
+
+        ResetLevelProgress();
+        ResetEndlessProgress();
+        Debug.Log("[Bloom] 已自动重置全部进度（Tools → Bloom → Auto Reset On Play 可关掉）");
+    }
+#endif
+
     public static void ResetLevelProgress()
     {
         PlayerPrefs.DeleteKey(Key);
