@@ -222,6 +222,16 @@ public class ShopUI : MonoBehaviour
         for (int i = 0; i < n; i++)
             (BallPalette.IsDarkTheme(i) ? dark : light).Add(i);
 
+        // 每列内按价格升序，于是两列的底部各是那一列最贵的那个。
+        // 玩家往下滚就是走向终点，而"我买得起的范围"会形成一条水平线，
+        // 钱变多它就往下移 —— 一条不用画出来的进度条。
+        //
+        // OrderBy 是稳定排序，所以同价的组内保持原顺序、不再分高下。
+        // 这是故意的：价格排成严格阶梯，玩家就按价格挑、默认贵的更好；
+        // 并列价把选择还给审美。
+        light = light.OrderBy(i => BallPalette.ThemePrices[i]).ToList();
+        dark = dark.OrderBy(i => BallPalette.ThemePrices[i]).ToList();
+
         int rows = Mathf.Max(light.Count, dark.Count);
         var order = new int[rows * 2];
         for (int row = 0; row < rows; row++)
