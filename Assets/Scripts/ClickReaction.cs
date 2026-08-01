@@ -18,7 +18,10 @@ public class ClickReaction : MonoBehaviour
 
         var sr = go.AddComponent<SpriteRenderer>();
         sr.sprite = SpriteHelper.Circle;
-        sr.color = new Color(0.6f, 0.6f, 0.6f, 0.45f);
+        // 灰色圈在白底上要压暗才看得见，在深色底上要提亮，方向正好相反
+        bool dark = GameManager.Instance != null && GameManager.Instance.IsDarkBackground;
+        float g = dark ? 0.85f : 0.6f;
+        sr.color = new Color(g, g, g, 0.45f);
         sr.sortingOrder = 2;
 
         var cr = go.AddComponent<ClickReaction>();

@@ -93,7 +93,7 @@ public static class SpriteHelper
 
     static Sprite CreateCoinSprite(int resolution)
     {
-        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false);
+        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);
         float center = resolution / 2f;
         float radius = center - 1f;
         float rimInner = radius * 0.80f;
@@ -142,13 +142,13 @@ public static class SpriteHelper
         }
 
         tex.Apply();
-        tex.filterMode = FilterMode.Bilinear;
+        tex.filterMode = FilterMode.Trilinear;
         return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
     }
 
     static Sprite CreateDollarSprite(int resolution)
     {
-        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false);
+        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);
         for (int y = 0; y < resolution; y++)
         {
             for (int x = 0; x < resolution; x++)
@@ -160,13 +160,18 @@ public static class SpriteHelper
         }
 
         tex.Apply();
-        tex.filterMode = FilterMode.Bilinear;
+        tex.filterMode = FilterMode.Trilinear;
         return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
     }
 
+    /// <summary>
+    /// 球。注意这里必须开 mipmap：贴图是 256px，但球在屏幕上只有 20-30px，
+    /// 缩小十倍以上。没有 mipmap 时 GPU 只能在原图上点采样，边缘会闪、会有锯齿 ——
+    /// 这不是"分辨率低"，是缩小采样的走样。开了 mipmap + Trilinear 之后边缘就干净了。
+    /// </summary>
     static Sprite CreateCircleSprite(int resolution)
     {
-        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false);
+        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);
         float center = resolution / 2f;
         float radius = center - 1f;
 
@@ -181,7 +186,7 @@ public static class SpriteHelper
         }
 
         tex.Apply();
-        tex.filterMode = FilterMode.Bilinear;
+        tex.filterMode = FilterMode.Trilinear;
         return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
     }
 
@@ -197,7 +202,7 @@ public static class SpriteHelper
 
     static Sprite CreateStripedCircleSprite(int resolution)
     {
-        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false);
+        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);
         float center = resolution / 2f;
         float radius = center - 1f;
         int stripeWidth = resolution / 12;
@@ -221,13 +226,13 @@ public static class SpriteHelper
         }
 
         tex.Apply();
-        tex.filterMode = FilterMode.Bilinear;
+        tex.filterMode = FilterMode.Trilinear;
         return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
     }
 
     static Sprite CreateSquareSprite(int resolution)
     {
-        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false);
+        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);
         for (int y = 0; y < resolution; y++)
             for (int x = 0; x < resolution; x++)
                 tex.SetPixel(x, y, Color.white);
@@ -239,7 +244,7 @@ public static class SpriteHelper
 
     static Sprite CreateCrosshatchSprite(int resolution)
     {
-        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false);
+        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);
         int spacing = resolution / 6;
         int lineWidth = Mathf.Max(1, resolution / 32);
 
@@ -254,7 +259,7 @@ public static class SpriteHelper
         }
 
         tex.Apply();
-        tex.filterMode = FilterMode.Bilinear;
+        tex.filterMode = FilterMode.Trilinear;
         return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
     }
 }

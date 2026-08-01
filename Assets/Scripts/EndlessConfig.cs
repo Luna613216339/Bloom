@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 无尽模式的难度旋钮。挂在 GameManager 上，全部在 Inspector 里可调，改完不用重新编译。
@@ -32,11 +33,15 @@ public class EndlessConfig
     [Tooltip("每轮随机散落几颗金球")]
     public int goldBallCount = 3;
     [Tooltip("一颗金球值多少金币")]
-    public int goldBallReward = 15;
+    public int goldBallReward = 10;
 
     [Header("金币")]
-    [Tooltip("达标之后每多打中一颗球给多少金币")]
-    public int coinsPerOverkill = 1;
+    [Tooltip("达标之后每多打中一颗球给多少金币。故意是小数 —— 超额是背景收入，金球才是尖峰")]
+    [FormerlySerializedAs("pollenPerOverkill")]  // 货币改名前的旧字段名，场景 YAML 里还是旧的
+    public float coinsPerOverkill = 0.2f;
+    [Tooltip("保险丝：一轮超额最多给多少金币。必须明显低于 goldBallReward，" +
+             "否则后期球一多、连锁一大，超额收入会把金球淹掉")]
+    public int maxOverkillCoins = 5;
     [Tooltip("每隔几轮给一次里程碑奖励")]
     public int milestoneEvery = 5;
     [Tooltip("第 N 次里程碑给 N × 这个数")]
@@ -61,10 +66,17 @@ public class EndlessConfig
         return TargetCount(round) / (float)BallCount(round);
     }
 
-    /// <summary>超额奖励：达标之后每多打中一颗算一份。让"打得漂亮"和"够了"不是同一件事</summary>
+    /// <summary>
+    /// 超额奖励：达标之后每多打中一颗算一份。让"打得漂亮"和"够了"不是同一件事。
+    ///
+    /// 但它必须小。连锁规模随球数超线性增长（渗流临界，见 BalanceSimulator），而金球是每轮固定的，
+    /// 所以线性给超额的话，后期一轮的超额收入会远超三颗金球，金球就从惊喜降级成零头了。
+    /// 用小数系数 + 硬上限压住：默认每超额 5 颗换 1 金币，一轮封顶 8。
+    /// </summary>
     public int OverkillReward(int triggered, int target)
     {
-        return Mathf.Max(0, triggered - target) * coinsPerOverkill;
+        int extra = Mathf.Max(0, triggered - target);
+        return Mathf.Min(Mathf.FloorToInt(extra * coinsPerOverkill), maxOverkillCoins);
     }
 
     public int MilestoneBonus(int round)

@@ -271,8 +271,9 @@ MonoBehaviour:
     targetPerRound: 1.6
     maxTargetRatio: 0.9
     goldBallCount: 3
-    goldBallReward: 15
-    pollenPerOverkill: 1
+    goldBallReward: 10
+    coinsPerOverkill: 0.2
+    maxOverkillCoins: 5
     milestoneEvery: 5
     milestoneStep: 20
 --- !u!4 &520979597

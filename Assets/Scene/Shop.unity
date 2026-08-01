@@ -240,6 +240,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a698cd666bbbe4667bf8de0fda7f53dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopUI
+  padLeft: 82.5
+  padRight: 27
+  gridTop: 77.9
+  gridBottom: 49.6
+  columns: 2
+  cardW: 300
+  cardGap: 27.2
+  panelW: 251.6
 --- !u!4 &677553980
 Transform:
   m_ObjectHideFlags: 0

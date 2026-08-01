@@ -22,7 +22,7 @@ public class GameUI : MonoBehaviour
     private GUIStyle resultTextStyle;
     private GUIStyle buttonStyle;
     private GUIStyle coinStyle;
-    private bool stylesReady;
+    private int styleVersion = -1;
 
     void Awake()
     {
@@ -31,34 +31,39 @@ public class GameUI : MonoBehaviour
 
     void InitStyles()
     {
-        if (stylesReady) return;
-        stylesReady = true;
+        if (styleVersion == Loc.Version) return;
+        styleVersion = Loc.Version;
+        coinStyle = null;
 
-        hudLabelStyle = new GUIStyle(GUI.skin.label)
+        // 深色主题下 HUD 要反过来。主题一局之内不会变（换主题得去商店，那是另一个场景），
+        // 所以在这里定一次就够了
+        bool dark = GameManager.Instance != null && GameManager.Instance.IsDarkBackground;
+
+        hudLabelStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 28,
             alignment = TextAnchor.UpperRight,
-            normal = { textColor = new Color(0.55f, 0.55f, 0.55f) }
-        };
+            normal = { textColor = BallPalette.MutedInkFor(dark) }
+        });
 
-        hudCountStyle = new GUIStyle(GUI.skin.label)
+        hudCountStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 38,
             alignment = TextAnchor.UpperRight,
             fontStyle = FontStyle.Bold,
-            normal = { textColor = new Color(0.3f, 0.3f, 0.3f) }
-        };
+            normal = { textColor = BallPalette.InkFor(dark) }
+        });
 
-        resultTextStyle = new GUIStyle(GUI.skin.label)
+        resultTextStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 52,
             alignment = TextAnchor.MiddleCenter
-        };
+        });
 
-        buttonStyle = new GUIStyle(GUI.skin.button)
+        buttonStyle = Loc.Fit(new GUIStyle(GUI.skin.button)
         {
             fontSize = 30
-        };
+        });
     }
 
     public void ShowGameplay(string levelName, int target, int total)
@@ -126,12 +131,12 @@ public class GameUI : MonoBehaviour
         if (gm != null && gm.IsEndless)
         {
             if (coinStyle == null)
-                coinStyle = new GUIStyle(GUI.skin.label)
+                coinStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
                 {
                     fontSize = 22,
                     alignment = TextAnchor.UpperRight,
                     normal = { textColor = new Color(0.85f, 0.65f, 0.15f) }
-                };
+                });
             GUI.Label(new Rect(0, pad + 82, sw - pad, 30), $"◆ {gm.CoinsThisRun}", coinStyle);
         }
 
@@ -158,12 +163,12 @@ public class GameUI : MonoBehaviour
         {
             resultTextStyle.fontSize = 60;
             resultTextStyle.normal.textColor = new Color(0.4f, 1f, 0.5f);
-            GUI.Label(new Rect(px, py - 20, pw, 90), "Congratulations!", resultTextStyle);
+            GUI.Label(new Rect(px, py - 20, pw, 90), Loc.T("game.congrats"), resultTextStyle);
             resultTextStyle.fontSize = 52;
 
             float btnY = py + 100;
             float btnX = px + (pw - btnW) / 2f;
-            if (AudioManager.Button(new Rect(btnX, btnY, btnW, btnH), "Menu", buttonStyle))
+            if (AudioManager.Button(new Rect(btnX, btnY, btnW, btnH), Loc.T("game.menu"), buttonStyle))
                 SceneManager.LoadScene("MainMenu");
         }
         else
@@ -173,8 +178,8 @@ public class GameUI : MonoBehaviour
                 : new Color(1f, 0.4f, 0.4f);
 
             string msg = passed
-                ? $"Passed!  {currentCount} / {targetCount}"
-                : $"Try Again  {currentCount} / {targetCount}";
+                ? Loc.F("game.passed", currentCount, targetCount)
+                : Loc.F("game.tryagain", currentCount, targetCount);
             GUI.Label(new Rect(px, py, pw, 90), msg, resultTextStyle);
 
             float btnY = py + 120;
@@ -182,10 +187,10 @@ public class GameUI : MonoBehaviour
             float totalBtnW = btnW * 2 + gap;
             float btnStartX = px + (pw - totalBtnW) / 2f;
 
-            if (AudioManager.Button(new Rect(btnStartX, btnY, btnW, btnH), "Replay", buttonStyle))
+            if (AudioManager.Button(new Rect(btnStartX, btnY, btnW, btnH), Loc.T("game.replay"), buttonStyle))
                 GameManager.Instance.Retry();
 
-            if (AudioManager.Button(new Rect(btnStartX + btnW + gap, btnY, btnW, btnH), "Menu", buttonStyle))
+            if (AudioManager.Button(new Rect(btnStartX + btnW + gap, btnY, btnW, btnH), Loc.T("game.menu"), buttonStyle))
                 SceneManager.LoadScene("MainMenu");
         }
     }
@@ -202,19 +207,19 @@ public class GameUI : MonoBehaviour
 
         resultTextStyle.fontSize = 52;
         resultTextStyle.normal.textColor = new Color(1f, 0.4f, 0.4f);
-        GUI.Label(new Rect(px, py, pw, 70), "Run Over", resultTextStyle);
+        GUI.Label(new Rect(px, py, pw, 70), Loc.T("run.over"), resultTextStyle);
 
-        var lineStyle = new GUIStyle(GUI.skin.label)
+        var lineStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 28,
             alignment = TextAnchor.MiddleCenter,
             normal = { textColor = new Color(0.9f, 0.9f, 0.9f) }
-        };
+        });
         GUI.Label(new Rect(px, py + 75, pw, 35),
-            $"Cleared {roundsCleared} rounds     Best {ProgressManager.BestRound}", lineStyle);
+            Loc.F("run.cleared", roundsCleared, ProgressManager.BestRound), lineStyle);
 
         lineStyle.normal.textColor = new Color(1f, 0.85f, 0.35f);
-        GUI.Label(new Rect(px, py + 115, pw, 35), $"Pollen +{coinsEarned}", lineStyle);
+        GUI.Label(new Rect(px, py + 115, pw, 35), Loc.F("run.coins", coinsEarned), lineStyle);
 
         // 死亡当下是玩家最想花钱的时刻，商店入口不能少
         float btnW = 165;
@@ -224,13 +229,15 @@ public class GameUI : MonoBehaviour
         float totalW = btnW * 3 + gap * 2;
         float startX = px + (pw - totalW) / 2f;
 
-        if (AudioManager.Button(new Rect(startX, btnY, btnW, btnH), "New Run", buttonStyle))
+        if (AudioManager.Button(new Rect(startX, btnY, btnW, btnH), Loc.T("run.new"), buttonStyle))
             GameManager.Instance.Retry();
 
-        if (AudioManager.Button(new Rect(startX + btnW + gap, btnY, btnW, btnH), "Shop", buttonStyle))
+        if (AudioManager.Button(new Rect(startX + btnW + gap, btnY, btnW, btnH), Loc.T("menu.shop"), buttonStyle))
             SceneManager.LoadScene("Shop");
 
-        if (AudioManager.Button(new Rect(startX + (btnW + gap) * 2, btnY, btnW, btnH), "Menu", buttonStyle))
+        if (AudioManager.Button(new Rect(startX + (btnW + gap) * 2, btnY, btnW, btnH), Loc.T("game.menu"), buttonStyle))
             SceneManager.LoadScene("MainMenu");
+
     }
+
 }

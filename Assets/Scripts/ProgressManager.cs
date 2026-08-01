@@ -28,9 +28,6 @@ public static class ProgressManager
             UnlockedLevel = globalLevel + 1;
     }
 
-    /// <summary>通关十关之后才开放无尽模式和商店</summary>
-    public static bool EndlessUnlocked => UnlockedLevel > StoryLevelCount;
-
     /// <summary>历史最好成绩：通过的最高轮次（不是死在第几轮）</summary>
     public static int BestRound
     {
@@ -70,10 +67,15 @@ public static class ProgressManager
         return true;
     }
 
-    /// <summary>主题只作用于无尽模式，正式关卡锁死作者配色。0 号是免费初始主题</summary>
+    /// <summary>
+    /// 主题只作用于无尽模式，正式关卡锁死作者配色。
+    /// 标价 0 的主题直接算已拥有 —— 免费就该是免费，不该还要点一下"解锁"。
+    /// </summary>
     public static bool IsThemeOwned(int index)
     {
-        return index == 0 || PlayerPrefs.GetInt(ThemeOwnedKey + index, 0) == 1;
+        if (index < 0 || index >= BallPalette.ThemeCount) return false;
+        return BallPalette.ThemePrices[index] == 0
+            || PlayerPrefs.GetInt(ThemeOwnedKey + index, 0) == 1;
     }
 
     public static void UnlockTheme(int index)

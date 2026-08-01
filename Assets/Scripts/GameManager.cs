@@ -80,6 +80,17 @@ public class GameManager : MonoBehaviour
         ? BallPalette.ForTheme(ProgressManager.EquippedTheme)
         : BallPalette.ForLevel(GlobalLevel);
 
+    /// <summary>
+    /// 背景色。正式关卡永远白底（关卡配色是照白底调的），只有无尽模式跟着主题走。
+    /// </summary>
+    public Color Background => endlessMode
+        ? BallPalette.BackgroundForTheme(ProgressManager.EquippedTheme)
+        : Color.white;
+
+    /// <summary>HUD、点击圈这些灰度元素要靠它决定往亮还是往暗走</summary>
+    public bool IsDarkBackground => endlessMode
+        && BallPalette.IsDarkTheme(ProgressManager.EquippedTheme);
+
 #if UNITY_EDITOR
     // 给 Editor/BalanceSimulator 读参数用。模拟器必须和 Inspector 上的值完全一致，
     // 否则算出来的通关率是假的。
@@ -96,7 +107,7 @@ public class GameManager : MonoBehaviour
         cam = Camera.main;
         cam.orthographic = true;
         cam.clearFlags = CameraClearFlags.SolidColor;
-        cam.backgroundColor = Color.white;
+        cam.backgroundColor = Background;
         Ball.SetupPhysics();
     }
 
@@ -117,12 +128,18 @@ public class GameManager : MonoBehaviour
 
         if (endlessMode)
         {
-            endlessConfig.levelName = $"Endless · Round {Round}";
+            endlessConfig.levelName = Loc.F("game.round", Round);
             endlessConfig.ballCount = endless.BallCount(Round);
             endlessConfig.targetCount = endless.TargetCount(Round);
+
+            // 第 1 轮 = 新的一局。首次进场和 Retry 都走这里，只用挂一个钩子
+            if (Round == 1) RunLogger.BeginRun();
         }
 
-        GameUI.Instance.ShowGameplay(Config.levelName, Config.targetCount, Config.ballCount);
+        // 正式关卡的名字由关号算出来，不用 Inspector 里的 levelName —— 那个没法翻译。
+        // levels[] 的 levelName 现在只是编辑器里的标签，方便你在数组里认出是哪一关
+        string title = endlessMode ? Config.levelName : Loc.F("game.level", GlobalLevel);
+        GameUI.Instance.ShowGameplay(title, Config.targetCount, Config.ballCount);
         CreateScreenBounds();
 
         var schools = FindObjectsByType<SchoolSpawner>(FindObjectsSortMode.None);
@@ -304,13 +321,21 @@ public class GameManager : MonoBehaviour
             CoinsThisRun += endless.OverkillReward(triggeredCount, Config.targetCount);
             CoinsThisRun += endless.MilestoneBonus(Round);
             ProgressManager.ReportClearedRound(Round);
+            LogRound(true);
             GameUI.Instance.ShowResult(true, triggeredCount, Config.targetCount, true);
         }
         else
         {
+            LogRound(false);
             ProgressManager.AddCoins(CoinsThisRun);
             GameUI.Instance.ShowRunOver(Round - 1, CoinsThisRun);
         }
+    }
+
+    void LogRound(bool passed)
+    {
+        RunLogger.RecordRound(Round, Config.ballCount, Config.targetCount,
+                              triggeredCount, goldThisRound, passed, CoinsThisRun);
     }
 
     public void NextLevel()

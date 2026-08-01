@@ -27,6 +27,17 @@
     <script>
       var canvas = document.querySelector("#unity-canvas");
 
+      // 画布的 CSS 尺寸固定 960x540，但在 Retina 屏上 1 个 CSS 像素 = 2 个物理像素。
+      // 不做这一步的话，Unity 只渲染 960x540 再被浏览器放大两倍 —— 满屏锯齿。
+      // 这里把后台缓冲按 devicePixelRatio 放大，显示尺寸不变、清晰度翻倍。
+      // 封顶 2 倍：3 倍屏上再翻一档，像素数是 9 倍，WebGL 扛不住。
+      // 宽高同比例放大，16:9 不变 —— 游戏的边界和弹射都按固定 16:9 算，比例一变就全乱。
+      (function () {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width  = 960 * dpr;
+        canvas.height = 540 * dpr;
+      })();
+
       function unityShowBanner(msg, type) {
         var warningBanner = document.querySelector("#unity-warning");
         var div = document.createElement('div');

@@ -249,8 +249,11 @@ public class Ball : MonoBehaviour
             GoldBurst.Create(transform.position, GoldColor, currentScale);
         }
 
+        // 半透明在白底上是"变浅"，在深色底上是"变暗" —— 后者会把霓虹球的光感抽掉，
+        // 所以深色主题下留多一点不透明度
         var c = sr.color;
-        sr.color = new Color(c.r, c.g, c.b, 0.45f);
+        float alpha = GameManager.Instance.IsDarkBackground ? 0.7f : 0.45f;
+        sr.color = new Color(c.r, c.g, c.b, alpha);
         GameManager.Instance.OnBallTriggered(this);
         GameManager.Instance.ReactionStarted();
     }

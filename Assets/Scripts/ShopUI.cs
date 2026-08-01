@@ -9,18 +9,40 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class ShopUI : MonoBehaviour
 {
-    const int Columns = 2;
-    const float CardW = 300f;
-    const float CardH = 210f;
-    const float CardGap = 28f;
-    const float PanelW = 260f;
+    // ---- 布局旋钮。全部在 Inspector 可调，Play 模式下拖着改能实时看到效果 ----
+    // 单位不是像素：整个 OnGUI 按屏幕高度归一化到 600，所以这些是"600 高画布上的坐标"
+
+    [Header("边距")]
+    [Tooltip("左边距。标题、卡片列表、Back 按钮共用这条左边线")]
+    [SerializeField] float padLeft = 62f;
+    [Tooltip("右边距。钱包、Current Theme 面板")]
+    [SerializeField] float padRight = 30f;
+    [Tooltip("卡片列表顶端，标题下方留多少")]
+    [SerializeField] float gridTop = 78f;
+    [Tooltip("卡片列表底端到屏幕底的留白（Back 按钮占的地方）")]
+    [SerializeField] float gridBottom = 70f;
+
+    [Header("卡片")]
+    [SerializeField] int columns = 2;
+    [SerializeField] float cardW = 300f;
+    [SerializeField] float cardGap = 28f;
+
+    [Header("右侧面板")]
+    [SerializeField] float panelW = 260f;
+
+    // 预览图是 16:9 —— 和游戏画面本身同比例，所以一张预览可以直接就是
+    // 装备该主题跑一局无尽模式的截图。高度由宽度算出来，改宽度不用手动补高度
+    float PreviewH => (cardW - 2f) * 9f / 16f;
+    float PanelPreviewH => (panelW - 2f) * 9f / 16f;
+    const float CardChromeH = 102f;              // 预览图下面的色板 + 名字 + 按钮
+    float CardH => PreviewH + CardChromeH;
 
     private GUIStyle titleStyle;
     private GUIStyle nameStyle;
-    private GUIStyle priceStyle;
+    private GUIStyle chipStyle;
     private GUIStyle smallStyle;
     private GUIStyle buttonStyle;
-    private bool stylesReady;
+    private int styleVersion = -1;
 
     private Vector2 scroll;
 
@@ -39,32 +61,32 @@ public class ShopUI : MonoBehaviour
 
     void InitStyles()
     {
-        if (stylesReady) return;
-        stylesReady = true;
+        if (styleVersion == Loc.Version) return;
+        styleVersion = Loc.Version;
 
-        titleStyle = new GUIStyle(GUI.skin.label)
+        titleStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 34,
             fontStyle = FontStyle.Bold,
             normal = { textColor = Ink }
-        };
-        nameStyle = new GUIStyle(GUI.skin.label)
+        });
+        nameStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 20,
             normal = { textColor = Ink }
-        };
-        priceStyle = new GUIStyle(GUI.skin.label)
+        });
+        chipStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
-            fontSize = 20,
-            alignment = TextAnchor.MiddleRight,
-            normal = { textColor = Gold }
-        };
-        smallStyle = new GUIStyle(GUI.skin.label)
+            fontSize = 15,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleCenter
+        });
+        smallStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 15,
             normal = { textColor = Muted }
-        };
-        buttonStyle = new GUIStyle(GUI.skin.button) { fontSize = 17 };
+        });
+        buttonStyle = Loc.Fit(new GUIStyle(GUI.skin.button) { fontSize = 17 });
     }
 
     void OnGUI()
@@ -76,56 +98,75 @@ public class ShopUI : MonoBehaviour
         float sw = Screen.width / scale;
         float sh = Screen.height / scale;
 
-        float pad = 30f;
+        GUI.Label(new Rect(padLeft, 18, 400, 45), Loc.T("shop.title"), titleStyle);
+        DrawWallet(new Rect(sw - padRight - 200, 22, 200, 30));
 
-        GUI.Label(new Rect(pad, 18, 400, 45), "Skin Shop", titleStyle);
-        DrawWallet(new Rect(sw - pad - 200, 22, 200, 30));
+        float gridX = padLeft;
+        float gridY = gridTop;
+        float gridW = columns * cardW + (columns - 1) * cardGap;
 
-        float gridX = pad;
-        float gridY = 78f;
-        float gridW = Columns * CardW + (Columns - 1) * CardGap;
-
-        int rows = Mathf.CeilToInt(BallPalette.ThemeCount / (float)Columns);
-        float contentH = rows * (CardH + CardGap);
-        var viewport = new Rect(gridX, gridY, gridW + 20f, sh - gridY - 70f);
+        int rows = Mathf.CeilToInt(BallPalette.ThemeCount / (float)columns);
+        float contentH = rows * (CardH + cardGap);
+        var viewport = new Rect(gridX, gridY, gridW + 20f, sh - gridY - gridBottom);
 
         scroll = GUI.BeginScrollView(viewport, scroll,
             new Rect(0, 0, gridW, contentH));
 
         for (int i = 0; i < BallPalette.ThemeCount; i++)
         {
-            float x = (i % Columns) * (CardW + CardGap);
-            float y = (i / Columns) * (CardH + CardGap);
-            DrawCard(new Rect(x, y, CardW, CardH), i);
+            float x = (i % columns) * (cardW + cardGap);
+            float y = (i / columns) * (CardH + cardGap);
+            DrawCard(new Rect(x, y, cardW, CardH), i);
         }
 
         GUI.EndScrollView();
 
-        DrawCurrentPanel(new Rect(sw - pad - PanelW, gridY, PanelW, 260));
+        DrawCurrentPanel(new Rect(sw - padRight - panelW, gridY, panelW, 260));
 
-        if (AudioManager.Button(new Rect(pad, sh - 60, 150, 42), "Back", buttonStyle))
+        if (AudioManager.Button(new Rect(padLeft, sh - 60, 150, 42), Loc.T("shop.back"), buttonStyle))
             SceneManager.LoadScene("MainMenu");
     }
 
     void DrawWallet(Rect r)
     {
-        var coin = new Rect(r.x + r.width - 150, r.y + 2, 24, 24);
-        DrawCircle(coin, Gold);
-        var style = new GUIStyle(GUI.skin.label)
+        // 用 ◆ 字形而不是画个圆：游戏内 HUD、卡片价签用的都是这个符号，
+        // 钱包再画一个圆就成了两种货币图标
+        var style = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 24,
             alignment = TextAnchor.MiddleLeft,
             normal = { textColor = Gold }
-        };
-        GUI.Label(new Rect(coin.x + 32, r.y, 140, 28), ProgressManager.Coins.ToString(), style);
+        });
+        GUI.Label(new Rect(r.x + r.width - 150, r.y, 190, 28),
+                  $"◆ {ProgressManager.Coins}", style);
     }
 
+    /// <summary>
+    /// 三个状态要在余光里就能分开，不能靠读右下角那个词：
+    ///   未解锁      → 预览图角上一枚金色价签
+    ///   已解锁未装备 → 什么都没有（没价签 = 已经是你的了，货架常识）
+    ///   已装备      → 整张卡 2px 深色描边 + 一枚 ✓ 角标
+    ///
+    /// 刻意不给未解锁的卡蒙灰或加栅栏：这个商店卖的就是颜色，
+    /// 把颜色关掉来表示"你还没买到颜色"，玩家就没法判断值不值这个价了。
+    /// 信号放在卡片的框上，预览内容一点不动。
+    /// </summary>
     void DrawCard(Rect r, int index)
     {
-        DrawBox(r, Line);
+        bool owned = ProgressManager.IsThemeOwned(index);
+        bool equipped = ProgressManager.EquippedTheme == index;
+        int price = BallPalette.ThemePrices[index];
 
-        var preview = new Rect(r.x + 1, r.y + 1, r.width - 2, 108);
+        DrawBox(r, equipped ? Ink : Line, equipped ? 2 : 1);
+
+        var preview = new Rect(r.x + 1, r.y + 1, r.width - 2, PreviewH);
         DrawThemePreview(preview, index);
+
+        if (equipped)
+            DrawChip(new Rect(preview.x + 8, preview.y + 8, 0, 0), "✓ " + Loc.T("shop.equipped"), Ink, Color.white);
+        else if (!owned)
+            DrawChip(new Rect(preview.xMax - 8, preview.y + 8, 0, 0), $"◆ {price}",
+                     Gold, new Color(0.16f, 0.11f, 0.01f), rightAligned: true);
 
         // 色板条
         var colors = BallPalette.ForTheme(index);
@@ -138,23 +179,21 @@ public class ShopUI : MonoBehaviour
             DrawCircle(new Rect(startX + i * (swatchSize + swatchGap), swatchY, swatchSize, swatchSize), colors[i]);
 
         float textY = swatchY + swatchSize + 10;
-        GUI.Label(new Rect(r.x + 12, textY, r.width - 24, 26), BallPalette.ThemeNames[index], nameStyle);
-
-        bool owned = ProgressManager.IsThemeOwned(index);
-        bool equipped = ProgressManager.EquippedTheme == index;
-        int price = BallPalette.ThemePrices[index];
+        // 没买的主题连名字都退一档，让"这张还不是你的"多一层弱信号
+        nameStyle.normal.textColor = owned ? Ink : Muted;
+        GUI.Label(new Rect(r.x + 12, textY, r.width - 24, 26), BallPalette.ThemeName(index), nameStyle);
 
         var btnRect = new Rect(r.x + r.width - 108, textY + 28, 96, 34);
 
         if (equipped)
         {
             GUI.enabled = false;
-            AudioManager.Button(btnRect, "Equipped", buttonStyle);
+            AudioManager.Button(btnRect, Loc.T("shop.equipped"), buttonStyle);
             GUI.enabled = true;
         }
         else if (owned)
         {
-            if (AudioManager.Button(btnRect, "Equip", buttonStyle))
+            if (AudioManager.Button(btnRect, Loc.T("shop.equip"), buttonStyle))
             {
                 ProgressManager.EquippedTheme = index;
                 if (AudioManager.Instance != null) AudioManager.Instance.PlayEquip();
@@ -162,9 +201,14 @@ public class ShopUI : MonoBehaviour
         }
         else
         {
-            GUI.Label(new Rect(r.x + 12, textY + 30, r.width - 130, 26), $"◆ {price}", priceStyle);
-            GUI.enabled = ProgressManager.Coins >= price;
-            if (AudioManager.Button(btnRect, "Unlock", buttonStyle))
+            // 买不起的时候把差额说出来，比一个灰按钮有用 —— 玩家知道还差多少才会去打
+            int gap = price - ProgressManager.Coins;
+            if (gap > 0)
+                GUI.Label(new Rect(r.x + 12, textY + 32, r.width - 120, 22),
+                          Loc.F("shop.short", gap), smallStyle);
+
+            GUI.enabled = gap <= 0;
+            if (AudioManager.Button(btnRect, Loc.T("shop.unlock"), buttonStyle))
             {
                 if (ProgressManager.TrySpendCoins(price))
                 {
@@ -175,16 +219,65 @@ public class ShopUI : MonoBehaviour
             }
             GUI.enabled = true;
         }
-
-        if (owned && !equipped)
-            GUI.Label(new Rect(r.x + 12, textY + 32, 120, 22), "Owned", smallStyle);
     }
 
-    /// <summary>占位预览：用主题色在框里摆一排球。等美术出图后整个换掉</summary>
+    /// <summary>
+    /// 压在预览图角上的小标签。宽度按文字算，rect 只用来定位：
+    /// rightAligned = true 时 (x, y) 是右上角，否则是左上角。
+    /// </summary>
+    void DrawChip(Rect anchor, string text, Color bg, Color fg, bool rightAligned = false)
+    {
+        var content = new GUIContent(text);
+        float w = chipStyle.CalcSize(content).x + 14;
+        float h = 22;
+        var chip = new Rect(rightAligned ? anchor.x - w : anchor.x, anchor.y, w, h);
+
+        GUI.color = bg;
+        GUI.DrawTexture(chip, Texture2D.whiteTexture);
+        GUI.color = Color.white;
+
+        chipStyle.normal.textColor = fg;
+        GUI.Label(chip, content, chipStyle);
+    }
+
+    // Resources.Load 每帧调一次太浪费，查过一次就记住结果（包括"没这张图"）
+    static Texture2D[] previewCache;
+    static bool[] previewProbed;
+
+    static Texture2D PreviewTexture(int index)
+    {
+        if (previewCache == null)
+        {
+            previewCache = new Texture2D[BallPalette.ThemeCount];
+            previewProbed = new bool[BallPalette.ThemeCount];
+        }
+        if (!previewProbed[index])
+        {
+            previewProbed[index] = true;
+            previewCache[index] = Resources.Load<Texture2D>("ThemePreview/" + BallPalette.ThemeIds[index]);
+        }
+        return previewCache[index];
+    }
+
+    /// <summary>
+    /// 有图就画图，没图就退回占位（主题色摆一排球）。
+    /// 这样可以一张一张往 Resources/ThemePreview 里放，不用等七张齐了才能跑。
+    /// </summary>
     void DrawThemePreview(Rect r, int index)
     {
+        var tex = PreviewTexture(index);
+        if (tex != null)
+        {
+            GUI.DrawTexture(r, tex, ScaleMode.ScaleAndCrop);
+            return;
+        }
+
         var colors = BallPalette.ForTheme(index);
-        GUI.color = new Color(0.97f, 0.97f, 0.97f);
+
+        // 占位图也要用主题自己的背景色，否则深色主题在商店里看着还是白的，
+        // 买回去才发现是黑底 —— 预览的意义就没了
+        var bg = BallPalette.BackgroundForTheme(index);
+        GUI.color = BallPalette.IsDarkTheme(index) ? bg : new Color(0.97f, 0.97f, 0.97f);
         GUI.DrawTexture(r, Texture2D.whiteTexture);
         GUI.color = Color.white;
 
@@ -198,36 +291,40 @@ public class ShopUI : MonoBehaviour
             DrawCircle(new Rect(x, y, size, size), colors[i % colors.Length]);
         }
 
-        GUI.Label(new Rect(r.x + 8, r.yMax - 24, r.width - 16, 20), "preview placeholder", smallStyle);
+        var tagStyle = Loc.Fit(new GUIStyle(smallStyle));
+        tagStyle.normal.textColor = BallPalette.MutedInkFor(BallPalette.IsDarkTheme(index));
+        GUI.Label(new Rect(r.x + 8, r.yMax - 24, r.width - 16, 20), Loc.T("shop.placeholder"), tagStyle);
     }
 
     void DrawCurrentPanel(Rect r)
     {
         GUI.Label(new Rect(r.x, r.y - 4, r.width, 34),
-            "Current Theme", new GUIStyle(GUI.skin.label)
+            Loc.T("shop.current"), Loc.Fit(new GUIStyle(GUI.skin.label)
             {
                 fontSize = 22,
                 normal = { textColor = Ink }
-            });
+            }));
 
-        var box = new Rect(r.x, r.y + 34, r.width, 150);
+        var box = new Rect(r.x, r.y + 34, r.width, PanelPreviewH + 42);
         DrawBox(box, Line);
-        DrawThemePreview(new Rect(box.x + 1, box.y + 1, box.width - 2, 108), ProgressManager.EquippedTheme);
+        DrawThemePreview(new Rect(box.x + 1, box.y + 1, box.width - 2, PanelPreviewH), ProgressManager.EquippedTheme);
 
+        // DrawCard 会按"买没买"改 nameStyle 的颜色，这里必须自己设回来
+        nameStyle.normal.textColor = Ink;
         GUI.Label(new Rect(box.x + 12, box.yMax - 34, box.width - 24, 26),
-            BallPalette.ThemeNames[ProgressManager.EquippedTheme], nameStyle);
+            BallPalette.ThemeName(ProgressManager.EquippedTheme), nameStyle);
 
         GUI.Label(new Rect(r.x, box.yMax + 10, r.width, 40),
-            "Themes apply to Endless only.\nStory levels keep their own colors.", smallStyle);
+            Loc.T("shop.note"), smallStyle);
     }
 
-    static void DrawBox(Rect r, Color border)
+    static void DrawBox(Rect r, Color border, float t = 1f)
     {
         GUI.color = border;
-        GUI.DrawTexture(new Rect(r.x, r.y, r.width, 1), Texture2D.whiteTexture);
-        GUI.DrawTexture(new Rect(r.x, r.yMax - 1, r.width, 1), Texture2D.whiteTexture);
-        GUI.DrawTexture(new Rect(r.x, r.y, 1, r.height), Texture2D.whiteTexture);
-        GUI.DrawTexture(new Rect(r.xMax - 1, r.y, 1, r.height), Texture2D.whiteTexture);
+        GUI.DrawTexture(new Rect(r.x, r.y, r.width, t), Texture2D.whiteTexture);
+        GUI.DrawTexture(new Rect(r.x, r.yMax - t, r.width, t), Texture2D.whiteTexture);
+        GUI.DrawTexture(new Rect(r.x, r.y, t, r.height), Texture2D.whiteTexture);
+        GUI.DrawTexture(new Rect(r.xMax - t, r.y, t, r.height), Texture2D.whiteTexture);
         GUI.color = Color.white;
     }
 
