@@ -141,7 +141,6 @@ public static class Loc
         { "shop.short",      new[]{ "Need {0} more",   "还差 {0}" } },
         { "shop.current",    new[]{ "Current Theme",   "当前主题" } },
         { "shop.note",       new[]{ "Skins apply to Endless only.", "皮肤效果只作用于无尽模式" } },
-        { "shop.placeholder",new[]{ "preview placeholder", "预览图待补" } },
     };
 
 #if UNITY_EDITOR

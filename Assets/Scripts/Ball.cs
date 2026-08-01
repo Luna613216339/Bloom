@@ -244,8 +244,11 @@ public class Ball : MonoBehaviour
 
         if (IsGoldBall)
         {
-            // 金球膨胀时换回普通圆形，否则高光会被拉得很怪
-            sr.sprite = SpriteHelper.Circle;
+            // 金球不画膨胀圈：金币的颜色是烘进贴图里的，SpriteRenderer.color 本身是白色，
+            // 换成纯圆之后那个白色就露出来，成了一个刺眼的半透明白圈。
+            // 直接关掉渲染，只留 GoldBurst 那个美元符号当"影子"。
+            // 检测范围不受影响 —— 膨胀是 currentScale 在算，和渲染无关。
+            sr.enabled = false;
             GoldBurst.Create(transform.position, GoldColor, currentScale);
         }
 

@@ -19,8 +19,7 @@ public static class BallPalette
     // 朦胧夏日：橙 → 黄 → 黄绿 → 青绿
     static readonly Color[] HazySummer =
     {
-        C("#EFB055"), C("#F0C65C"), C("#E3CC5A"), C("#C3C851"),
-        C("#9DC454"), C("#74BD63"), C("#55B287"),
+        C("#EFB055"), C("#E3CC5A"), C("#9DC454"), C("#74BD63"), C("#55B287"),
     };
 
     // 涩谷夜：琥珀 → 品红 → 紫 → 电蓝 → 青。琥珀放队首，渐变时不会经过灰绿
@@ -33,8 +32,7 @@ public static class BallPalette
     // 马卡龙糖果
     static readonly Color[] Macaron =
     {
-        C("#F5A0B4"), C("#F7CE86"), C("#B9E08D"), C("#8FD3E8"),
-        C("#B4A6E5"), C("#F2AED6"), C("#F8D982"),
+        C("#F5A0B4"), C("#B9E08D"), C("#8FD3E8"), C("#B4A6E5"), C("#F2AED6"), C("#F8D982"),
     };
 
     // 靛蓝 → 蒂芙尼蓝。原来是单色靛蓝的明暗渐变，但单色在白底上必然失败：
@@ -42,22 +40,19 @@ public static class BallPalette
     // 混进第二个色相（青绿）之后，每一档都能保住饱和度，最亮端也立得住。
     static readonly Color[] Tiffany =
     {
-        C("#3E4EB4"), C("#4560C9"), C("#3D7BD4"), C("#2E96CE"),
-        C("#1FAEC4"), C("#0ABAB5"), C("#4BC9BD"),
+        C("#3E4EB4"), C("#3D7BD4"), C("#2E96CE"), C("#1FAEC4"), C("#4BC9BD"),
     };
 
     // 双色对撞 · 青 × 橙。冷暖交替排列，散布时对比最强
     static readonly Color[] TealOrange =
     {
-        C("#0E9AA7"), C("#EE7B30"), C("#25B4B8"), C("#F4A259"),
-        C("#5FCBC4"), C("#E15A1D"), C("#127F8A"),
+        C("#EE7B30"), C("#F4A259"), C("#5FCBC4"), C("#E15A1D"), C("#127F8A"),
     };
 
     // 樱花藕粉
     static readonly Color[] Sakura =
     {
-        C("#F2A88F"), C("#F49BAE"), C("#EE85AC"), C("#E370AA"),
-        C("#D081C4"), C("#B98FD6"), C("#A79BE0"),
+        C("#F2A88F"), C("#F49BAE"), C("#E370AA"), C("#D081C4"), C("#A79BE0"),
     };
 
     // 涩谷夜的深色版。不是"同一套色换个背景"—— 白底靠暗端立住的颜色，
@@ -98,17 +93,17 @@ public static class BallPalette
         C("#FFD046"), C("#FF8C42"), C("#FF5B7F"),
     };
 
-    // 地狱火（深色）：骨白 → 烬灰 → 火橙 → 朱红 → 血红，近黑带红的底。
+    // 地狱火（深色）：烬灰 → 火橙 → 朱红 → 血红，近黑带红的底。
     //
-    // 只有 5 色，不是凑不够 —— 是加不了。能再加的只剩更暗的红，
-    // 而暗红在黑底上必然沉底（试过第六颗绛红，整套对比度掉到 2.56）。
-    // 五色是这个主题在深色底上的天花板，不是妥协。
+    // 只有 4 色，不是凑不够 —— 是加不了。能再加的只剩更暗的红，
+    // 而暗红在黑底上必然沉底（试过一颗绛红 #D6304F，整套对比度掉到 2.56）。
+    // 四色是这个主题在深色底上的天花板，不是妥协。
     //
-    // 骨白那颗不是硬塞的：火焰最热的芯本来就是白的，往外才是黄橙红。
-    // 白底上"重"的球是黑的，黑底上就该是白的 —— 和包豪斯那条是同一个道理。
+    // 原来还有一颗骨白当火心，去掉了 —— 太亮，在这套里像个异物。
+    // 现在最亮的是烬灰，整套压在暖红区间内，邪气才出得来。
     static readonly Color[] Hellfire =
     {
-        C("#F2E9DC"), C("#9E8B86"), C("#FF7A2E"), C("#FF442E"), C("#FF2148"),
+        C("#9E8B86"), C("#FF7A2E"), C("#FF442E"), C("#FF2148"),
     };
 
     // 糖霜（深色）：粉彩上黑底。
@@ -184,15 +179,6 @@ public static class BallPalette
         return Loc.IsZh ? ThemeNamesZh[i] : ThemeNames[i];
     }
 
-    /// <summary>
-    /// 预览图的文件名，对应 Assets/Resources/ThemePreview/{id}.png。
-    /// 和 ThemeNames 分开：那个是给玩家看的、随时会改，这个是资源路径，改了图就丢。
-    /// </summary>
-    public static readonly string[] ThemeIds =
-    {
-        "hazy-summer", "emerald", "sakura", "tiffany", "shibuya-night", "rainbow",
-        "shibuya-night-dark", "aurora", "midnight-garden", "hellfire", "frosting",
-    };
 
     /// <summary>
     /// 深色主题定在 300：换深色不是换配色，是换掉整个游戏的观感，价值不是一个档次。

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -163,8 +164,11 @@ public class ShopUI : MonoBehaviour
         else if (!owned)
             DrawPriceChip(preview.xMax - 8, preview.y + 8, price);
 
-        // 色板条
-        var colors = BallPalette.ForTheme(index);
+        // 色板条：按明度从浅到深排，读起来是一条色阶而不是一把散色。
+        // 排的是副本 —— 数组本身的顺序不能动，蛇形关（6-10）靠 BallPalette.Ramp
+        // 沿着这个顺序插值成蛇的身体，涩谷夜那套还特意把琥珀放在队首，
+        // 免得渐变经过灰绿。展示顺序和取色顺序是两件事。
+        var colors = BallPalette.ForTheme(index).OrderByDescending(Luminance).ToArray();
         float swatchY = preview.yMax + 8;
         float swatchSize = 18f;
         float swatchGap = 6f;
@@ -252,38 +256,15 @@ public class ShopUI : MonoBehaviour
         Money.Draw(chip.x + 8f, chip.center.y, price, chipStyle, iconH);
     }
 
-    // Resources.Load 每帧调一次太浪费，查过一次就记住结果（包括"没这张图"）
-    static Texture2D[] previewCache;
-    static bool[] previewProbed;
-
-    static Texture2D PreviewTexture(int index)
-    {
-        if (previewCache == null)
-        {
-            previewCache = new Texture2D[BallPalette.ThemeCount];
-            previewProbed = new bool[BallPalette.ThemeCount];
-        }
-        if (!previewProbed[index])
-        {
-            previewProbed[index] = true;
-            previewCache[index] = Resources.Load<Texture2D>("ThemePreview/" + BallPalette.ThemeIds[index]);
-        }
-        return previewCache[index];
-    }
-
     /// <summary>
-    /// 有图就画图，没图就退回占位（主题色摆一排球）。
-    /// 这样可以一张一张往 Resources/ThemePreview 里放，不用等七张齐了才能跑。
+    /// 预览图：用主题自己的配色和背景，在框里随机摆一把球 —— 就是这个主题
+    /// 在游戏里的样子。刻意不用外部图片：全项目的图形都是代码生成的，
+    /// 而且这样加新主题就是加一行配色，不用再配一张图。
+    ///
+    /// 随机种子由 index 决定，所以每个主题的球位固定不变，不会每帧乱跳。
     /// </summary>
     void DrawThemePreview(Rect r, int index)
     {
-        var tex = PreviewTexture(index);
-        if (tex != null)
-        {
-            GUI.DrawTexture(r, tex, ScaleMode.ScaleAndCrop);
-            return;
-        }
-
         var colors = BallPalette.ForTheme(index);
 
         // 占位图也要用主题自己的背景色，否则深色主题在商店里看着还是白的，
@@ -303,9 +284,6 @@ public class ShopUI : MonoBehaviour
             DrawCircle(new Rect(x, y, size, size), colors[i % colors.Length]);
         }
 
-        var tagStyle = Loc.Fit(new GUIStyle(smallStyle));
-        tagStyle.normal.textColor = BallPalette.MutedInkFor(BallPalette.IsDarkTheme(index));
-        GUI.Label(new Rect(r.x + 8, r.yMax - 24, r.width - 16, 20), Loc.T("shop.placeholder"), tagStyle);
     }
 
     void DrawCurrentPanel(Rect r)
@@ -339,6 +317,9 @@ public class ShopUI : MonoBehaviour
         GUI.DrawTexture(new Rect(r.xMax - t, r.y, t, r.height), Texture2D.whiteTexture);
         GUI.color = Color.white;
     }
+
+    /// <summary>感知亮度，只用来给色板条排序</summary>
+    static float Luminance(Color c) => c.r * 0.299f + c.g * 0.587f + c.b * 0.114f;
 
     static void DrawCircle(Rect r, Color c)
     {
