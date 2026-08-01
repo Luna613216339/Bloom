@@ -75,6 +75,7 @@ public class ShopUI : MonoBehaviour
     private GUIStyle nameStyle;
     private GUIStyle chipStyle;
     private GUIStyle priceStyle;
+    private GUIStyle panelTitleStyle;
     private GUIStyle smallStyle;
     private GUIStyle buttonStyle;
     private int styleVersion = -1;
@@ -117,6 +118,11 @@ public class ShopUI : MonoBehaviour
             fontStyle = FontStyle.Bold,
             alignment = TextAnchor.MiddleCenter
         });
+        panelTitleStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 22,
+            normal = { textColor = Ink }
+        });
         priceStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
         {
             fontSize = 22,
@@ -130,11 +136,6 @@ public class ShopUI : MonoBehaviour
         });
         buttonStyle = Loc.Fit(new GUIStyle(GUI.skin.button) { fontSize = 17 });
 
-        // 上面的对象初始化器只设了 normal，其余状态还是内置 skin 的透明色。
-        // 统一补一遍，免得哪个标签一碰鼠标就消失
-        SetTextColor(titleStyle, Ink);
-        SetTextColor(nameStyle, Ink);
-        SetTextColor(smallStyle, Muted);
     }
 
     /// <summary>
@@ -315,7 +316,7 @@ public class ShopUI : MonoBehaviour
         // 名字和按钮同一行：名字靠左、按钮靠右
         float rowY = preview.yMax + RowTop;
         nameStyle.fontSize = nameFontSize;              // 面板会临时改字号，画卡片前设回来
-        SetTextColor(nameStyle, owned ? Ink : Muted);   // 没买的退一档灰，多一层弱信号
+        Loc.SetTextColor(nameStyle, owned ? Ink : Muted);   // 没买的退一档灰，多一层弱信号
         GUI.Label(new Rect(r.x + NameLeft, rowY, NameWidth, RowH),
                   BallPalette.ThemeName(index), nameStyle);
 
@@ -368,7 +369,7 @@ public class ShopUI : MonoBehaviour
         GUI.DrawTexture(chip, Texture2D.whiteTexture);
         GUI.color = Color.white;
 
-        chipStyle.normal.textColor = fg;
+        Loc.SetTextColor(chipStyle, fg);
         GUI.Label(chip, content, chipStyle);
     }
 
@@ -379,7 +380,7 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     void DrawPriceChip(float right, float top, int price)
     {
-        SetTextColor(priceStyle, Money.Ink);
+        Loc.SetTextColor(priceStyle, Money.Ink);
         float iconH = 22f;
         float w = Money.Width(price, priceStyle, iconH) + 22f;
         float h = 36f;
@@ -463,12 +464,7 @@ public class ShopUI : MonoBehaviour
 
     void DrawCurrentPanel(Rect r)
     {
-        GUI.Label(new Rect(r.x, r.y - 4, r.width, 34),
-            Loc.T("shop.current"), Loc.Fit(new GUIStyle(GUI.skin.label)
-            {
-                fontSize = 22,
-                normal = { textColor = Ink }
-            }));
+        GUI.Label(new Rect(r.x, r.y - 4, r.width, 34), Loc.T("shop.current"), panelTitleStyle);
 
         var box = new Rect(r.x, r.y + 34, r.width, PanelPreviewH + panelFontSize + 18f);
         DrawBox(box, Line);
@@ -476,7 +472,7 @@ public class ShopUI : MonoBehaviour
 
         // DrawCard 会改 nameStyle 的颜色和字号，这里必须自己设回来。
         // 字号单独按面板宽度算 —— 面板比卡片窄，用卡片的字号会顶出框
-        SetTextColor(nameStyle, Ink);
+        Loc.SetTextColor(nameStyle, Ink);
         nameStyle.fontSize = panelFontSize;
         float nameH = panelFontSize + 10f;
         GUI.Label(new Rect(box.x + 12, box.yMax - nameH - 6f, box.width - 24, nameH),
@@ -496,25 +492,6 @@ public class ShopUI : MonoBehaviour
         GUI.color = Color.white;
     }
 
-    /// <summary>
-    /// 给一个 GUIStyle 的**所有状态**设同一个文字色。
-    ///
-    /// 必须全设：GUIStyle 的 normal / hover / active / focused 是各自独立的，
-    /// 而内置 skin 里除 normal 之外几乎都是透明的。只设 normal 的话，
-    /// IMGUI 一旦走到别的状态（鼠标悬停在控件上就会），文字直接凭空消失。
-    /// 2026-08-02 踩过：商店卡片的主题名一碰鼠标就没了。
-    /// </summary>
-    static void SetTextColor(GUIStyle s, Color c)
-    {
-        s.normal.textColor = c;
-        s.hover.textColor = c;
-        s.active.textColor = c;
-        s.focused.textColor = c;
-        s.onNormal.textColor = c;
-        s.onHover.textColor = c;
-        s.onActive.textColor = c;
-        s.onFocused.textColor = c;
-    }
 
     /// <summary>感知亮度，只用来给色板条排序</summary>
     static float Luminance(Color c) => c.r * 0.299f + c.g * 0.587f + c.b * 0.114f;

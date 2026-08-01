@@ -121,10 +121,62 @@ public static class Loc
     /// 而那个对象是<b>和编辑器自身的 IMGUI 共享的</b>。写它会连编辑器的字体图集一起改掉，
     /// 表现是所有 GUI 文字变成 "Gizmos" 之类的乱码 + 颜色错乱，而且退出 Play 也不恢复。
     /// </summary>
+    /// <summary>
+    /// 语言按钮专用：**永远**用中文字体。
+    ///
+    /// 这个按钮的文案是"要切过去的那个语言"，所以英文界面下它显示的是「中文」——
+    /// 两个汉字。而 UIFont 在英文下返回 null（内置字体），内置字体没有汉字，
+    /// 构建版里就是一片空白。
+    ///
+    /// 编辑器里看不出来：Unity 在编辑器里会退回系统字体，而 WebGL 里没有系统字体可退。
+    /// </summary>
+    public static GUIStyle FitAlwaysCjk(GUIStyle s)
+    {
+        Fit(s);
+        if (CjkFont != null) s.font = CjkFont;
+        return s;
+    }
+
     public static GUIStyle Fit(GUIStyle s)
     {
         s.font = UIFont;
+        FillTransparentStates(s);
         return s;
+    }
+
+    /// <summary>
+    /// 把 normal 的文字色**无条件**复制到其余七个状态。
+    ///
+    /// GUIStyle 的 normal / hover / active / focused 各自独立，只设 normal 的话
+    /// IMGUI 走到别的状态时会拿到 skin 自带的颜色 —— 在这个项目里表现为
+    /// 鼠标一悬停文字就消失。
+    ///
+    /// ⚠️ 曾经写成"只补 alpha==0 的状态"，结果没生效：内置 skin 那些状态
+    /// 并不是透明的，条件根本不成立。判断状态"有没有被设过"这件事做不到，
+    /// 所以只能无条件覆盖。
+    ///
+    /// 按钮除外 —— 按钮的悬停/按下变色是内置 skin 有意做的，覆盖了就没有反馈了。
+    /// 靠 name 区分：GUIStyle 的拷贝构造会带上原样式的名字，
+    /// 从 GUI.skin.button 复制出来的 name 就是 "button"。
+    /// </summary>
+    public static void SetTextColor(GUIStyle s, Color c)
+    {
+        s.normal.textColor = c;
+        FillTransparentStates(s);
+    }
+
+    static void FillTransparentStates(GUIStyle s)
+    {
+        if (s.name == "button") return;
+
+        var c = s.normal.textColor;
+        s.hover.textColor = c;
+        s.active.textColor = c;
+        s.focused.textColor = c;
+        s.onNormal.textColor = c;
+        s.onHover.textColor = c;
+        s.onActive.textColor = c;
+        s.onFocused.textColor = c;
     }
 
     // ---- 词条表。[0] = English，[1] = 中文 ----

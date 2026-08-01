@@ -93,7 +93,7 @@ public static class BallPalette
         C("#FFD046"), C("#FF8C42"), C("#FF5B7F"),
     };
 
-    // 地狱火（深色）：烬灰 → 火橙 → 朱红 → 血红，近黑带红的底。
+    // 熔岩（深色）：烬灰 → 火橙 → 朱红 → 血红，近黑带红的底。
     //
     // 只有 4 色，不是凑不够 —— 是加不了。能再加的只剩更暗的红，
     // 而暗红在黑底上必然沉底（试过一颗绛红 #D6304F，整套对比度掉到 2.56）。
@@ -101,7 +101,7 @@ public static class BallPalette
     //
     // 原来还有一颗骨白当火心，去掉了 —— 太亮，在这套里像个异物。
     // 现在最亮的是烬灰，整套压在暖红区间内，邪气才出得来。
-    static readonly Color[] Hellfire =
+    static readonly Color[] Lava =
     {
         C("#9E8B86"), C("#FF7A2E"), C("#FF442E"), C("#FF2148"),
     };
@@ -156,7 +156,7 @@ public static class BallPalette
     static readonly Color[][] ThemePalettes =
     {
         HazySummer, Emerald, Sakura, Tiffany, ShibuyaNight, Rainbow,
-        ShibuyaNightDark, Aurora, MidnightGarden, Hellfire, Frosting,
+        ShibuyaNightDark, Aurora, MidnightGarden, Lava, Frosting,
     };
 
     public static readonly string[] ThemeNames =
@@ -168,7 +168,7 @@ public static class BallPalette
     /// <summary>主题名的中文版，索引和 ThemeNames 一一对应。取名走 Loc.ThemeName(i)</summary>
     public static readonly string[] ThemeNamesZh =
     {
-        "朦胧夏日", "青苔", "樱花", "知更鸟蓝", "涩谷夜", "原版彩虹",
+        "朦胧夏日", "青苔", "樱花", "蒂芙尼", "涩谷夜", "原版彩虹",
         "涩谷夜·暗", "极光", "午夜植物园", "熔岩", "糖霜",
     };
 
@@ -191,12 +191,12 @@ public static class BallPalette
     ///        就能尝到深色。商店如果第一局摸不到，玩家就当它是装饰，之后不会再点。
     ///   100~200  中间档，按主题本身定，没有"深色一律更贵"这种一刀切 ——
     ///        深色占到商店一半时它就不是稀有品类了。
-    ///   300  知更鸟蓝 / 极光 —— **两个旗舰**。只留两个，是为了让"最贵"这件事
+    ///   300  蒂芙尼 / 极光 —— **两个旗舰**。只留两个，是为了让"最贵"这件事
     ///        还有意义；三个以上就变成一堵墙，而且挡住的往往正是最花力气的东西。
     /// </summary>
     public static readonly int[] ThemePrices =
     {
-        //  朦胧夏日 青苔 樱花 知更鸟蓝 涩谷夜 彩虹
+        //  朦胧夏日 青苔 樱花 蒂芙尼 涩谷夜 彩虹
               0,     50, 100,  300,   100,  150,
         //  涩谷夜·暗 极光 午夜植物园 熔岩 糖霜
               50,    300,  200,     200, 200,
@@ -214,7 +214,7 @@ public static class BallPalette
         C("#15121E"),   // 涩谷夜·深色版：近黑的紫调
         C("#0A1024"),   // 极光：近黑的夜蓝
         C("#0D1512"),   // 午夜植物园：墨绿黑
-        C("#0C0304"),   // 地狱火：近纯黑，带一点红
+        C("#0C0304"),   // 熔岩：近纯黑，带一点红
         C("#16131C"),   // 糖霜：近黑微紫
     };
 

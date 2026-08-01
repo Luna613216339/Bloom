@@ -174,7 +174,7 @@ public class GameUI : MonoBehaviour
         if (passed && !hasNextLevel)
         {
             resultTextStyle.fontSize = 60;
-            resultTextStyle.normal.textColor = new Color(0.4f, 1f, 0.5f);
+            Loc.SetTextColor(resultTextStyle, new Color(0.4f, 1f, 0.5f));
             GUI.Label(new Rect(px, py - 20, pw, 90), Loc.T("game.congrats"), resultTextStyle);
             resultTextStyle.fontSize = 52;
 
@@ -185,9 +185,9 @@ public class GameUI : MonoBehaviour
         }
         else
         {
-            resultTextStyle.normal.textColor = passed
+            Loc.SetTextColor(resultTextStyle, passed
                 ? new Color(0.4f, 1f, 0.5f)
-                : new Color(1f, 0.4f, 0.4f);
+                : new Color(1f, 0.4f, 0.4f));
 
             string msg = passed
                 ? Loc.F("game.passed", currentCount, targetCount)
@@ -218,7 +218,7 @@ public class GameUI : MonoBehaviour
         float py = (sh - 300) / 2f;
 
         resultTextStyle.fontSize = 52;
-        resultTextStyle.normal.textColor = new Color(1f, 0.4f, 0.4f);
+        Loc.SetTextColor(resultTextStyle, new Color(1f, 0.4f, 0.4f));
         GUI.Label(new Rect(px, py, pw, 70), Loc.T("run.over"), resultTextStyle);
 
         var lineStyle = Loc.Fit(new GUIStyle(GUI.skin.label)

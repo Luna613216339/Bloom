@@ -26,6 +26,9 @@ public class MainMenuUI : MonoBehaviour
     private GUIStyle titleStyle;
     private GUIStyle playBtnStyle;
     private GUIStyle levelBtnStyle;
+    private GUIStyle langBtnStyle;
+    private GUIStyle authorStyle;
+    private GUIStyle hintStyle;
     private int styleVersion = -1;
 
     void Awake()
@@ -51,6 +54,22 @@ public class MainMenuUI : MonoBehaviour
 
         playBtnStyle = Loc.Fit(new GUIStyle(GUI.skin.button) { fontSize = 24 });
         levelBtnStyle = Loc.Fit(new GUIStyle(GUI.skin.button) { fontSize = 20 });
+        // 语言按钮永远用中文字体：它的文案是"要切过去的语言"，
+        // 英文界面下显示的是「中文」两个汉字，内置字体渲染不出来
+        langBtnStyle = Loc.FitAlwaysCjk(new GUIStyle(GUI.skin.button) { fontSize = 17 });
+
+        authorStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 18,
+            alignment = TextAnchor.MiddleCenter,
+            normal = { textColor = new Color(0.45f, 0.45f, 0.45f) }
+        });
+        hintStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 16,
+            alignment = TextAnchor.MiddleCenter,
+            normal = { textColor = new Color(0.5f, 0.5f, 0.5f) }
+        });
     }
 
     void OnGUI()
@@ -66,12 +85,6 @@ public class MainMenuUI : MonoBehaviour
 
         GUI.Label(new Rect(0, sh * 0.2f, sw, 60), "Bloom", titleStyle);
 
-        var authorStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
-        {
-            fontSize = 18,
-            alignment = TextAnchor.MiddleCenter,
-            normal = { textColor = new Color(0.45f, 0.45f, 0.45f) }
-        });
         GUI.Label(new Rect(0, sh * 0.2f + 55, sw, 30), Loc.T("menu.author"), authorStyle);
 
         // 关卡格子永远画满 1-10，没解锁的灰着。
@@ -111,8 +124,7 @@ public class MainMenuUI : MonoBehaviour
     /// </summary>
     void DrawLanguageButton(float sw, float sh)
     {
-        var style = Loc.Fit(new GUIStyle(GUI.skin.button) { fontSize = 17 });
-        if (AudioManager.Button(new Rect(sw - 130, sh - 56, 100, 36), Loc.SwitchLabel, style))
+        if (AudioManager.Button(new Rect(sw - 130, sh - 56, 100, 36), Loc.SwitchLabel, langBtnStyle))
             Loc.Toggle();
 
         // 缺字体时中文会渲染成空白，这里直说，免得以为是 bug
@@ -150,12 +162,6 @@ public class MainMenuUI : MonoBehaviour
         if (AudioManager.Button(new Rect(startX + btnW + gap, y + 22, btnW, btnH), Loc.T("menu.shop"), playBtnStyle))
             SceneManager.LoadScene("Shop");
 
-        var hintStyle = Loc.Fit(new GUIStyle(GUI.skin.label)
-        {
-            fontSize = 16,
-            alignment = TextAnchor.MiddleCenter,
-            normal = { textColor = new Color(0.5f, 0.5f, 0.5f) }
-        });
         GUI.Label(new Rect(0, y + 22 + btnH + 6, sw, 24),
             Loc.F("menu.stats", ProgressManager.BestRound), hintStyle);
     }
