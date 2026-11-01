@@ -62,6 +62,12 @@ public class GameManager : MonoBehaviour
     public int TargetCount => endlessMode ? endlessTarget : level.Target;
     public int TriggeredCount => triggeredCount;
 
+    /// <summary>每结算一次 +1，自动测试靠它判断"这一次尝试结束了"（过关会立刻跳下一关，State 看不出来）</summary>
+    public int ResultCounter { get; private set; }
+    public bool LastResultPassed { get; private set; }
+    public int LastResultTriggered { get; private set; }
+    public int LastResultTarget { get; private set; }
+
     /// <summary>全局关卡号（1 起）</summary>
     public int GlobalLevel => currentLevel;
 
@@ -193,6 +199,9 @@ public class GameManager : MonoBehaviour
     void CreateWall(string name, Vector2 position, Vector2 size)
     {
         var go = new GameObject(name);
+        // 放在 Ignore Raycast 层：球照样弹，但蛇的"前方有没有门"射线不会把屏幕边界当成门。
+        // 路径起点在屏幕外的蛇，队头一出生就在边界外面，否则会被自己的保险丝卡住永远不动。
+        go.layer = 2;
         go.transform.position = position;
         var rb = go.AddComponent<Rigidbody2D>();
         rb.bodyType = RigidbodyType2D.Static;
@@ -324,6 +333,10 @@ public class GameManager : MonoBehaviour
         {
             State = GameState.LevelComplete;
             lastPassed = triggeredCount >= TargetCount;
+            LastResultPassed = lastPassed;
+            LastResultTriggered = triggeredCount;
+            LastResultTarget = TargetCount;
+            ResultCounter++;
 
             if (endlessMode)
             {

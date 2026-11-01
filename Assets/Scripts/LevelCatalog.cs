@@ -112,12 +112,17 @@ public static class LevelCatalog
         return d;
     }
 
-    /// <summary>旧第 9 关原样：两条圆弧相向转，像一对齿轮。要全中得等两条弧同时到中间</summary>
+    /// <summary>
+    /// 旧第 9 关改造：两条圆弧相向转，像一对齿轮。要全中得在两条弧同时经过中间那道缝时点缝里。
+    /// 旧场景里两个圆心相距 6.55，缝宽 1.19，自动测试扫过：只有一个 ±0.15 秒、±0.2 格的点能全中，
+    /// 人打不出来。圆心改到相距 6.0（缝宽 0.64），窗口放宽到两秒左右，形状也更像咬合的齿轮。
+    /// </summary>
     static LevelDef Gears()
     {
         var d = SchoolLevel("gears", "齿轮", "Gears", 18, BallPalette.Sakura);
-        var a = SchoolDef.Orbit(new Vector2(-3.26f, -0.27f), 2.68f, 9, false, 0f);
-        var b = SchoolDef.Orbit(new Vector2(3.29f, -0.27f), 2.68f, 9, true, 0f);
+        var a = SchoolDef.Orbit(new Vector2(-3.0f, -0.27f), 2.68f, 9, false, 0f);
+        // 旧场景里右边那个圆绕 X 轴翻了 180°，Unity 把它算成 z 旋转 180°：两条弧镜像对称地转
+        var b = SchoolDef.Orbit(new Vector2(3.0f, -0.27f), 2.68f, 9, true, 180f);
         foreach (var s in new[] { a, b })
         {
             s.Spacing = 0.53f; s.Speed = 2.28f; s.ShowPath = true;
@@ -145,7 +150,7 @@ public static class LevelCatalog
     /// </summary>
     static LevelDef Gate()
     {
-        var d = SchoolLevel("gate", "闸", "The Gate", 16, BallPalette.Emerald);
+        var d = SchoolLevel("gate", "闸", "The Gate", 15, BallPalette.Emerald);
         var s = SchoolDef.Line(new Vector2(-9.6f, 0f), new Vector2(9.6f, 0f), 10);
         s.HoldWhenBlocked = true;
         d.Schools.Add(s);
@@ -178,21 +183,24 @@ public static class LevelCatalog
     }
 
     /// <summary>
-    /// 新，时机：两队球从两角相向走，在中心交叉，各自路上有一道关着的闸。
-    /// 先到的那队会先停在闸前；等两队都到了再一起放行，它们才会同时经过交叉点。
+    /// 新，时机：两队球从两角相向走，在中心交叉。左下那队先到，右下那队晚 4 秒多才到。
+    /// 什么都不做的话它们先后经过交叉点，一次点击够不着两队。两条路上各有一扇开着的门：
+    /// 把先到那队的门关上让它等，等另一队快到了再开，两队就会一起过交叉点。
     /// </summary>
     static LevelDef Crossing()
     {
         var d = SchoolLevel("crossing", "错车", "Crossing", 14, BallPalette.Tiffany);
         var a = SchoolDef.Line(new Vector2(-9.6f, -4.6f), new Vector2(9.6f, 4.6f), 8);
-        var b = SchoolDef.Line(new Vector2(9.6f, -4.6f), new Vector2(-9.6f, 4.6f), 8);
+        // 右边那队的起点拉到屏幕外更远处，所以它天然晚到
+        var b = SchoolDef.Line(new Vector2(14.6f, -7.0f), new Vector2(-9.6f, 4.6f), 8);
         a.Wave = false; b.Wave = false;
+        a.Speed = 2.0f; b.Speed = 2.0f;
         a.HoldWhenBlocked = true; b.HoldWhenBlocked = true;
         a.Palette = BallPalette.Tiffany; b.Palette = BallPalette.Sakura;
         d.Schools.Add(a); d.Schools.Add(b);
         float ang = Mathf.Atan2(4.6f, 9.6f) * Mathf.Rad2Deg;   // 25.6°
-        d.Doors.Add(new DoorDef(-1.5f, -0.72f, ang + 90f));
-        d.Doors.Add(new DoorDef(1.5f, -0.72f, -ang - 90f));
+        d.Doors.Add(new DoorDef(-1.48f, -0.71f, ang + 90f, startsOpen: true));
+        d.Doors.Add(new DoorDef(1.48f, -0.71f, -ang - 90f, startsOpen: true));
         return d;
     }
 
@@ -332,9 +340,10 @@ public static class LevelCatalog
         var up = SparkDir(0f, 1f);
         var down = SparkDir(0f, -1f);
         LevelDef.Cluster(d.Balls, split + up * 4.6f, 0.55f, 6);
-        LevelDef.Cluster(d.Balls, split + down * 6.0f, 0.55f, 6);
-        var d1 = split + up * 1.5f;
-        var d2 = split + down * 4.2f;
+        LevelDef.Cluster(d.Balls, split + down * 6.2f, 0.55f, 6);
+        // 上门近、下门远：两颗火星同时出发，先过上门，再过下门，中间那 0.9 秒就是切换的窗口
+        var d1 = split + up * 1.0f;
+        var d2 = split + down * 5.2f;
         d.Doors.Add(new DoorDef(d1.x, d1.y, -(90f - Ball.SplitHalfAngleDeg), startsOpen: true, link: 1));
         d.Doors.Add(new DoorDef(d2.x, d2.y, 90f - Ball.SplitHalfAngleDeg, startsOpen: false, link: 1));
         return d;

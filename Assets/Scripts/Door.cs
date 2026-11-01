@@ -44,7 +44,14 @@ public class Door : MonoBehaviour
 
         col = GetComponent<BoxCollider2D>();
         if (col == null)
+        {
             col = gameObject.AddComponent<BoxCollider2D>();
+            // 运行时 AddComponent 会按 SpriteRenderer 当前的 sprite 自动定尺寸，
+            // 而这时 sprite 还是空的，碰撞体会变成 0×0 —— 球直接穿门。门的尺寸全靠 transform 的缩放，
+            // 所以碰撞体固定 1×1。
+            col.size = Vector2.one;
+            col.offset = Vector2.zero;
+        }
         if (Ball.bounceMat != null)
             col.sharedMaterial = Ball.bounceMat;
 

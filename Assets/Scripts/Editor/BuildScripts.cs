@@ -18,7 +18,12 @@ public static class BuildScripts
             if (s.enabled) scenes.Add(s.path);
 
         string root = Directory.GetParent(Application.dataPath).FullName;
-        string outPath = Path.Combine(root, "Builds", "Autotest", "Bloom.app");
+        // -buildDir <名字> 可以换一个输出目录，这样上一个包还在跑测试的时候也能打新包
+        string dirName = "Autotest";
+        var args = System.Environment.GetCommandLineArgs();
+        for (int i = 0; i < args.Length - 1; i++)
+            if (args[i] == "-buildDir") dirName = args[i + 1];
+        string outPath = Path.Combine(root, "Builds", dirName, "Bloom.app");
         Directory.CreateDirectory(Path.GetDirectoryName(outPath));
 
         var opts = new BuildPlayerOptions

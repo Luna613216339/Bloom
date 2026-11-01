@@ -53,6 +53,7 @@ public class LevelBuilder
         var rb = go.AddComponent<Rigidbody2D>();
         rb.bodyType = RigidbodyType2D.Static;
         var col = go.AddComponent<BoxCollider2D>();
+        col.size = Vector2.one;     // 尺寸全在 transform 的缩放里，别让它去量 sprite
         col.sharedMaterial = Ball.bounceMat;
 
         solidRects.Add((w.Center, w.Size * 0.5f, w.Rot));

@@ -77,6 +77,7 @@ public class Cage : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Static;
 
         var col = go.AddComponent<BoxCollider2D>();
+        col.size = Vector2.one;
         col.sharedMaterial = Ball.bounceMat;
     }
 

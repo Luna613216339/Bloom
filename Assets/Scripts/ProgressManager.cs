@@ -81,9 +81,10 @@ public static class ProgressManager
 
     public static int Coins
     {
-        get => PlayerPrefs.GetInt(CoinsKey, 0);
+        get => AutoTest.Active ? AutoTest.FakeCoins : PlayerPrefs.GetInt(CoinsKey, 0);
         private set
         {
+            if (AutoTest.Active) { AutoTest.FakeCoins = value; return; }
             PlayerPrefs.SetInt(CoinsKey, value);
             PlayerPrefs.Save();
         }

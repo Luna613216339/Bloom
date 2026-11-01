@@ -154,7 +154,7 @@ public class GameUI : MonoBehaviour
             else AudioManager.Instance.PlayFail();
         }
 
-        if (passed && hasNext)
+        if (passed && hasNext && !AutoTest.Active)
         {
             GameManager.Instance.NextLevel();
         }
