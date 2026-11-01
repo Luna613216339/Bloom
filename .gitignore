@@ -35,3 +35,6 @@ Thumbs.db
 *.aab
 *.unitypackage
 *.app
+
+# 完整中文字体太大，只留授权文件；tools-rebuild-font.sh 缺了会自己下
+/ThirdParty/Fonts/*.ttf
