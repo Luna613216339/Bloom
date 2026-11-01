@@ -108,6 +108,21 @@ public static class Loc
 
     public static bool CjkReady => CjkFont != null;
 
+    // ---- 测试菜单的字体 ----
+    // 测试阶段的主菜单要显示每关一行中文说明，这些字不在子集字体里。
+    // 试过 Font.CreateDynamicFontFromOSFont 借系统字体：IMGUI 里字形全错（每行都画成别的字符串），
+    // 不可用。改用 Unity 内置的动态字体（font = null）：它在编辑器和 macOS 包里遇到缺字会自动
+    // 退到系统字体（开发笔记坑 24 就是这么发现的），中文照常显示；WebGL 里没有这条退路，
+    // 但测试菜单本来也不打网页版。正式关卡名要进游戏时仍然要重做子集字体（先问用户下载 Noto Sans SC）。
+
+    /// <summary>测试菜单的样式：中英文都用内置动态字体，靠系统字体回退显示汉字</summary>
+    public static GUIStyle FitTestMenu(GUIStyle s)
+    {
+        Fit(s);
+        s.font = null;
+        return s;
+    }
+
     /// <summary>
     /// 当前该用的字体。英文返回 null —— GUIStyle.font = null 表示"用默认字体"，
     /// 英文界面因此保持内置字体原样。
