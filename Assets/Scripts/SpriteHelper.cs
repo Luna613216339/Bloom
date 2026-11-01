@@ -11,6 +11,7 @@ public static class SpriteHelper
     private static Texture2D _banknote;
     private static Sprite _rainbow;
     private static Sprite _shell;
+    private static Sprite _ring;
 
     /// <summary>
     /// 分裂球 / 火星：六个色相扇区拼成的五彩球。颜色烤在贴图里，不跟关卡配色走 ——
@@ -38,6 +39,17 @@ public static class SpriteHelper
             if (_shell == null)
                 _shell = CreateShellSprite(256);
             return _shell;
+        }
+    }
+
+    /// <summary>细圆环：硬球壳碎掉时那一圈往外散的线</summary>
+    public static Sprite Ring
+    {
+        get
+        {
+            if (_ring == null)
+                _ring = CreateRingSprite(256, 0.12f);
+            return _ring;
         }
     }
 
@@ -218,6 +230,29 @@ public static class SpriteHelper
     /// 缩小十倍以上。没有 mipmap 时 GPU 只能在原图上点采样，边缘会闪、会有锯齿 ——
     /// 这不是"分辨率低"，是缩小采样的走样。开了 mipmap + Trilinear 之后边缘就干净了。
     /// </summary>
+    /// <summary>圆环，thickness 是环宽占半径的比例。内外两边都做一像素的抗锯齿</summary>
+    static Sprite CreateRingSprite(int resolution, float thickness)
+    {
+        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);
+        float center = resolution / 2f;
+        float outer = center - 1f;
+        float inner = outer * (1f - thickness);
+
+        for (int y = 0; y < resolution; y++)
+        {
+            for (int x = 0; x < resolution; x++)
+            {
+                float dist = Vector2.Distance(new Vector2(x, y), new Vector2(center, center));
+                float alpha = Mathf.Clamp01(outer - dist) * Mathf.Clamp01(dist - inner);
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
+            }
+        }
+
+        tex.Apply();
+        tex.filterMode = FilterMode.Trilinear;
+        return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
+    }
+
     static Sprite CreateCircleSprite(int resolution)
     {
         var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);

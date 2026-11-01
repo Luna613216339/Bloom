@@ -19,20 +19,22 @@ public enum IdleMode { None, Bob, Sway, Spin, Breathe, Drift }
 
 /// <summary>
 /// 静止球群怎么"活着"。只作用于关卡里摆好的静止球（Balls 里 Vel 为零的），蛇和散布球不受影响。
-/// 被点着的球立刻停止 idle。
+/// 正在烧的球也跟着团一起动（停下来会让球距不再按比例变，链会断）。
 /// </summary>
 public class IdleDef
 {
     public IdleMode Mode;
-    /// <summary>位移幅度（世界单位）。Spin 模式下是角速度（度/秒）</summary>
+    /// <summary>位移幅度（世界单位）。Spin 模式下是角速度（度/秒）；Breathe 是相对这一团半径的比例</summary>
     public float Amplitude;
     public float Period = 3.2f;
     public int Seed = 7;
+    /// <summary>半径比这大的团不动（长线、螺旋这类大图案动起来乱）</summary>
+    public float MaxGroupRadius = 1.2f;
 
     /// <summary>
     /// 每种动法的默认幅度。整团一起动的（Bob / Sway / Spin）球之间的距离不变，可以大一点；
-    /// Breathe 会拉开球距，Drift 每颗各自漂、相邻两颗可能反向，所以压得很小：
-    /// 第 7 关那一圈球相邻 0.7，够得着是 0.825，只剩 0.125 的余量。
+    /// Breathe 按比例拉开球距，Drift 每颗各自漂、相邻两颗可能反向，所以压得很小。
+    /// 用户试玩（2026-11-02）：圆形小团用 Breathe 或 Bob；Sway、Spin、Drift 不要；蛇不加。
     /// </summary>
     public static IdleDef Of(IdleMode mode)
     {
@@ -42,7 +44,7 @@ public class IdleDef
             case IdleMode.Bob: d.Amplitude = 0.12f; d.Period = 3.2f; break;
             case IdleMode.Sway: d.Amplitude = 0.12f; d.Period = 3.6f; break;
             case IdleMode.Spin: d.Amplitude = 8f; break;
-            case IdleMode.Breathe: d.Amplitude = 0.05f; d.Period = 3.0f; break;
+            case IdleMode.Breathe: d.Amplitude = 0.07f; d.Period = 3.0f; break;
             case IdleMode.Drift: d.Amplitude = 0.04f; d.Period = 4.0f; break;
         }
         return d;
@@ -137,8 +139,6 @@ public class SchoolDef
     public bool HoldWhenBlocked;
     public bool ShowPath;
     public Color[] Palette;         // 不填就用关卡配色
-    /// <summary>白模里用第二套（更浅的）灰，让两队球分得开。彩色模式下不起作用</summary>
-    public bool LightTone;
     public BallKind[] Kinds;        // 按队列索引指定特殊球，不填全是普通球
 
     public static SchoolDef Line(Vector2 a, Vector2 b, int count)

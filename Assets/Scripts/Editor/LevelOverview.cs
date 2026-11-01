@@ -145,7 +145,7 @@ public static class LevelOverview
 
         float head = (s.Count - 1) * s.Spacing + s.StartOffset;
         int normal = s.Count - s.Escape;
-        var palette = Look.Palette(s.Palette ?? d.Palette, s.LightTone);
+        var palette = Look.Palette(s.Palette ?? d.Palette);
         for (int i = 0; i < s.Count; i++)
         {
             float dist = head - i * s.Spacing;
@@ -249,7 +249,7 @@ public static class LevelOverview
                 {
                     float d = Mathf.Sqrt(x * x + y * y);
                     if (d > pr + 0.5f) continue;
-                    Color col = c;
+                    Color col = kind == BallKind.Hard ? Look.Hard(c) : c;
                     if (kind == BallKind.Split)
                     {
                         float ang = Mathf.Atan2(y, x);
@@ -257,7 +257,7 @@ public static class LevelOverview
                         col = Color.HSVToRGB(Mathf.Floor(ang / (Mathf.PI * 2f) * 6f) / 6f, 0.8f, 0.92f);
                     }
                     else if (kind == BallKind.Hard && d > pr * 0.55f && d < pr * 0.78f)
-                        col = Color.Lerp(c, Color.white, 0.85f);
+                        col = Color.Lerp(col, Color.white, 0.85f);
                     Set(cx + x, cy + y, col);
                 }
         }

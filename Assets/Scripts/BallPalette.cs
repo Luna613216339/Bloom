@@ -118,18 +118,12 @@ public static class BallPalette
     // ---- 白模（2026-11-02 起正式关卡默认用这套，见 Look.cs）----
 
     /// <summary>
-    /// 白模的球：四档灰，散布关当标签循环取，蛇形关沿身体从深到浅插值（能看出队伍方向）。
-    /// 最浅一档也压在 0.6 以下，膨胀时换成强调色，所以不用管"爆炸态对比度"那条指标。
+    /// 白模的普通球：只有一种中灰（用户定：普通球不分深浅，颜色只留给特殊球）。
+    /// 膨胀时换成强调色，所以不用管"爆炸态对比度"那条指标。
     /// </summary>
     public static readonly Color[] Whitebox =
     {
-        C("#3A3A3A"), C("#555555"), C("#707070"), C("#8C8C8C"),
-    };
-
-    /// <summary>白模第二套：更浅的灰，两队球要分开时给第二队用</summary>
-    public static readonly Color[] WhiteboxLight =
-    {
-        C("#9A9A9A"), C("#AEAEAE"), C("#C2C2C2"),
+        C("#7D7D7D"),
     };
 
     /// <summary>白模里唯一的强调色：着火 / 在扩散。朱红，在白底和灰球之间都跳得出来</summary>
@@ -138,8 +132,11 @@ public static class BallPalette
     /// <summary>白模的墙、笼子、门</summary>
     public static readonly Color WhiteboxStructure = C("#2E2E2E");
 
-    /// <summary>白模的逃跑球底色（贴图自带明暗条纹）</summary>
-    public static readonly Color WhiteboxEscape = C("#4A4A4A");
+    /// <summary>白模的逃跑球底色（贴图自带明暗条纹）。特殊球都带颜色，一眼和中灰的普通球分开</summary>
+    public static readonly Color WhiteboxEscape = C("#2F7DE1");
+
+    /// <summary>白模的硬球（壳和壳碎之后剩下的那颗都是这个色）</summary>
+    public static readonly Color WhiteboxHard = C("#138A72");
 
     // 原版彩虹，只留给第 10 关
     public static readonly Color[] Rainbow =

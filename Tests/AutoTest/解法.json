@@ -1,0 +1,518 @@
+{
+ "jobs": [
+  {
+   "name": "ripple 解法",
+   "id": "ripple",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "gears 解法",
+   "id": "gears",
+   "actions": [
+    {
+     "t": 5.0,
+     "type": "click",
+     "x": 0,
+     "y": -0.27
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "gate 解法",
+   "id": "gate",
+   "actions": [
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 7.0,
+     "type": "click",
+     "x": 5.2,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "net 解法",
+   "id": "net",
+   "actions": [
+    {
+     "t": 0.1,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 6.3,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 6.6,
+     "type": "click",
+     "x": 0.9,
+     "y": 0.1
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "crossing 解法",
+   "id": "crossing",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 5.0,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 5.75,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "pincer 解法",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.3,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 4.3,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 4.6,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "kaleidoscope 解法",
+   "id": "kaleidoscope",
+   "actions": [
+    {
+     "t": 3.0,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "spark 解法",
+   "id": "spark",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -5.6,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "backfire 解法",
+   "id": "backfire",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -0.3,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "switch 解法",
+   "id": "switch",
+   "actions": [
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -6,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "shell 解法",
+   "id": "shell",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0.5,
+     "y": 0.4
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "fork 解法",
+   "id": "fork",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "click",
+     "x": -6.2,
+     "y": 0
+    },
+    {
+     "t": 2.0,
+     "type": "door",
+     "door": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "guide-bounce 解法",
+   "id": "guide-bounce",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -6.2,
+     "y": 0.8
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "guide-reroute 解法",
+   "id": "guide-reroute",
+   "actions": [
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -6.2,
+     "y": 0.8
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "guide-prepare 解法",
+   "id": "guide-prepare",
+   "actions": [
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 0.3,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -6.2,
+     "y": 0.4
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "waiting-line 解法",
+   "id": "waiting-line",
+   "actions": [
+    {
+     "t": 5.0,
+     "type": "click",
+     "x": -2.5,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "halt 解法",
+   "id": "halt",
+   "actions": [
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 3.0,
+     "type": "click",
+     "x": -7,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "hoop 解法",
+   "id": "hoop",
+   "actions": [
+    {
+     "t": 1.8,
+     "type": "click",
+     "x": -2.1,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "two-gates 解法",
+   "id": "two-gates",
+   "actions": [
+    {
+     "t": 7.0,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 7.0,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 9.6,
+     "type": "click",
+     "x": 5.0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "binary 解法",
+   "id": "binary",
+   "actions": [
+    {
+     "t": 3.0,
+     "type": "click",
+     "x": 0,
+     "y": 2.65
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "loom 解法",
+   "id": "loom",
+   "actions": [
+    {
+     "t": 4.0,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "strings 解法",
+   "id": "strings",
+   "actions": [
+    {
+     "t": 1.0,
+     "type": "click",
+     "x": 0,
+     "y": 2.4
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "relay 解法",
+   "id": "relay",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "fireworks 解法",
+   "id": "fireworks",
+   "actions": [
+    {
+     "t": 6.0,
+     "type": "click",
+     "x": -0.8,
+     "y": 1.5
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "boomerang 解法",
+   "id": "boomerang",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": 3.2
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "two-locks 解法",
+   "id": "two-locks",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": 0.35
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "key 解法",
+   "id": "key",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -3.8,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "bolt 解法",
+   "id": "bolt",
+   "actions": [
+    {
+     "t": 5.0,
+     "type": "click",
+     "x": -0.2,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "shift-change 解法",
+   "id": "shift-change",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 1.8,
+     "type": "click",
+     "x": 0,
+     "y": -0.7
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "jar 解法",
+   "id": "jar",
+   "actions": [
+    {
+     "t": 8.0,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 8.2,
+     "type": "click",
+     "x": 3.2,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "spiral 解法",
+   "id": "spiral",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 25
+  },
+  {
+   "name": "rose 解法",
+   "id": "rose",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "meander 解法",
+   "id": "meander",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -6.3,
+     "y": 3.2
+    }
+   ],
+   "maxTime": 35
+  }
+ ]
+}

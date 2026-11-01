@@ -1,0 +1,459 @@
+{
+ "jobs": [
+  {
+   "name": "one-line 随手一点",
+   "id": "one-line",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "ripple 随手一点",
+   "id": "ripple",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 20
+  },
+  {
+   "name": "gears 随手一点",
+   "id": "gears",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "long-wave 随手一点",
+   "id": "long-wave",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 20
+  },
+  {
+   "name": "gate 随手一点",
+   "id": "gate",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "net 随手一点",
+   "id": "net",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "crossing 随手一点",
+   "id": "crossing",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "pincer 随手一点",
+   "id": "pincer",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "kaleidoscope 随手一点",
+   "id": "kaleidoscope",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "spark 随手一点",
+   "id": "spark",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "backfire 随手一点",
+   "id": "backfire",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "switch 随手一点",
+   "id": "switch",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "shell 随手一点",
+   "id": "shell",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "fork 随手一点",
+   "id": "fork",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "guide-bounce 随手一点",
+   "id": "guide-bounce",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "guide-reroute 随手一点",
+   "id": "guide-reroute",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "guide-prepare 随手一点",
+   "id": "guide-prepare",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "waiting-line 随手一点",
+   "id": "waiting-line",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "halt 随手一点",
+   "id": "halt",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "hoop 随手一点",
+   "id": "hoop",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "two-gates 随手一点",
+   "id": "two-gates",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 20
+  },
+  {
+   "name": "binary 随手一点",
+   "id": "binary",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "loom 随手一点",
+   "id": "loom",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "strings 随手一点",
+   "id": "strings",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 20
+  },
+  {
+   "name": "relay 随手一点",
+   "id": "relay",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "fireworks 随手一点",
+   "id": "fireworks",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "boomerang 随手一点",
+   "id": "boomerang",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "two-locks 随手一点",
+   "id": "two-locks",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "key 随手一点",
+   "id": "key",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "bolt 随手一点",
+   "id": "bolt",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "shift-change 随手一点",
+   "id": "shift-change",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
+   "name": "jar 随手一点",
+   "id": "jar",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 20
+  },
+  {
+   "name": "spiral 随手一点",
+   "id": "spiral",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 25
+  },
+  {
+   "name": "rose 随手一点",
+   "id": "rose",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 20
+  },
+  {
+   "name": "meander 随手一点",
+   "id": "meander",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 35
+  }
+ ]
+}

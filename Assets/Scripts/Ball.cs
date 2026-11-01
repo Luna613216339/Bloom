@@ -8,8 +8,14 @@ public class Ball : MonoBehaviour
     public bool IsEscapeBall { get; private set; }
     public bool IsGoldBall { get; private set; }
 
-    /// <summary>硬球的壳已经被敲裂了（再来一把别处的火就炸）</summary>
-    public bool IsCracked => Kind == BallKind.Hard && hardSource != 0;
+    /// <summary>硬球的壳已经被打掉了（火要再来一次才炸）</summary>
+    public bool IsCracked => Kind == BallKind.Hard && crackedAt >= 0f;
+
+    /// <summary>
+    /// 硬球打掉壳之后多久内碰到它的火都不算"第二次"。连锁里相邻的球是接连着火的，
+    /// 同一波火的几颗邻居会在这段时间里先后碰到它；要等火从别的路绕回来、或者火星飞到，才是第二次。
+    /// </summary>
+    public const float HardCooldown = 1.0f;
 
     /// <summary>火星不算通关数，也不算场上球数</summary>
     public bool CountsForTarget => Kind != BallKind.Fragment;
@@ -52,7 +58,8 @@ public class Ball : MonoBehaviour
     private Vector2 preferredFleeDir;
 
     private float splitAxisDeg = float.NaN;
-    private int hardSource;
+    private float crackedAt = -1f;
+    private readonly System.Collections.Generic.HashSet<int> spentSources = new System.Collections.Generic.HashSet<int>();
     private float fuse;
 
     public static PhysicsMaterial2D bounceMat;
@@ -167,6 +174,7 @@ public class Ball : MonoBehaviour
     {
         Kind = BallKind.Hard;
         sr.sprite = SpriteHelper.Shell;
+        sr.color = Look.Hard(sr.color);
     }
 
     static Ball CreateFragment(Vector2 position, Vector2 dir, float parentSize, float duration)
@@ -324,8 +332,10 @@ public class Ball : MonoBehaviour
     }
 
     /// <summary>
-    /// 一把火碰到了这颗球。普通球直接炸；硬球第一次只敲裂壳，要换一把火再碰才炸；
-    /// 火星不吃别人的火（它自己就是火）。
+    /// 一把火碰到了这颗球。普通球直接炸；火星不吃别人的火（它自己就是火）。
+    /// 硬球是两层：第一次被火碰到，外壳"啪"地碎掉（不传火），剩下一颗普通球；
+    /// 打壳那一波火（壳碎后 HardCooldown 秒内碰到它的每一把）都作废，要等之后再来的火才炸。
+    /// 所以硬球要被"打两次"：火得从另一条路绕回来，或者靠火星、移动的球把第二把火送到。
     /// </summary>
     public void Hit(int sourceId, Vector2 from)
     {
@@ -334,13 +344,19 @@ public class Ball : MonoBehaviour
 
         if (Kind == BallKind.Hard)
         {
-            if (hardSource == 0)
+            if (crackedAt < 0f)
             {
-                hardSource = sourceId;
+                crackedAt = Time.time;
+                spentSources.Add(sourceId);
                 Crack();
                 return;
             }
-            if (hardSource == sourceId) return;
+            if (spentSources.Contains(sourceId)) return;
+            if (Time.time - crackedAt < HardCooldown)
+            {
+                spentSources.Add(sourceId);
+                return;
+            }
         }
 
         Trigger(from);
@@ -349,6 +365,7 @@ public class Ball : MonoBehaviour
     void Crack()
     {
         sr.sprite = SpriteHelper.Circle;
+        ShellBurst.Create(transform.position, currentScale, sr.color);
         if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
     }
 

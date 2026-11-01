@@ -55,7 +55,6 @@ public class SchoolSpawner : MonoBehaviour
     private RaycastHit2D[] rayResults = new RaycastHit2D[4];
     private bool[] stalled;
     private Color[] paletteOverride;
-    private bool lightTone;
     private BallKind[] kinds;
 
     /// <summary>
@@ -85,7 +84,6 @@ public class SchoolSpawner : MonoBehaviour
         holdWhenBlocked = d.HoldWhenBlocked;
         startOffset = d.StartOffset;
         paletteOverride = d.Palette;
-        lightTone = d.LightTone;
         kinds = d.Kinds;
 
         if (d.Circle)
@@ -281,7 +279,7 @@ public class SchoolSpawner : MonoBehaviour
     void SpawnSchool()
     {
         int normalCount = ballCount - escapeBallCount;
-        Color[] palette = Look.Palette(paletteOverride ?? GameManager.Instance.Palette, lightTone);
+        Color[] palette = Look.Palette(paletteOverride ?? GameManager.Instance.Palette);
 
         for (int i = 0; i < ballCount; i++)
         {

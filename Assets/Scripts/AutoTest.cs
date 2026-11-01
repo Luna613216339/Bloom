@@ -31,6 +31,7 @@ public static class AutoTest
     {
         public string name;
         public int level;
+        public string id;           // 填了就按关卡 id 找关（关号会随增删关变，id 不变），优先于 level
         public Act[] actions;       // 脚本化的一次尝试
         public Sweep sweep;         // 或者：扫一遍网格点击
         public float maxTime = 12f;
@@ -134,6 +135,17 @@ public static class AutoTest
 
             foreach (var job in plan.jobs)
             {
+                if (!string.IsNullOrEmpty(job.id))
+                {
+                    job.level = 0;
+                    foreach (var l in LevelCatalog.All) if (l.Id == job.id) job.level = l.Number;
+                    if (job.level == 0)
+                    {
+                        Debug.LogError($"[AutoTest] 没有 id 为 {job.id} 的关");
+                        results.Add(new Result { name = job.name, id = job.id });
+                        continue;
+                    }
+                }
                 if (job.level <= 0)
                 {
                     // 0 = 主菜单截图，-1 = 无尽模式冒烟（点一下看一轮能不能正常结算），-2 = 商店截图

@@ -35,71 +35,68 @@ public static class LevelCatalog
     static void Build()
     {
         all = new List<LevelDef>();
+        // 过关一律要清空全场（Add 里统一设 Target = TotalBalls）。
+        // 随机散布的喘息关（旧 初开 / 繁星 / 密林）是无尽模式的玩法，2026-11-02 用户定：只留在无尽模式里。
         const string ch1 = "正式 · 第一章 开花";
         const string ch2 = "正式 · 第二章 门";
-        Add(FirstBloom(), ch1, "点一下，看它开。随机散布，目标宽松");                        // 1
-        Add(OneLine(), ch1, "斜着走的一队球，火从点的地方一颗颗亮过去");                     // 2
-        Add(Ripple(), ch1, "点任何一颗，火先聚到中心再一圈圈往外扩");                       // 3
-        Add(Stars(), ch1, "一堆乱飞的球，找最密的地方点");                                   // 4
-        Add(Gears(), ch1, "两条弧相向转，等它们同时到中间那道缝");                           // 5
-        Add(LongWave(), ch1, "横贯全屏的波浪，从点的地方往两头亮");                         // 6
-        Add(Gate(), ch2, "一队球被闸拦住，开闸它们才走进右边那圈（动静结合）");               // 7
-        Add(Net(), ch2, "蛇尾三颗逃跑球，关门把它们关进笼子");                               // 8
-        Add(Thicket(), ch2, "满屏的球，喘口气");                                             // 9
-        Add(Crossing(), ch2, "两队球相向来，用门拦住先到的那队等一等");                      // 10
-        Add(Pincer(), ch2, "两条蛇从两头进同一个笼子，两扇门都要关");                        // 11
-        Add(Kaleidoscope(), ch2, "五条弧绕中心转，一次全中");                                // 12
-        // ---- 新机制的样关：分裂球、联动门已通过，硬球用户还没看到 ----
+        Add(OneLine(), ch1, "斜着走的一队球，火从点的地方一颗颗亮过去");                     // 1
+        Add(Ripple(), ch1, "点任何一颗，火先聚到中心再一圈圈往外扩");                       // 2
+        Add(Gears(), ch1, "两条弧相向转，等它们同时到中间那道缝");                           // 3
+        Add(LongWave(), ch1, "横贯全屏的波浪，从点的地方往两头亮");                         // 4
+        Add(Breathe(Gate()), ch2, "一队球被闸拦住，开闸它们才走进右边那圈（动静结合）");               // 5
+        Add(Net(), ch2, "蛇尾三颗逃跑球，关门把它们关进笼子");                               // 6
+        Add(Crossing(), ch2, "两队球相向来，用门拦住先到的那队等一等");                      // 7
+        Add(Pincer(), ch2, "两条蛇从两头进同一个笼子，两扇门都要关");                        // 8
+        Add(Kaleidoscope(), ch2, "五条弧绕中心转，一次全中（简单关）");                      // 9
+        // ---- 新机制的样关 ----
         const string smp = "样关（新机制）";
-        Add(SampleSpark(), smp, "火烧到五彩球，裂出两颗火星飞向远处的两小团");               // 13
-        Add(SampleBackfire(), smp, "火星背着火源飞：点大团没用，要点五彩球的另一侧");         // 14
-        Add(SampleSwitch(), smp, "火星路上有扇关着的门，先开门再点");                         // 15
-        Add(SampleShell(), smp, "一排球中间一颗硬球，要两把不同的火才炸");                   // 16
-        Add(SampleFork(), smp, "两颗火星各走一条路，联动门要在飞行中切换");                   // 17
-        // ---- 引导关：分裂球 + 门，循序渐进，建议排在 15 和 17 之间 ----
-        const string gd = "引导关（分裂球 + 门，建议排在 15 开关 和 17 分岔 之间）";
-        Add(GuideBounce(), gd, "火星撞上关着的门会弹回来，弹回来的火星照样能用");             // 18
-        Add(GuideReroute(), gd, "门开着火星会飞到空地；把门关上，让它弹进那一团");           // 19
-        Add(GuidePrepare(), gd, "两扇普通门，一扇要开一扇要关，点火前先准备好");             // 20
+        Add(Breathe(SampleSpark()), smp, "火烧到五彩球，裂出两颗火星飞向远处的两小团");               // 10
+        Add(Breathe(SampleBackfire()), smp, "火星背着火源飞：点大团没用，要点五彩球的另一侧");         // 11
+        Add(Breathe(SampleSwitch()), smp, "火星路上有扇关着的门，先开门再点");                         // 12
+        Add(SampleShell(), smp, "一圈球顶上一颗硬球：火打掉壳之后，要绕一圈回来再打一次");                   // 13
+        Add(Breathe(SampleFork()), smp, "两颗火星各走一条路，联动门要在飞行中切换");                   // 14
+        // ---- 引导关：分裂球 + 门 ----
+        const string gd = "引导关（分裂球 + 门，建议排在 开关 和 分岔 之间）";
+        Add(Breathe(GuideBounce()), gd, "火星撞上关着的门会弹回来，弹回来的火星照样能用");             // 15
+        Add(Breathe(GuideReroute()), gd, "门开着火星会飞到空地；把门关上，让它弹进那一团");           // 16
+        Add(Breathe(GuidePrepare()), gd, "两扇普通门，一扇要开一扇要关，点火前先准备好");             // 17
         // ---- 备选池：动静结合（用户最喜欢的一类）----
         const string dyn = "备选 · 动静结合";
-        Add(WaitingLine(), dyn, "队伍停在闸前才能传火；开了闸反而走散（和第 7 关相反）");     // 21
-        Add(Halt(), dyn, "门开着队伍会走掉；先关门让它停在路口，再点远处那条线");             // 22
-        Add(Hoop(), dyn, "一队球穿过一个静止的大环，队头在环上那一刻点");                     // 23
-        Add(TwoGates(), dyn, "两队球、两道闸，把它们放到同时走进中间那个结构");               // 24
-        Add(Binary(), dyn, "两条弧一内一外反向转，顶上一小团，两个队头同时到时点");           // 25
-        Add(Loom(), dyn, "三列球上下穿梭，横着一条静止的线，像织布");                         // 26
-        Add(Drifter(), dyn, "一团球整体漂流、撞墙反弹，等它漂过静止的那团");                 // 27
-        Add(Strings(), dyn, "五根静止的弦，一队球竖着穿过去，把五根弦一起拨响");             // 28
-        Add(Turnaround(), dyn, "队伍到头会折返、叠在一起，折叠那一刻最密");                   // 29
+        Add(Breathe(WaitingLine()), dyn, "队伍停在闸前才能传火；开了闸反而走散（和 闸 相反）");       // 18
+        Add(Breathe(Halt()), dyn, "门开着队伍会走掉；先关门让它停在路口，再点远处那条线");             // 19
+        Add(Hoop(), dyn, "一队球穿过一个静止的大环，队头在环上那一刻点");                     // 20
+        Add(Breathe(TwoGates()), dyn, "两队球、两道闸，把它们放到同时走进中间那个结构");               // 21
+        Add(Breathe(Binary()), dyn, "两条弧一内一外反向转，顶上一小团，两个队头同时到时点");           // 22
+        Add(Loom(), dyn, "三列球上下穿梭，横着一条静止的线，像织布");                         // 23
+        Add(Strings(), dyn, "五根静止的弦，一队球竖着穿过去，把五根弦一起拨响");             // 24
         // ---- 备选池：分裂球 ----
         const string spl = "备选 · 分裂球";
-        Add(Relay(), spl, "五颗五彩球隔着够不着的距离排一排，火星一路接力过去");             // 30
-        Add(Fireworks(), spl, "转动的环里嵌着五彩球，火星向四周射向小团");                   // 31
-        Add(Boomerang(), spl, "火星撞上斜墙拐弯，俯冲进下面两团");                           // 32
+        Add(Breathe(Relay()), spl, "五颗五彩球隔着够不着的距离排一排，火星一路接力过去");             // 25
+        Add(Fireworks(), spl, "转动的环里嵌着五彩球，火星向四周射向小团");                   // 26
+        Add(Breathe(Boomerang()), spl, "火星撞上斜墙拐弯，俯冲进下面两团");                           // 27
         // ---- 备选池：硬球 ----
         const string hrd = "备选 · 硬球";
-        Add(TwoLocks(), hrd, "两头是大团，中间两颗硬球夹一条双排线；点大团只敲裂，点中间全开"); // 33
-        Add(Key(), hrd, "火沿着线烧到硬球只能敲裂，追上来的火星是第二把火");                 // 34
-        Add(Bolt(), hrd, "队伍停在闸前，闸后一颗硬球挡着一条线；点硬球和线之间的缝");         // 35
+        Add(Breathe(TwoLocks()), hrd, "两头是大团，中间两颗硬球夹一条双排线");                         // 28
+        Add(Breathe(Key()), hrd, "火沿着线烧到硬球只能敲裂，追上来的火星是第二把火");                 // 29
+        Add(Breathe(Bolt()), hrd, "队伍停在闸前，闸后一颗硬球挡着一条线");                             // 30
         // ---- 备选池：门与笼子 ----
         const string dr = "备选 · 门与笼子";
-        Add(ShiftChange(), dr, "两队球各有一扇联动门：切一下，走的停、停的走，让两队都进中间"); // 36
-        Add(Jar(), dr, "整条蛇涌进右边封死的笼子，四颗逃跑球也进来了再关门");                 // 37
-        // ---- 备选池：奇观（静止）----
-        const string spc = "备选 · 奇观";
-        Add(Spiral(), spc, "一条螺旋线，点中心火转着圈往外烧");                               // 38
-        Add(Rose(), spc, "三片花瓣在中心相连，点中心三片一起开");                             // 39
-        Add(Meander(), spc, "五行球首尾相接成一条长路，火要爬二十秒才到头");                 // 40
-        // ---- 备选池：续命 ----
-        Add(Encore(), "备选 · 续命", "两团离得远，一下点不完；没过关时按「再打一下」补第二下"); // 41
-        // ---- 实验：静止球群的 idle，第 7 关 × 5 种动法，挨个点开比 ----
-        const string idle = "实验 · 静止球群 idle（第 7 关 × 5 种动法）";
-        Add(GateIdle(IdleMode.Bob), idle, "右边那圈整团上下浮（幅度 0.12）");                 // 42
-        Add(GateIdle(IdleMode.Sway), idle, "右边那圈整团左右摆（幅度 0.12）");               // 43
-        Add(GateIdle(IdleMode.Spin), idle, "右边那圈整团慢转（8°/秒）");                     // 44
-        Add(GateIdle(IdleMode.Breathe), idle, "右边那圈呼吸：整团微微胀缩（幅度 0.05）");     // 45
-        Add(GateIdle(IdleMode.Drift), idle, "右边那圈每颗各自轻微漂移（幅度 0.04）");         // 46
+        Add(ShiftChange(), dr, "两队球各有一扇联动门：切一下，走的停、停的走，让两队都进中间"); // 31
+        Add(Jar(), dr, "整条蛇涌进右边封死的笼子，四颗逃跑球也进来了再关门");                 // 32
+        // ---- 调剂关：奇观（静止）----
+        const string spc = "调剂 · 奇观";
+        Add(Spiral(), spc, "一条螺旋线，点中心火转着圈往外烧");                               // 33
+        Add(Rose(), spc, "三片花瓣在中心相连，点中心三片一起开");                             // 34
+        Add(Meander(), spc, "五行球首尾相接成一条长路，火要爬二十秒才到头");                 // 35
+        // 撤下的（2026-11-02 用户试玩后）：漂流（目标达不到全清，但"整团漂流撞墙反弹"的动法留着以后用，见 Drifter）、
+        // 折返（队伍碰到球群就掉头，玩家会困惑）、再来一下（等于逼玩家花钱续命）、idle 五个对比变体（已按关挂到正式关上）。
+    }
+
+    /// <summary>这关的圆形小团用"呼吸"当 idle（长线、大图案、蛇不受影响，见 IdleGroup）</summary>
+    static LevelDef Breathe(LevelDef d)
+    {
+        d.Idle = IdleDef.Of(IdleMode.Breathe);
+        return d;
     }
 
     static void Add(LevelDef d, string group, string note)
@@ -112,26 +109,17 @@ public static class LevelCatalog
     static void Add(LevelDef d)
     {
         d.Number = all.Count + 1;
+        d.Target = d.TotalBalls;
         if (d.Puzzle) d.AllowContinue = false;
         all.Add(d);
     }
 
     // ---- 常量：旧关卡实测值 ----
-    const float ScatterScale = 1.48f;   // 旧 1-5 关的膨胀倍数
     const float SchoolScale = 1.3f;     // 旧 6-10 关的膨胀倍数
 
     // =====================================================================
     // 第一章  开花
     // =====================================================================
-
-    /// <summary>旧第 1 关原样：20 颗随机散布，点一下看它开</summary>
-    static LevelDef FirstBloom()
-    {
-        var d = new LevelDef { Id = "first-bloom", NameZh = "初开", NameEn = "First Bloom", Target = 3,
-            Palette = BallPalette.HazySummer };
-        d.Scatter.Add(new ScatterDef { Count = 20 });
-        return d;
-    }
 
     /// <summary>旧第 6 关原样：一条 8 颗的蛇斜着走，带波浪</summary>
     static LevelDef OneLine()
@@ -154,15 +142,10 @@ public static class LevelCatalog
         float[] radii = { 0.85f, 1.75f, 2.65f, 3.55f, 4.45f };
         for (int ring = 0; ring < radii.Length; ring++)
             LevelDef.Ring(d.Balls, Vector2.zero, radii[ring], 12, 90f);
-        return d;
-    }
-
-    /// <summary>旧第 3 关：40 颗随机散布，目标 8，喘口气</summary>
-    static LevelDef Stars()
-    {
-        var d = new LevelDef { Id = "stars", NameZh = "繁星", NameEn = "Stars", Target = 8,
-            Palette = BallPalette.Tiffany };
-        d.Scatter.Add(new ScatterDef { Count = 40 });
+        // 整幅图一起轻轻胀缩，像水面。外三圈只沿辐条传（辐条间距 0.9，够得着 0.94），
+        // 第二圈相邻 0.906 也只剩 0.034 的余量，所以幅度压在 2.5%（辐条间距最多变 0.023）
+        d.Idle = IdleDef.Of(IdleMode.Breathe);
+        d.Idle.Amplitude = 0.025f; d.Idle.Period = 4f; d.Idle.MaxGroupRadius = 99f;
         return d;
     }
 
@@ -224,15 +207,6 @@ public static class LevelCatalog
         d.Schools.Add(s);
         d.Cages.Add(new CageDef(0.89f, 0.08f, 2.6f, 2.53f, 26.9f, true, false));
         d.Doors.Add(new DoorDef(-0.28f, -0.52f, -63.2f));
-        return d;
-    }
-
-    /// <summary>旧第 5 关：60 颗随机散布，目标 16。门那几关之间的喘息</summary>
-    static LevelDef Thicket()
-    {
-        var d = new LevelDef { Id = "thicket", NameZh = "密林", NameEn = "Thicket", Target = 16,
-            Palette = BallPalette.TealOrange };
-        d.Scatter.Add(new ScatterDef { Count = 60 });
         return d;
     }
 
@@ -362,15 +336,19 @@ public static class LevelCatalog
     // =====================================================================
 
     /// <summary>
-    /// 样关 · 硬壳：一排球，正中间一颗硬球。从一头点，火烧到硬球只能敲裂它的壳，停住。
-    /// 紧挨着硬球点：你点出的圈是第一把火，旁边被点着的球是第二把，硬球才会炸，两头全亮。
+    /// 样关 · 硬壳：一圈 20 颗球，顶上那颗是硬球，硬球外面再接一小截线（只有硬球炸了火才过得去）。
+    /// 硬球要被火打两次：第一次打掉壳，要隔一会儿再来一把火才炸。
+    /// 点在硬球旁边：近的那头立刻打掉壳，另一头的火绕一整圈回来再打一次 —— 全亮。
+    /// 点在正对面：两头的火同时到，只打掉壳；点外面那截线：火从外面打掉壳，也没有第二把。
     /// </summary>
     static LevelDef SampleShell()
     {
-        var d = new LevelDef { Id = "shell", NameZh = "硬壳", NameEn = "Hard Shell", Target = 17,
-            Palette = BallPalette.Emerald, Sample = true, Puzzle = true };
-        LevelDef.Line(d.Balls, new Vector2(-6f, 0f), new Vector2(6f, 0f), 17);
-        var mid = d.Balls[8]; mid.Kind = BallKind.Hard; d.Balls[8] = mid;
+        var d = new LevelDef { Id = "shell", NameZh = "硬壳", NameEn = "Hard Shell", Target = 0,
+            Palette = BallPalette.Emerald, Sample = true, Puzzle = true, ExpandSpeed = 2.5f };
+        const float r = 2.7f;
+        LevelDef.Ring(d.Balls, new Vector2(0f, -0.6f), r, 20, 90f);
+        var top = d.Balls[0]; top.Kind = BallKind.Hard; d.Balls[0] = top;
+        LevelDef.Line(d.Balls, new Vector2(0f, -0.6f + r + 0.85f), new Vector2(0f, -0.6f + r + 2.55f), 3);
         return d;
     }
 
@@ -539,7 +517,6 @@ public static class LevelCatalog
         var a = SchoolDef.Line(new Vector2(-9.6f, 1.5f), new Vector2(9.6f, 1.5f), 10);
         var b = SchoolDef.Line(new Vector2(-15.6f, -1.5f), new Vector2(9.6f, -1.5f), 10);
         foreach (var s in new[] { a, b }) { s.HoldWhenBlocked = true; s.Wave = false; d.Schools.Add(s); }
-        b.LightTone = true;
         d.Doors.Add(new DoorDef(1.0f, 1.5f, 90f));
         d.Doors.Add(new DoorDef(1.0f, -1.5f, 90f));
         LevelDef.Ring(d.Balls, new Vector2(5.0f, 1.5f), 0.7f, 6, 90f);
@@ -567,7 +544,6 @@ public static class LevelCatalog
         var outer = SchoolDef.Orbit(Vector2.zero, rOut, 8, true, phaseOut);
         inner.Speed = speed; outer.Speed = speedOut;
         inner.ShowPath = true; outer.ShowPath = true;
-        outer.LightTone = true;
         d.Schools.Add(inner); d.Schools.Add(outer);
         LevelDef.Cluster(d.Balls, new Vector2(0f, (rIn + rOut) / 2f), 0.4f, 5);
         return d;
@@ -624,21 +600,6 @@ public static class LevelCatalog
         var s = SchoolDef.Line(new Vector2(0f, -9.6f), new Vector2(0f, 9.6f), 14);
         s.Wave = false; s.Speed = 1.9f;
         d.Schools.Add(s);
-        return d;
-    }
-
-    /// <summary>
-    /// 折返：一队球在两团之间来回走。路到头，队头掉头往回走，后面的球还在往前 —— 整队叠在一起，
-    /// 这一刻最密。队头折返时点端点那团，叠起来的整队都亮。两头都行。
-    /// </summary>
-    static LevelDef Turnaround()
-    {
-        var d = SchoolLevel("turnaround", "折返", "Turnaround", 18, BallPalette.Sakura);
-        d.Pool = LevelPool.Candidate;
-        var s = SchoolDef.Line(new Vector2(-4f, 0f), new Vector2(4f, 0f), 12);
-        d.Schools.Add(s);
-        LevelDef.Ring(d.Balls, new Vector2(4.9f, 0f), 0.6f, 6, 90f);
-        LevelDef.Ring(d.Balls, new Vector2(-4.9f, 0f), 0.6f, 6, 90f);
         return d;
     }
 
@@ -771,7 +732,6 @@ public static class LevelCatalog
         var a = SchoolDef.Line(new Vector2(-9.6f, 1.2f), new Vector2(9.6f, 1.2f), 10);
         var b = SchoolDef.Line(new Vector2(9.6f, -1.2f), new Vector2(-9.6f, -1.2f), 10);
         foreach (var s in new[] { a, b }) { s.HoldWhenBlocked = true; s.Wave = false; d.Schools.Add(s); }
-        b.LightTone = true;
         // 两扇门都在圈的右边：上队（向右）停下时队身横过圈；下队（向左）在圈右边等，一放就进圈
         d.Doors.Add(new DoorDef(2.0f, 1.2f, 90f, startsOpen: true, link: 1));
         d.Doors.Add(new DoorDef(2.0f, -1.2f, 90f, startsOpen: false, link: 1));
@@ -859,52 +819,6 @@ public static class LevelCatalog
             acc += Vector2.Distance(prev, p);
             prev = p;
             if (acc >= spacing) { into.Add(new BallDef(p.x, p.y)); acc = 0f; }
-        }
-    }
-
-    // =====================================================================
-    // 备选：续命
-    // =====================================================================
-
-    /// <summary>
-    /// 再来一下：两团离得远，一下只能点着一团，目标却要两团。失败面板上按「再打一下」补第二下。
-    /// 这关只为了把续命的流程摆到台面上看，不建议进正式序列（它等于逼玩家花钱）。
-    /// </summary>
-    static LevelDef Encore()
-    {
-        var d = new LevelDef { Id = "encore", NameZh = "再来一下", NameEn = "Encore", Target = 18,
-            Palette = BallPalette.HazySummer, Pool = LevelPool.Candidate };
-        // 半径 0.85：散布型关卡够得着的距离是 0.94，第一版写 1.0 结果外圈点不着
-        LevelDef.Cluster(d.Balls, new Vector2(-4.5f, 0f), 0.85f, 8);
-        LevelDef.Cluster(d.Balls, new Vector2(4.5f, 0f), 0.85f, 8);
-        return d;
-    }
-
-    // =====================================================================
-    // 实验：第 7 关 × idle 动法
-    // =====================================================================
-
-    static LevelDef GateIdle(IdleMode mode)
-    {
-        var d = Gate();
-        d.Id = "gate-idle-" + mode.ToString().ToLower();
-        d.NameZh = "闸 · " + IdleNameZh(mode);
-        d.NameEn = "Gate · " + mode;
-        d.Pool = LevelPool.Experiment;
-        d.Idle = IdleDef.Of(mode);
-        return d;
-    }
-
-    static string IdleNameZh(IdleMode mode)
-    {
-        switch (mode)
-        {
-            case IdleMode.Bob: return "上下浮";
-            case IdleMode.Sway: return "左右摆";
-            case IdleMode.Spin: return "慢转";
-            case IdleMode.Breathe: return "呼吸";
-            case IdleMode.Drift: return "各自漂";
-            default: return "静止";
         }
     }
 

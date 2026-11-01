@@ -119,7 +119,7 @@ public class LevelBuilder
         {
             var go = new GameObject("Idle");
             go.transform.SetParent(Root.transform, false);
-            go.AddComponent<IdleGroup>().Configure(def.Idle, idleBalls);
+            go.AddComponent<IdleGroup>().Configure(def.Idle, idleBalls, (def.ReactionMaxScale + def.BallSize) * 0.5f);
         }
 
         foreach (var sc in def.Scatter)
