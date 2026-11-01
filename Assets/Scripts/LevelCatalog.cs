@@ -511,7 +511,7 @@ public static class LevelCatalog
         s.HoldWhenBlocked = true; s.Wave = false;
         d.Schools.Add(s);
         d.Doors.Add(new DoorDef(0f, 2.5f, 0f, startsOpen: true));
-        LevelDef.Cluster(d.Balls, new Vector2(1.4f, 0f), 0.6f, 6);
+        LevelDef.Cluster(d.Balls, new Vector2(1.3f, 0f), 0.6f, 6);     // 最左那颗离停住的队伍 0.74
         return d;
     }
 
@@ -787,13 +787,15 @@ public static class LevelCatalog
     /// </summary>
     static LevelDef Jar()
     {
-        var d = SchoolLevel("jar", "瓮中", "In the Jar", 10, BallPalette.HazySummer);
+        // 目标 9：四颗逃跑球里总有一颗停在火够不着的角落，抓住三颗就算
+        var d = SchoolLevel("jar", "瓮中", "In the Jar", 9, BallPalette.HazySummer);
         d.Pool = LevelPool.Candidate;
         var s = SchoolDef.Line(new Vector2(-9.6f, 0f), new Vector2(9.6f, 0f), 10);
         s.Escape = 4;
         d.Schools.Add(s);
-        d.Cages.Add(new CageDef(3.2f, 0f, 3.2f, 2.8f, 0f, true, false));
-        d.Doors.Add(new DoorDef(1.6f, 0f, 90f, startsOpen: true));
+        // 笼子要窄：逃跑球撞上关着的门停在门口，必须还在笼子中间那团火够得着的范围里
+        d.Cages.Add(new CageDef(3.2f, 0f, 2.2f, 2.4f, 0f, true, false));
+        d.Doors.Add(new DoorDef(2.1f, 0f, 90f, startsOpen: true));
         return d;
     }
 
