@@ -7,7 +7,7 @@ itch.io 上有旧版可玩：luna25-7430528.itch.io/bloom
 ## 先读什么
 
 1. `Docs/交接.md`：现在在哪一步、下一步做什么。**每次开工先读它，收工前更新它。**
-2. `Docs/任务说明-关卡扩展.md`：当前这轮任务的全部要求和验收标准
+2. `Docs/任务说明-第二阶段.md`：当前这一阶段的任务（白模 + 大量备选关）；体验目标、工作规矩和交付格式沿用 `Docs/任务说明-关卡扩展.md`
 3. `Docs/决策记录.md`：已经定下来的设计决定和理由，别推翻，要改先问用户
 
 更早的设计文档和踩坑记录在工程外的备份文件夹里，**只读，不要改**：
@@ -41,7 +41,7 @@ AI 负责实现、自己验证、管 Git。纯技术选择自己定，**不要�
 - 正式关卡永远白底；配色只从 `BallPalette.cs` 取。
 - 编译验证：Unity 编辑器**关着**的时候可以用命令行
   `/Applications/Unity/Hub/Editor/6000.3.19f1/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectPath <工程> -logFile -`。
-  编辑器开着时工程被锁（`Temp/UnityLockfile`），这时请用户关掉 Unity，或请用户看控制台。
+  编辑器开着时工程被锁（`Temp/UnityLockfile`），这时用 Unity MCP（`Unity_RunCommand` 刷新编译、打包，`Unity_Camera_Capture` 截图，`Unity_GetConsoleLogs` 看控制台）；MCP 也连不上再请用户关掉 Unity。
 
 ## 对外措辞
 
