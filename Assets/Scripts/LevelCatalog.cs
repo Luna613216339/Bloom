@@ -85,12 +85,12 @@ public static class LevelCatalog
         // ---- 备选池：门与笼子 ----
         const string dr = "备选 · 门与笼子";
         Add(ShiftChange(), dr, "两队球各有一扇联动门：切一下，走的停、停的走，让两队都进中间"); // 36
-        Add(Jar(), dr, "整条蛇钻进笼子折返，趁逃跑球还在里面关门");                           // 37
+        Add(Jar(), dr, "整条蛇涌进右边封死的笼子，四颗逃跑球也进来了再关门");                 // 37
         // ---- 备选池：奇观（静止）----
         const string spc = "备选 · 奇观";
         Add(Spiral(), spc, "一条螺旋线，点中心火转着圈往外烧");                               // 38
         Add(Rose(), spc, "三片花瓣在中心相连，点中心三片一起开");                             // 39
-        Add(Meander(), spc, "五行球首尾相接成一条长路，火要爬十几秒才到头");                 // 40
+        Add(Meander(), spc, "五行球首尾相接成一条长路，火要爬二十秒才到头");                 // 40
         // ---- 备选池：续命 ----
         Add(Encore(), "备选 · 续命", "两团离得远，一下点不完；没过关时按「再打一下」补第二下"); // 41
         // ---- 实验：静止球群的 idle，第 7 关 × 5 种动法，挨个点开比 ----
@@ -411,7 +411,8 @@ public static class LevelCatalog
     /// 引导 · 弹回：和火种一样的左团 + 桥 + 五彩球。上面那颗火星直飞右上的小团；
     /// 下面那颗火星撞上一扇斜着的关着的门，被弹成竖直向下，落进正下方那一团。
     /// 什么都不用操作，点左团就全亮 —— 只为了让玩家亲眼看见"火星会被门弹回，而且弹回来还有用"。
-    /// 门的角度算过：火星方向 (cos -40°, sin -40°)，门的法线取 25°，反射后正好竖直向下。
+    /// 门近乎竖直（转 95°）：火星以 45° 入射、反射成朝左下 130° 飞。第一版让门斜 115° 想把火星
+    /// 折成竖直向下，结果入射角只有 25°，火星先擦到门的端头、反射方向偏了 18°，所以改成这样。
     /// </summary>
     static LevelDef GuideBounce()
     {
@@ -420,8 +421,8 @@ public static class LevelCatalog
         var split = BuildSparkFeed(d, new Vector2(-6.2f, 0.8f), new Vector2(-1.6f, 0.8f));
         LevelDef.Cluster(d.Balls, split + SparkDir(0f, 1f) * 4.6f, 0.55f, 6);        // 右上，直达
         var doorPos = split + SparkDir(0f, -1f) * 2.4f;
-        d.Doors.Add(new DoorDef(doorPos.x, doorPos.y, 115f));                        // 法线 25°
-        LevelDef.Cluster(d.Balls, new Vector2(doorPos.x, doorPos.y - 2.4f), 0.55f, 6); // 弹回后正下方
+        d.Doors.Add(new DoorDef(doorPos.x, doorPos.y, 95f));
+        LevelDef.Cluster(d.Balls, doorPos + BounceDir * 2.4f, 0.55f, 6);              // 弹回后的落点
         return d;
     }
 
@@ -454,10 +455,13 @@ public static class LevelCatalog
         var upDoor = split + up * 2.2f;
         d.Doors.Add(new DoorDef(upDoor.x, upDoor.y, -(90f - Ball.SplitHalfAngleDeg)));          // 关着，横在路上
         var downDoor = split + SparkDir(0f, -1f) * 2.4f;
-        d.Doors.Add(new DoorDef(downDoor.x, downDoor.y, 115f, startsOpen: true));                // 开着，要关
-        LevelDef.Cluster(d.Balls, new Vector2(downDoor.x, downDoor.y - 2.3f), 0.55f, 6);
+        d.Doors.Add(new DoorDef(downDoor.x, downDoor.y, 95f, startsOpen: true));                 // 开着，要关
+        LevelDef.Cluster(d.Balls, downDoor + BounceDir * 2.4f, 0.55f, 6);
         return d;
     }
+
+    /// <summary>火星撞上转 95° 的门之后的方向：入射 -40°，门的法线 5°，反射成 -130°</summary>
+    static readonly Vector2 BounceDir = new Vector2(Mathf.Cos(-130f * Mathf.Deg2Rad), Mathf.Sin(-130f * Mathf.Deg2Rad));
 
     /// <summary>左团 + 桥 + 五彩球，火种那套喂火的布局。返回五彩球的位置</summary>
     static Vector2 BuildSparkFeed(LevelDef d, Vector2 cluster, Vector2 split)
@@ -489,7 +493,7 @@ public static class LevelCatalog
         d.Walls.Add(new WallDef(1.0f, -3.1f, 0.3f, 3.8f));
         d.Doors.Add(new DoorDef(1.0f, 0f, 90f) { Size = new Vector2(2.4f, 0.37f) });
         LevelDef.Ring(d.Balls, new Vector2(-2.5f, 0f), 0.7f, 6, 90f);      // 队伍从圈中间穿过
-        LevelDef.Ring(d.Balls, new Vector2(1.95f, 0f), 0.6f, 6, 90f);      // 闸后那团，离停住的队头 0.8 以内
+        LevelDef.Ring(d.Balls, new Vector2(1.95f, 0f), 0.6f, 6, 0f);       // 闸后那团：最左那颗正对停住的队头（0.7）
         return d;
     }
 
@@ -502,7 +506,7 @@ public static class LevelCatalog
     {
         var d = SchoolLevel("halt", "拦停", "Halt", 29, BallPalette.Tiffany);
         d.Pool = LevelPool.Candidate;
-        LevelDef.Line(d.Balls, new Vector2(-8.0f, 0f), new Vector2(-1.0f, 0f), 10);
+        LevelDef.Line(d.Balls, new Vector2(-7.0f, 0f), new Vector2(-0.7f, 0f), 10);
         var s = SchoolDef.Line(new Vector2(0f, -9.6f), new Vector2(0f, 9.6f), 12);
         s.HoldWhenBlocked = true; s.Wave = false;
         d.Schools.Add(s);
@@ -533,7 +537,7 @@ public static class LevelCatalog
         var d = SchoolLevel("two-gates", "双闸", "Two Gates", 32, BallPalette.Emerald);
         d.Pool = LevelPool.Candidate;
         var a = SchoolDef.Line(new Vector2(-9.6f, 1.5f), new Vector2(9.6f, 1.5f), 10);
-        var b = SchoolDef.Line(new Vector2(-12.6f, -1.5f), new Vector2(9.6f, -1.5f), 10);
+        var b = SchoolDef.Line(new Vector2(-15.6f, -1.5f), new Vector2(9.6f, -1.5f), 10);
         foreach (var s in new[] { a, b }) { s.HoldWhenBlocked = true; s.Wave = false; d.Schools.Add(s); }
         b.LightTone = true;
         d.Doors.Add(new DoorDef(1.0f, 1.5f, 90f));
@@ -551,15 +555,17 @@ public static class LevelCatalog
     /// </summary>
     static LevelDef Binary()
     {
-        var d = SchoolLevel("binary", "双星", "Binary", 21, BallPalette.ShibuyaNight);
+        var d = SchoolLevel("binary", "双星", "Binary", 20, BallPalette.ShibuyaNight);
         d.Pool = LevelPool.Candidate;
         const float rIn = 1.9f, rOut = 3.4f, speed = 1.65f;
-        float period = 2f * Mathf.PI * rIn / speed;              // 7.2 秒
-        float omega = 360f / period;
-        float phaseIn = 90f - omega * 4f;                        // 4 秒后到顶
+        // 队头在路径上的起始路程是 (Count-1)*Spacing，相位要把这段弧也算进去：4 秒后两个队头都到顶（90°）
+        float headArc = 7 * 0.5f;
+        float speedOut = speed * rOut / rIn;
+        float phaseIn = 90f - (headArc + speed * 4f) / rIn * Mathf.Rad2Deg;
+        float phaseOut = 90f + (headArc + speedOut * 4f) / rOut * Mathf.Rad2Deg;
         var inner = SchoolDef.Orbit(Vector2.zero, rIn, 8, false, phaseIn);
-        var outer = SchoolDef.Orbit(Vector2.zero, rOut, 8, true, 180f - phaseIn);
-        inner.Speed = speed; outer.Speed = speed * rOut / rIn;
+        var outer = SchoolDef.Orbit(Vector2.zero, rOut, 8, true, phaseOut);
+        inner.Speed = speed; outer.Speed = speedOut;
         inner.ShowPath = true; outer.ShowPath = true;
         outer.LightTone = true;
         d.Schools.Add(inner); d.Schools.Add(outer);
@@ -615,7 +621,7 @@ public static class LevelCatalog
             Palette = BallPalette.ShibuyaNight, ExpandSpeed = 1.5f, Pool = LevelPool.Candidate };
         for (int r = -2; r <= 2; r++)
             LevelDef.Line(d.Balls, new Vector2(-5.4f, r * 1.2f), new Vector2(5.4f, r * 1.2f), 13);
-        var s = SchoolDef.Line(new Vector2(0f, -9.6f), new Vector2(0f, 9.6f), 12);
+        var s = SchoolDef.Line(new Vector2(0f, -9.6f), new Vector2(0f, 9.6f), 14);
         s.Wave = false; s.Speed = 1.9f;
         d.Schools.Add(s);
         return d;
@@ -774,18 +780,20 @@ public static class LevelCatalog
     }
 
     /// <summary>
-    /// 瓮中：路的尽头在笼子里。整条蛇钻进去、在里面折返，尾巴三颗逃跑球也进来的那一刻
-    /// 关门、点队头 —— 逃跑球往回逃撞上关着的门，留在笼子里。
+    /// 瓮中：路笔直穿进一个右边封死的笼子。队头撞上笼底，整条蛇一颗颗涌进来、在里面乱撞；
+    /// 尾巴四颗逃跑球也进来之后关门、点笼子里 —— 逃跑球往回逃撞上关着的门，留在笼子里。
+    /// 第一版让路在笼子里折返，结果掉头之后"往回逃"就是朝着火跑，门根本用不上，改成这样。
+    /// 和第 8 关收网同一个原理，但是正着放、逃跑球更多、笼子更窄。
     /// </summary>
     static LevelDef Jar()
     {
         var d = SchoolLevel("jar", "瓮中", "In the Jar", 10, BallPalette.HazySummer);
         d.Pool = LevelPool.Candidate;
-        var s = SchoolDef.Line(new Vector2(-9.6f, 0f), new Vector2(4.4f, 0f), 10);
-        s.Escape = 3;
+        var s = SchoolDef.Line(new Vector2(-9.6f, 0f), new Vector2(9.6f, 0f), 10);
+        s.Escape = 4;
         d.Schools.Add(s);
-        d.Cages.Add(new CageDef(3.0f, 0f, 3.6f, 2.8f, 0f, true, false));
-        d.Doors.Add(new DoorDef(1.2f, 0f, 90f, startsOpen: true));
+        d.Cages.Add(new CageDef(3.2f, 0f, 3.2f, 2.8f, 0f, true, false));
+        d.Doors.Add(new DoorDef(1.6f, 0f, 90f, startsOpen: true));
         return d;
     }
 
@@ -797,9 +805,10 @@ public static class LevelCatalog
     static LevelDef Spiral()
     {
         var d = new LevelDef { Id = "spiral", NameZh = "螺旋", NameEn = "Spiral", Target = 0,
-            Palette = BallPalette.Tiffany, ExpandSpeed = 1.5f, Pool = LevelPool.Candidate };
+            Palette = BallPalette.Tiffany, ExpandSpeed = 3f, Pool = LevelPool.Candidate };
+        // 间距 0.65、膨胀 3/秒：每跳 0.17 秒，整条线 15 秒左右烧完。0.8 + 1.5 的话要 36 秒
         Curve(d.Balls, t => { float r = 0.5f + 1.25f * t / (2f * Mathf.PI); return new Vector2(Mathf.Cos(t), Mathf.Sin(t)) * r; },
-            0f, 3.3f * 2f * Mathf.PI, 0.8f);
+            0f, 3.3f * 2f * Mathf.PI, 0.65f);
         d.Target = d.Balls.Count;
         return d;
     }
@@ -815,18 +824,19 @@ public static class LevelCatalog
         return d;
     }
 
-    /// <summary>蜿蜒：五行球，行与行够不着，只在两端交替相连，拼成一条 89 颗的长路</summary>
+    /// <summary>蜿蜒：五行球，行与行够不着，只在两端交替相连，拼成一条 99 颗的长路</summary>
     static LevelDef Meander()
     {
         var d = new LevelDef { Id = "meander", NameZh = "蜿蜒", NameEn = "Meander", Target = 0,
-            Palette = BallPalette.Emerald, ExpandSpeed = 1.5f, Pool = LevelPool.Candidate };
+            Palette = BallPalette.Emerald, ExpandSpeed = 3f, Pool = LevelPool.Candidate };
+        // 行内间距 0.7、膨胀 3/秒：每跳 0.2 秒，一百颗 20 秒烧完
         for (int r = 0; r < 5; r++)
         {
             float y = 3.2f - r * 1.6f;
-            LevelDef.Line(d.Balls, new Vector2(-6.4f, y), new Vector2(6.4f, y), 17);
+            LevelDef.Line(d.Balls, new Vector2(-6.3f, y), new Vector2(6.3f, y), 19);
             if (r < 4)
             {
-                float x = r % 2 == 0 ? 6.4f : -6.4f;
+                float x = r % 2 == 0 ? 6.3f : -6.3f;
                 d.Balls.Add(new BallDef(x, y - 0.8f));
             }
         }
@@ -862,8 +872,9 @@ public static class LevelCatalog
     {
         var d = new LevelDef { Id = "encore", NameZh = "再来一下", NameEn = "Encore", Target = 18,
             Palette = BallPalette.HazySummer, Pool = LevelPool.Candidate };
-        LevelDef.Cluster(d.Balls, new Vector2(-4.5f, 0f), 1.0f, 8);
-        LevelDef.Cluster(d.Balls, new Vector2(4.5f, 0f), 1.0f, 8);
+        // 半径 0.85：散布型关卡够得着的距离是 0.94，第一版写 1.0 结果外圈点不着
+        LevelDef.Cluster(d.Balls, new Vector2(-4.5f, 0f), 0.85f, 8);
+        LevelDef.Cluster(d.Balls, new Vector2(4.5f, 0f), 0.85f, 8);
         return d;
     }
 
