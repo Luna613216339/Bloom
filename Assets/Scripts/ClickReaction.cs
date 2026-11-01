@@ -6,6 +6,7 @@ public class ClickReaction : MonoBehaviour
     private float maxScale;
     private float timer;
     private bool shrinking;
+    private int sourceId;
 
     private const float ExpandSpeed = 5f;
     private const float ShrinkSpeed = 4f;
@@ -29,6 +30,7 @@ public class ClickReaction : MonoBehaviour
         cr.maxScale = maxScale;
         cr.timer = duration;
         cr.shrinking = false;
+        cr.sourceId = GameManager.Instance.NextSourceId();
 
         GameManager.Instance.ReactionStarted();
         return cr;
@@ -74,7 +76,7 @@ public class ClickReaction : MonoBehaviour
             float ballRadius = ball.transform.localScale.x * 0.5f;
             float dist = Vector2.Distance(transform.position, ball.transform.position);
             if (dist < myRadius + ballRadius)
-                ball.Trigger();
+                ball.Hit(sourceId, transform.position);
         }
     }
 }

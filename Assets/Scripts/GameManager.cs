@@ -1,61 +1,56 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
+    /// <summary>主菜单选关时写：要进的关号（1 起）。0 = 第 1 关</summary>
     public static int RequestedStartLevel = 0;
 
     public enum GameState { WaitingForInput, ChainReacting, LevelComplete }
     public GameState State { get; private set; }
     public List<Ball> AllBalls { get; } = new List<Ball>();
 
-    [Header("Global Settings (shared by all levels)")]
+    [Header("Global Settings（只有无尽模式用；正式关卡的参数在 LevelCatalog 里）")]
     [SerializeField] private float ballSpeed = 1.8f;
     [SerializeField] private float ballSize = 0.4f;
-    [SerializeField] private float reactionMaxScale = 1.3f;
+    [SerializeField] private float reactionMaxScale = 1.48f;
     [SerializeField] private float reactionDuration = 1.5f;
 
-    [Serializable]
-    public class LevelConfig
-    {
-        public string levelName = "Level 1";
-        public int ballCount = 20;
-        public int targetCount = 5;
-    }
-
-    [Header("Per-Level Settings")]
-    [SerializeField] private LevelConfig[] levels = new LevelConfig[]
-    {
-        new LevelConfig { levelName = "Level 1", ballCount = 20, targetCount = 5 },
-        new LevelConfig { levelName = "Level 2", ballCount = 25, targetCount = 10 },
-        new LevelConfig { levelName = "Level 3", ballCount = 30, targetCount = 15 },
-        new LevelConfig { levelName = "Level 4", ballCount = 35, targetCount = 22 },
-        new LevelConfig { levelName = "Level 5", ballCount = 40, targetCount = 30 },
-    };
-
-    [Header("Level Flow")]
-    [SerializeField] private string nextScene = "";
-    [SerializeField] private int globalLevelStart = 1;
-
-    [Header("Endless Mode（勾上之后，上面的 Levels 数组不生效）")]
+    [Header("Endless Mode（勾上就是无尽模式，不勾就是正式关卡）")]
     [Tooltip("参数逐轮由下面的公式生成，失败即结束整轮挑战")]
     [SerializeField] private bool endlessMode = false;
     [SerializeField] private EndlessConfig endless = new EndlessConfig();
 
-    private int currentLevel;
+    // ---- 续命（占位价，正式定价以后再说）----
+    /// <summary>正式关卡再点一下的价钱。比无尽模式贵：正式关卡能无限重玩，续命是在买"省事"</summary>
+    public const int StoryContinuePrice = 60;
+    public const int EndlessContinuePrice = 30;
+    /// <summary>一次尝试里最多续几次</summary>
+    public const int MaxContinues = 1;
+
+    private LevelDef level;
+    private int currentLevel = 1;
     private int triggeredCount;
     private int goldThisRound;
     private int activeReactions;
+    private int continuesUsed;
+    private int bankedThisRun;
+    private int sourceCounter;
+    private bool lastPassed;
     private Camera cam;
+    private LevelBuilder built;
     private const float GameAspect = 16f / 9f;
     private readonly List<GameObject> screenBounds = new List<GameObject>();
 
-    private readonly LevelConfig endlessConfig = new LevelConfig();
+    // 无尽模式每轮的参数
+    private int endlessBallCount;
+    private int endlessTarget;
 
     public bool IsEndless => endlessMode;
+    public LevelDef Level => level;
 
     /// <summary>无尽模式当前轮次，从 1 起</summary>
     public int Round { get; private set; } = 1;
@@ -63,14 +58,12 @@ public class GameManager : MonoBehaviour
     /// <summary>本轮挑战累计的金币，失败结算时才真正入账</summary>
     public int CoinsThisRun { get; private set; }
 
-    private LevelConfig Config => endlessMode
-        ? endlessConfig
-        : levels[Mathf.Clamp(currentLevel, 0, levels.Length - 1)];
+    public int CurrentBallCount => endlessMode ? endlessBallCount : level.TotalBalls;
+    public int TargetCount => endlessMode ? endlessTarget : level.Target;
+    public int TriggeredCount => triggeredCount;
 
-    public int CurrentBallCount => Config.ballCount;
-
-    /// <summary>全局关卡号（1-10），Level1-5 场景里随 currentLevel 递增</summary>
-    public int GlobalLevel => globalLevelStart + currentLevel;
+    /// <summary>全局关卡号（1 起）</summary>
+    public int GlobalLevel => currentLevel;
 
     /// <summary>
     /// 球的配色。正式关卡锁死作者配色，无尽模式才用商店买的主题。
@@ -78,7 +71,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public Color[] Palette => endlessMode
         ? BallPalette.ForTheme(ProgressManager.EquippedTheme)
-        : BallPalette.ForLevel(GlobalLevel);
+        : level.Palette;
 
     /// <summary>
     /// 背景色。正式关卡永远白底（关卡配色是照白底调的），只有无尽模式跟着主题走。
@@ -113,7 +106,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        currentLevel = RequestedStartLevel;
+        currentLevel = Mathf.Clamp(RequestedStartLevel, 1, Mathf.Max(1, LevelCatalog.Count));
         RequestedStartLevel = 0;
         StartLevel();
     }
@@ -124,32 +117,40 @@ public class GameManager : MonoBehaviour
         triggeredCount = 0;
         goldThisRound = 0;
         activeReactions = 0;
+        continuesUsed = 0;
+        lastPassed = false;
         State = GameState.WaitingForInput;
 
+        string title;
         if (endlessMode)
         {
-            endlessConfig.levelName = Loc.F("game.round", Round);
-            endlessConfig.ballCount = endless.BallCount(Round);
-            endlessConfig.targetCount = endless.TargetCount(Round);
+            endlessBallCount = endless.BallCount(Round);
+            endlessTarget = endless.TargetCount(Round);
+            title = Loc.F("game.round", Round);
 
             // 第 1 轮 = 新的一局。首次进场和 Retry 都走这里，只用挂一个钩子
             if (Round == 1) RunLogger.BeginRun();
         }
+        else
+        {
+            level = LevelCatalog.Get(currentLevel);
+            title = Loc.F("game.level", currentLevel);
+        }
 
-        // 正式关卡的名字由关号算出来，不用 Inspector 里的 levelName —— 那个没法翻译。
-        // levels[] 的 levelName 现在只是编辑器里的标签，方便你在数组里认出是哪一关
-        string title = endlessMode ? Config.levelName : Loc.F("game.level", GlobalLevel);
-        GameUI.Instance.ShowGameplay(title, Config.targetCount, Config.ballCount);
+        GameUI.Instance.ShowGameplay(title, TargetCount, CurrentBallCount);
         CreateScreenBounds();
 
-        var schools = FindObjectsByType<SchoolSpawner>(FindObjectsSortMode.None);
-        if (schools.Length > 0)
+        if (endlessMode)
         {
-            foreach (var school in schools)
-                school.Init();
+            SpawnEndlessBalls();
         }
         else
-            SpawnBalls();
+        {
+            built = LevelBuilder.Build(level);
+            foreach (var school in built.Schools)
+                school.Init();
+            built.SpawnBalls();
+        }
     }
 
     void ClearBalls()
@@ -170,8 +171,11 @@ public class GameManager : MonoBehaviour
         foreach (var cr in FindObjectsByType<ClickReaction>(FindObjectsSortMode.None))
             Destroy(cr.gameObject);
 
-        foreach (var door in FindObjectsByType<Door>(FindObjectsSortMode.None))
-            door.ResetState();
+        if (built != null)
+        {
+            built.Destroy();
+            built = null;
+        }
     }
 
     void CreateScreenBounds()
@@ -198,16 +202,16 @@ public class GameManager : MonoBehaviour
         screenBounds.Add(go);
     }
 
-    void SpawnBalls()
+    void SpawnEndlessBalls()
     {
         float h = 2f * cam.orthographicSize;
         float w = h * GameAspect;
         float margin = 0.5f;
 
         // 金球是这批球里随机的几颗，不是额外加的 —— 否则场上总数变了，平衡数值全乱
-        var goldIndices = PickGoldIndices(Config.ballCount);
+        var goldIndices = PickGoldIndices(endlessBallCount);
 
-        for (int i = 0; i < Config.ballCount; i++)
+        for (int i = 0; i < endlessBallCount; i++)
         {
             float x = UnityEngine.Random.Range(-w / 2f + margin, w / 2f - margin);
             float y = UnityEngine.Random.Range(-h / 2f + margin, h / 2f - margin);
@@ -239,16 +243,24 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (AutoTest.Active) return;
         if (!Input.GetMouseButtonDown(0)) return;
 
         Vector3 worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
-        worldPos.z = 0f;
+        HandlePointer(worldPos);
+    }
 
+    /// <summary>
+    /// 玩家在世界坐标 p 处点了一下。先看是不是点在门上（任何时候都能开关门），
+    /// 不是门而且还没点过，就是这一关唯一的那一下。自动测试也走这里。
+    /// </summary>
+    public void HandlePointer(Vector2 p)
+    {
         if (State == GameState.WaitingForInput || State == GameState.ChainReacting)
         {
             foreach (var door in FindObjectsByType<Door>(FindObjectsSortMode.None))
             {
-                if (door.ContainsPoint(worldPos))
+                if (door.ContainsPoint(p))
                 {
                     door.Toggle();
                     return;
@@ -258,16 +270,31 @@ public class GameManager : MonoBehaviour
 
         if (State == GameState.WaitingForInput)
         {
-            ClickReaction.Create(worldPos, reactionMaxScale, reactionDuration);
+            ClickReaction.Create(p, ActiveMaxScale, ActiveDuration);
             State = GameState.ChainReacting;
         }
     }
+
+    /// <summary>按建关顺序找第几扇门开关一下。自动测试用</summary>
+    public bool ToggleDoor(int index)
+    {
+        if (built == null || index < 0 || index >= built.Doors.Count) return false;
+        built.Doors[index].Toggle();
+        return true;
+    }
+
+    float ActiveMaxScale => endlessMode ? reactionMaxScale : level.ReactionMaxScale;
+    float ActiveDuration => endlessMode ? reactionDuration : level.ReactionDuration;
+
+    /// <summary>每一把"火"（点击圈、被点着的球、火星）拿一个编号，硬球靠它分辨两把火</summary>
+    public int NextSourceId() => ++sourceCounter;
 
     public void RegisterBall(Ball ball) => AllBalls.Add(ball);
     public void UnregisterBall(Ball ball) => AllBalls.Remove(ball);
 
     public void OnBallTriggered(Ball ball)
     {
+        if (ball != null && !ball.CountsForTarget) return;
         triggeredCount++;
 
         bool isGold = ball != null && ball.IsGoldBall;
@@ -296,46 +323,98 @@ public class GameManager : MonoBehaviour
         if (activeReactions <= 0 && State == GameState.ChainReacting)
         {
             State = GameState.LevelComplete;
-            bool passed = triggeredCount >= Config.targetCount;
+            lastPassed = triggeredCount >= TargetCount;
 
             if (endlessMode)
             {
-                EndRound(passed);
+                EndRound(lastPassed);
                 return;
             }
 
-            bool hasNext = currentLevel < levels.Length - 1 || !string.IsNullOrEmpty(nextScene);
+            bool hasNext = currentLevel < LevelCatalog.Count;
 
-            if (passed)
-                ProgressManager.CompleteLevel(globalLevelStart + currentLevel);
+            if (lastPassed && !AutoTest.Active)
+                ProgressManager.CompleteLevel(currentLevel);
 
-            GameUI.Instance.ShowResult(passed, triggeredCount, Config.targetCount, hasNext);
+            GameUI.Instance.ShowResult(lastPassed, triggeredCount, TargetCount, hasNext);
         }
     }
 
-    /// <summary>无尽模式一轮结束。过了就无缝进下一轮，没过整轮挑战就到此为止</summary>
+    /// <summary>无尽模式一轮结束。过了就无缝进下一轮，没过整轮挑战就到此为止（除非续命）</summary>
     void EndRound(bool passed)
     {
         if (passed)
         {
-            CoinsThisRun += endless.OverkillReward(triggeredCount, Config.targetCount);
+            CoinsThisRun += endless.OverkillReward(triggeredCount, TargetCount);
             CoinsThisRun += endless.MilestoneBonus(Round);
             ProgressManager.ReportClearedRound(Round);
             LogRound(true);
-            GameUI.Instance.ShowResult(true, triggeredCount, Config.targetCount, true);
+            GameUI.Instance.ShowResult(true, triggeredCount, TargetCount, true);
         }
         else
         {
             LogRound(false);
-            ProgressManager.AddCoins(CoinsThisRun);
+            BankRun();
             GameUI.Instance.ShowRunOver(Round - 1, CoinsThisRun);
         }
     }
 
+    /// <summary>
+    /// 把这一局还没入账的金币存进钱包。失败时调；续命之后再失败只会把新增的那部分入账，
+    /// 所以可以放心调多次。
+    /// </summary>
+    void BankRun()
+    {
+        int delta = CoinsThisRun - bankedThisRun;
+        if (delta > 0) ProgressManager.AddCoins(delta);
+        bankedThisRun = CoinsThisRun;
+    }
+
     void LogRound(bool passed)
     {
-        RunLogger.RecordRound(Round, Config.ballCount, Config.targetCount,
+        RunLogger.RecordRound(Round, CurrentBallCount, TargetCount,
                               triggeredCount, goldThisRound, passed, CoinsThisRun);
+    }
+
+    // ---- 续命 ----
+
+    public int ContinuePrice => endlessMode ? EndlessContinuePrice : StoryContinuePrice;
+
+    /// <summary>现在能不能花钱再点一下：没过关、没用完次数、这关允许、场上还有球、钱够</summary>
+    public bool CanContinue
+    {
+        get
+        {
+            if (State != GameState.LevelComplete || lastPassed) return false;
+            if (continuesUsed >= MaxContinues) return false;
+            if (!endlessMode && !level.AllowContinue) return false;
+            if (!HasLiveBalls()) return false;
+            return ProgressManager.Coins >= ContinuePrice;
+        }
+    }
+
+    bool HasLiveBalls()
+    {
+        foreach (var b in AllBalls)
+        {
+            if (b == null || !b.CountsForTarget) continue;
+            if (b.CurrentState == Ball.BallState.Moving || b.CurrentState == Ball.BallState.Fleeing)
+                return true;
+        }
+        return false;
+    }
+
+    /// <summary>花钱买一次额外点击。场上剩下的球原地接着跑，已经打中的数不清零</summary>
+    public bool TryContinue()
+    {
+        if (!CanContinue) return false;
+        if (!ProgressManager.TrySpendCoins(ContinuePrice)) return false;
+        continuesUsed++;
+        lastPassed = false;
+        State = GameState.WaitingForInput;
+        GameUI.Instance.HideResult();
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayPurchase();
+        return true;
     }
 
     public void NextLevel()
@@ -347,14 +426,10 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (currentLevel < levels.Length - 1)
+        if (currentLevel < LevelCatalog.Count)
         {
             currentLevel++;
             StartLevel();
-        }
-        else if (!string.IsNullOrEmpty(nextScene))
-        {
-            SceneManager.LoadScene(nextScene);
         }
     }
 
@@ -365,6 +440,7 @@ public class GameManager : MonoBehaviour
         {
             Round = 1;
             CoinsThisRun = 0;
+            bankedThisRun = 0;
         }
         StartLevel();
     }

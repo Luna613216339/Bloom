@@ -34,6 +34,12 @@ public class SchoolSpawner : MonoBehaviour
     [SerializeField] private float reactionDuration = 1.5f;
     [SerializeField] private float expandSpeed = 1.5f;
 
+    [Header("Blocking")]
+    [Tooltip("队头撞到关着的门时整队停下等。不勾就是旧行为：撞到的球各自散开")]
+    [SerializeField] private bool holdWhenBlocked = false;
+    [Tooltip("额外的起始路程，用来错开两队球的相位")]
+    [SerializeField] private float startOffset = 0f;
+
     [Header("Path Visualization")]
     [SerializeField] private bool showPathLine = false;
     [SerializeField] private Color pathLineColor = new Color(0.3f, 0.6f, 1f, 0.3f);
@@ -48,6 +54,53 @@ public class SchoolSpawner : MonoBehaviour
     private ContactFilter2D wallFilter;
     private RaycastHit2D[] rayResults = new RaycastHit2D[4];
     private bool[] stalled;
+    private Color[] paletteOverride;
+    private BallKind[] kinds;
+
+    /// <summary>
+    /// 由 LevelBuilder 调用，用关卡数据覆盖 Inspector 的值，并把折线路径点建成子物体。
+    /// 必须在 Init 之前调。
+    /// </summary>
+    public void Configure(SchoolDef d)
+    {
+        ballSpacing = d.Spacing;
+        waveAmplitude = d.WaveAmplitude;
+        waveSpeed = d.WaveSpeed;
+        enableWave = d.Wave;
+        ballSize = d.BallSize;
+        escapeBallCount = d.Escape;
+        dangerRadius = d.DangerRadius;
+        fleeSpeed = d.FleeSpeed;
+        moveSpeed = d.Speed;
+        loopPath = d.Loop;
+        useCirclePath = d.Circle;
+        circleRadius = d.Radius;
+        clockwise = d.Clockwise;
+        overrideBallCount = d.Count;
+        reactionMaxScale = d.MaxScale;
+        reactionDuration = d.Duration;
+        expandSpeed = d.ExpandSpeed;
+        showPathLine = d.ShowPath;
+        holdWhenBlocked = d.HoldWhenBlocked;
+        startOffset = d.StartOffset;
+        paletteOverride = d.Palette;
+        kinds = d.Kinds;
+
+        if (d.Circle)
+        {
+            transform.position = d.Center;
+            transform.rotation = Quaternion.Euler(0f, 0f, d.PhaseDeg);
+        }
+        else if (d.Waypoints != null)
+        {
+            for (int i = 0; i < d.Waypoints.Length; i++)
+            {
+                var wp = new GameObject("Waypoint_" + (i + 1));
+                wp.transform.SetParent(transform, false);
+                wp.transform.position = d.Waypoints[i];
+            }
+        }
+    }
 
     void Start()
     {
@@ -106,7 +159,7 @@ public class SchoolSpawner : MonoBehaviour
 
         if (!useCirclePath && (waypoints == null || waypoints.Length < 2)) return;
 
-        headDistance = (ballCount - 1) * ballSpacing;
+        headDistance = (ballCount - 1) * ballSpacing + startOffset;
         SpawnSchool();
 
         stalled = new bool[ballCount];
@@ -116,11 +169,34 @@ public class SchoolSpawner : MonoBehaviour
     {
         if (!useCirclePath && (waypoints == null || waypoints.Length < 2)) return;
 
-        headDistance += moveSpeed * Time.fixedDeltaTime;
-        if ((loopPath || useCirclePath) && headDistance > totalPathLength)
-            headDistance -= totalPathLength;
+        float step = moveSpeed * Time.fixedDeltaTime;
+        if (!holdWhenBlocked || !HeadBlocked(step))
+        {
+            headDistance += step;
+            if ((loopPath || useCirclePath) && headDistance > totalPathLength)
+                headDistance -= totalPathLength;
+        }
 
         UpdateBallPositions();
+    }
+
+    /// <summary>
+    /// 队头前方这一步会不会撞上墙或关着的门。撞上就整队原地等，队形不散。
+    /// 只看队头：后面的球走的是同一条路，队头过得去它们就过得去。
+    /// </summary>
+    bool HeadBlocked(float step)
+    {
+        if (spawnedBalls.Count == 0 || spawnedBalls[0] == null) return false;
+        if (spawnedBalls[0].CurrentState != Ball.BallState.Moving) return false;
+
+        Vector2 pos = GetPositionAtDistance(headDistance);
+        Vector2 next = GetPositionAtDistance(headDistance + step);
+        Vector2 dir = next - pos;
+        float len = dir.magnitude;
+        if (len < 0.0001f) return false;
+
+        int hitCount = Physics2D.Raycast(pos, dir / len, wallFilter, rayResults, len + ballSize * 0.5f);
+        return hitCount > 0;
     }
 
     void CollectWaypoints()
@@ -202,7 +278,7 @@ public class SchoolSpawner : MonoBehaviour
     void SpawnSchool()
     {
         int normalCount = ballCount - escapeBallCount;
-        Color[] palette = GameManager.Instance.Palette;
+        Color[] palette = paletteOverride ?? GameManager.Instance.Palette;
 
         for (int i = 0; i < ballCount; i++)
         {
@@ -229,6 +305,11 @@ public class SchoolSpawner : MonoBehaviour
                 ball.SetAsEscapeBall(dangerRadius, fleeSpeed, escapeBallColor);
                 Vector2 pathDir = GetDirectionAtDistance(dist);
                 ball.SetPreferredFleeDirection(-pathDir);
+            }
+            else if (kinds != null && i < kinds.Length)
+            {
+                if (kinds[i] == BallKind.Split) ball.SetAsSplitBall();
+                else if (kinds[i] == BallKind.Hard) ball.SetAsHardBall();
             }
 
             spawnedBalls.Add(ball);

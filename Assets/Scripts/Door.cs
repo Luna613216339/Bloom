@@ -10,6 +10,10 @@ public class Door : MonoBehaviour
     [SerializeField] private float animDuration = 0.15f;
 
     private bool isOpen;
+    private int link;
+    public int Link => link;
+    public int Index { get; private set; }
+    public bool IsOpen => isOpen;
     private SpriteRenderer sr;
     private BoxCollider2D col;
     private Vector3 baseScale;
@@ -50,13 +54,33 @@ public class Door : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Static;
     }
 
+    /// <summary>
+    /// 由 LevelBuilder 在物体还没激活（Awake 还没跑）时调用。
+    /// link 不为 0 的门是联动门：点一扇，同组的每一扇都翻转一次。
+    /// </summary>
+    public void Configure(bool startsOpen, Color color, int link, int index)
+    {
+        this.startsOpen = startsOpen;
+        this.closedColor = color;
+        this.link = link;
+        Index = index;
+    }
+
     public bool ContainsPoint(Vector2 point)
     {
         return col.OverlapPoint(point);
     }
 
-    public void Toggle()
+    public void Toggle() => Toggle(true);
+
+    public void Toggle(bool propagate)
     {
+        if (propagate && link != 0)
+        {
+            foreach (var other in FindObjectsByType<Door>(FindObjectsSortMode.None))
+                if (other != this && other.link == link) other.Toggle(false);
+        }
+
         isOpen = !isOpen;
         col.isTrigger = isOpen;
 

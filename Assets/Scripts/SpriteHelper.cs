@@ -9,6 +9,37 @@ public static class SpriteHelper
     private static Sprite _coin;
     private static Sprite _dollar;
     private static Texture2D _banknote;
+    private static Sprite _rainbow;
+    private static Sprite _shell;
+
+    /// <summary>
+    /// 分裂球 / 火星：六个色相扇区拼成的五彩球。颜色烤在贴图里，不跟关卡配色走 ——
+    /// 它的任务是在任何配色里都一眼认出"这颗不一样"，和逃跑球的条纹是同一个道理。
+    /// 饱和度压到 0.8、明度 0.92，否则黄色那一瓣在白底上会飘。
+    /// </summary>
+    public static Sprite Rainbow
+    {
+        get
+        {
+            if (_rainbow == null)
+                _rainbow = CreateRainbowSprite(256);
+            return _rainbow;
+        }
+    }
+
+    /// <summary>
+    /// 硬球：实心核 + 一圈透明缝 + 实心外壳。缝里透出背景色，看起来就是"外面套了一层"。
+    /// 整张图是白的，颜色由 SpriteRenderer 染，所以仍然跟关卡配色。壳被敲裂后换回普通圆。
+    /// </summary>
+    public static Sprite Shell
+    {
+        get
+        {
+            if (_shell == null)
+                _shell = CreateShellSprite(256);
+            return _shell;
+        }
+    }
 
     public static Sprite Circle
     {
@@ -240,6 +271,63 @@ public static class SpriteHelper
                 bool onStripe = (x + y) % (stripeWidth * 2) < stripeWidth;
                 float brightness = onStripe ? 1f : 0.35f;
                 tex.SetPixel(x, y, new Color(brightness, brightness, brightness, alpha));
+            }
+        }
+
+        tex.Apply();
+        tex.filterMode = FilterMode.Trilinear;
+        return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
+    }
+
+    static Sprite CreateRainbowSprite(int resolution)
+    {
+        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);
+        float center = resolution / 2f;
+        float radius = center - 1f;
+        const int sectors = 6;
+
+        for (int y = 0; y < resolution; y++)
+        {
+            for (int x = 0; x < resolution; x++)
+            {
+                float dx = x - center;
+                float dy = y - center;
+                float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                float alpha = Mathf.Clamp01(radius - dist);
+                if (alpha <= 0f)
+                {
+                    tex.SetPixel(x, y, Color.clear);
+                    continue;
+                }
+                float ang = Mathf.Atan2(dy, dx);
+                if (ang < 0f) ang += Mathf.PI * 2f;
+                int sector = Mathf.FloorToInt(ang / (Mathf.PI * 2f) * sectors) % sectors;
+                Color c = Color.HSVToRGB(sector / (float)sectors, 0.8f, 0.92f);
+                tex.SetPixel(x, y, new Color(c.r, c.g, c.b, alpha));
+            }
+        }
+
+        tex.Apply();
+        tex.filterMode = FilterMode.Trilinear;
+        return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
+    }
+
+    static Sprite CreateShellSprite(int resolution)
+    {
+        var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);
+        float center = resolution / 2f;
+        float radius = center - 1f;
+        float gapOuter = radius * 0.78f;
+        float gapInner = radius * 0.62f;
+
+        for (int y = 0; y < resolution; y++)
+        {
+            for (int x = 0; x < resolution; x++)
+            {
+                float dist = Vector2.Distance(new Vector2(x, y), new Vector2(center, center));
+                float alpha = Mathf.Clamp01(radius - dist);
+                if (dist < gapOuter && dist > gapInner) alpha *= 0.12f;
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
             }
         }
 

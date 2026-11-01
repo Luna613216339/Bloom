@@ -200,6 +200,8 @@ public static class Loc
         { "game.replay",     new[]{ "Replay",          "重玩" } },
         { "game.menu",       new[]{ "Menu",            "主菜单" } },
         { "game.next",       new[]{ "Next",            "下一关" } },
+        // 续命：没过关时花钱再点一下。中文只能用子集字体里已有的字（见 FontCharset.txt）
+        { "game.more",       new[]{ "One More Click",  "再打一下" } },
 
         // 无尽模式结算
         { "run.over",        new[]{ "Game Over",       "游戏结束" } },

@@ -39,7 +39,31 @@ public static class ProgressMenu
     static void UnlockAll()
     {
         ProgressManager.UnlockAllLevels();
-        Debug.Log("[Bloom] 十关全部解锁（无尽模式和商店本来就不需要解锁）");
+        Debug.Log($"[Bloom] {LevelCatalog.Count} 关全部解锁（无尽模式和商店本来就不需要解锁）");
+    }
+
+    const string EditorUnlockMenu = "Tools/Bloom/Editor: All Levels Selectable";
+
+    /// <summary>
+    /// 编辑器里主菜单的关卡格子全部可点，默认开。关掉就能看到真实的解锁状态。
+    /// 只影响编辑器，构建版本不受影响。
+    /// </summary>
+    [MenuItem(EditorUnlockMenu)]
+    static void ToggleEditorUnlock()
+    {
+        bool on = !EditorPrefs.GetBool(ProgressManager.EditorUnlockAllKey, ProgressManager.EditorUnlockAllDefault);
+        EditorPrefs.SetBool(ProgressManager.EditorUnlockAllKey, on);
+        Menu.SetChecked(EditorUnlockMenu, on);
+        Debug.Log(on
+            ? "[Bloom] 编辑器里全部关卡可选"
+            : "[Bloom] 编辑器里按真实解锁进度显示");
+    }
+
+    [MenuItem(EditorUnlockMenu, true)]
+    static bool ToggleEditorUnlockValidate()
+    {
+        Menu.SetChecked(EditorUnlockMenu, EditorPrefs.GetBool(ProgressManager.EditorUnlockAllKey, ProgressManager.EditorUnlockAllDefault));
+        return true;
     }
 
     [MenuItem("Tools/Bloom/Reset Level Progress")]

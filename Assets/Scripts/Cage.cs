@@ -15,6 +15,15 @@ public class Cage : MonoBehaviour
     [SerializeField] private float wallThickness = 0.15f;
     [SerializeField] private Color wallColor = Color.white;
 
+    /// <summary>由 LevelBuilder 在物体激活前调用，替代 Inspector 里的值</summary>
+    public void Configure(float width, float height, float doorGap, bool left, bool right,
+        float thickness, Color color)
+    {
+        this.width = width; this.height = height; this.doorGap = doorGap;
+        hasLeftDoor = left; hasRightDoor = right;
+        wallThickness = thickness; wallColor = color;
+    }
+
     void Awake()
     {
         if (Application.isPlaying)

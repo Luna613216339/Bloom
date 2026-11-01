@@ -40,6 +40,7 @@ public class GameUI : MonoBehaviour
         if (styleVersion == Loc.Version) return;
         styleVersion = Loc.Version;
         coinStyle = null;
+        moneyStyleCache = null;
 
         // 深色主题下 HUD 要反过来。主题一局之内不会变（换主题得去商店，那是另一个场景），
         // 所以在这里定一次就够了
@@ -94,6 +95,51 @@ public class GameUI : MonoBehaviour
     public void UpdateCount(int count)
     {
         currentCount = count;
+    }
+
+    /// <summary>续命之后收起结算面板，回到游戏画面</summary>
+    public void HideResult()
+    {
+        showResult = false;
+        showRunOver = false;
+    }
+
+    /// <summary>
+    /// 「再打一下 + 价钱」按钮。文字靠左、钞票和数字靠右，画在同一个按钮里。
+    /// 返回 true 表示按下去了（钱已经扣了）。
+    /// </summary>
+    bool DrawContinueButton(Rect r)
+    {
+        var gm = GameManager.Instance;
+        bool pressed = AudioManager.Button(r, "", buttonStyle);
+
+        string label = Loc.T("game.more");
+        var labelStyle = Loc.Fit(new GUIStyle(buttonStyle) { alignment = TextAnchor.MiddleLeft });
+        labelStyle.normal.background = null;
+        labelStyle.hover.background = null;
+        labelStyle.active.background = null;
+        float iconH = 26f;
+        float moneyW = Money.Width(gm.ContinuePrice, moneyStyleFor(buttonStyle), iconH);
+        float textW = labelStyle.CalcSize(new GUIContent(label)).x;
+        float gap = 18f;
+        float startX = r.x + (r.width - textW - gap - moneyW) / 2f;
+        GUI.Label(new Rect(startX, r.y, textW + 4f, r.height), label, labelStyle);
+        Money.Draw(startX + textW + gap, r.y + r.height / 2f, gm.ContinuePrice, moneyStyleFor(buttonStyle), iconH);
+
+        return pressed && gm.TryContinue();
+    }
+
+    GUIStyle moneyStyleCache;
+    GUIStyle moneyStyleFor(GUIStyle basis)
+    {
+        if (moneyStyleCache == null)
+            moneyStyleCache = Loc.Fit(new GUIStyle(GUI.skin.label)
+            {
+                fontSize = basis.fontSize - 4,
+                alignment = TextAnchor.MiddleLeft,
+                normal = { textColor = Money.Bright }
+            });
+        return moneyStyleCache;
     }
 
     public void ShowResult(bool passed, int triggered, int target, bool hasNext)
@@ -199,6 +245,14 @@ public class GameUI : MonoBehaviour
             float totalBtnW = btnW * 2 + gap;
             float btnStartX = px + (pw - totalBtnW) / 2f;
 
+            // 没过关而且买得起：先给一行"再打一下"，重玩和主菜单往下挪
+            if (!passed && GameManager.Instance.CanContinue)
+            {
+                if (DrawContinueButton(new Rect(btnStartX, btnY, totalBtnW, btnH)))
+                    return;
+                btnY += btnH + 14f;
+            }
+
             if (AudioManager.Button(new Rect(btnStartX, btnY, btnW, btnH), Loc.T("game.replay"), buttonStyle))
                 GameManager.Instance.Retry();
 
@@ -215,7 +269,7 @@ public class GameUI : MonoBehaviour
 
         float pw = 560;
         float px = (sw - pw) / 2f;
-        float py = (sh - 300) / 2f;
+        float py = (sh - 300) / 2f - (GameManager.Instance.CanContinue ? 30f : 0f);
 
         resultTextStyle.fontSize = 52;
         Loc.SetTextColor(resultTextStyle, new Color(1f, 0.4f, 0.4f));
@@ -248,6 +302,15 @@ public class GameUI : MonoBehaviour
         float btnY = py + 180;
         float totalW = btnW * 3 + gap * 2;
         float startX = px + (pw - totalW) / 2f;
+
+        // 续命：这一轮再点一下，钱从钱包扣（本局赚的已经先入账了）
+        if (GameManager.Instance.CanContinue)
+        {
+            float cw = 360f;
+            if (DrawContinueButton(new Rect(px + (pw - cw) / 2f, btnY - 4f, cw, btnH)))
+                return;
+            btnY += btnH + 14f;
+        }
 
         if (AudioManager.Button(new Rect(startX, btnY, btnW, btnH), Loc.T("run.new"), buttonStyle))
             GameManager.Instance.Retry();

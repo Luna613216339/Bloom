@@ -21,7 +21,11 @@ public static class ProgressManager
     private const int ThemeSchema = 2;
     private const string ThemeSchemaKey = "ThemeSchema";
 
-    private const int StoryLevelCount = 10;
+    /// <summary>编辑器里全部关卡默认可选，方便直接试任何一关。只影响编辑器</summary>
+    public const string EditorUnlockAllKey = "Bloom.EditorUnlockAll";
+    public const bool EditorUnlockAllDefault = true;
+    /// <summary>编辑器里每次 Play 自动重置之后发的测试钱，否则续命按钮永远按不起</summary>
+    public const int EditorTestWallet = 300;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void MigrateThemesIfNeeded()
@@ -37,7 +41,14 @@ public static class ProgressManager
 
     public static int UnlockedLevel
     {
-        get => PlayerPrefs.GetInt(Key, 1);
+        get
+        {
+#if UNITY_EDITOR
+            if (UnityEditor.EditorPrefs.GetBool(EditorUnlockAllKey, EditorUnlockAllDefault))
+                return LevelCatalog.Count + 1;
+#endif
+            return PlayerPrefs.GetInt(Key, 1);
+        }
         set
         {
             PlayerPrefs.SetInt(Key, value);
@@ -142,7 +153,8 @@ public static class ProgressManager
 
         ResetLevelProgress();
         ResetEndlessProgress();
-        Debug.Log("[Bloom] 已自动重置全部进度（Tools → Bloom → Auto Reset On Play 可关掉）");
+        AddCoins(EditorTestWallet);
+        Debug.Log($"[Bloom] 已自动重置全部进度，并发了 {EditorTestWallet} 块测试钱（Tools → Bloom → Auto Reset On Play 可关掉）");
     }
 #endif
 
@@ -164,6 +176,6 @@ public static class ProgressManager
 
     public static void UnlockAllLevels()
     {
-        UnlockedLevel = StoryLevelCount + 1;
+        UnlockedLevel = LevelCatalog.Count + 1;
     }
 }
