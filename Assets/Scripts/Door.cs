@@ -91,7 +91,8 @@ public class Door : MonoBehaviour
         isOpen = !isOpen;
         col.isTrigger = isOpen;
 
-        if (Application.isPlaying && AudioManager.Instance != null)
+        // 联动的那几扇不出声，否则点一下叠好几声
+        if (propagate && Application.isPlaying && AudioManager.Instance != null)
             AudioManager.Instance.PlayDoor(isOpen);
 
         if (Application.isPlaying)

@@ -257,7 +257,7 @@ public static class LevelCatalog
     static LevelDef SampleSpark()
     {
         var d = new LevelDef { Id = "spark", NameZh = "火种", NameEn = "Spark", Target = 24,
-            Palette = BallPalette.HazySummer, Sample = true, Puzzle = true };
+            Palette = BallPalette.HazySummer, Sample = true };
         LevelDef.Cluster(d.Balls, new Vector2(-5.6f, 0f), 0.7f, 6);
         LevelDef.Line(d.Balls, new Vector2(-4.2f, 0f), new Vector2(-1.8f, 0f), 4);
         var split = new Vector2(-1.0f, 0f);
@@ -291,7 +291,7 @@ public static class LevelCatalog
     static LevelDef SampleSwitch()
     {
         var d = new LevelDef { Id = "switch", NameZh = "开关", NameEn = "Switch", Target = 24,
-            Palette = BallPalette.Tiffany, Sample = true, Puzzle = true };
+            Palette = BallPalette.Tiffany, Sample = true };
         LevelDef.Cluster(d.Balls, new Vector2(-6.0f, 0f), 0.7f, 6);
         LevelDef.Line(d.Balls, new Vector2(-4.6f, 0f), new Vector2(-2.5f, 0f), 4);
         var split = new Vector2(-1.7f, 0f);
@@ -332,7 +332,7 @@ public static class LevelCatalog
     static LevelDef SampleFork()
     {
         var d = new LevelDef { Id = "fork", NameZh = "分岔", NameEn = "Fork", Target = 23,
-            Palette = BallPalette.TealOrange, Sample = true, Puzzle = true };
+            Palette = BallPalette.TealOrange, Sample = true };
         LevelDef.Cluster(d.Balls, new Vector2(-6.2f, 0f), 0.7f, 6);
         LevelDef.Line(d.Balls, new Vector2(-4.8f, 0f), new Vector2(-2.7f, 0f), 4);
         var split = new Vector2(-1.9f, 0f);

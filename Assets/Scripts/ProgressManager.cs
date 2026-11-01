@@ -58,7 +58,8 @@ public static class ProgressManager
 
     public static void CompleteLevel(int globalLevel)
     {
-        if (globalLevel >= UnlockedLevel)
+        // 和存档里的真实值比，不走带编辑器"全部可选"覆盖的属性，否则编辑器里的通关永远不落盘
+        if (globalLevel >= PlayerPrefs.GetInt(Key, 1))
             UnlockedLevel = globalLevel + 1;
     }
 
