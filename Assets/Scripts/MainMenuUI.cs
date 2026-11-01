@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// 测试阶段的主菜单：关卡是一个竖向滚动列表，每行 关号 / 名字 / 一行中文特色 / 属于哪个池子。
 /// 关卡越来越多，格子装不下，而且用户要边玩边记感受，得看见每关是干什么的。
-/// 这不是最终形态。说明文字只有中文，用的是系统字体（见 Loc.TestMenuFont）。
+/// 这不是最终形态。说明文字只有中文，靠内置动态字体的系统回退显示（见 Loc.FitTestMenu）。
 /// </summary>
 public class MainMenuUI : MonoBehaviour
 {

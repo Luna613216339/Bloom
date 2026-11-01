@@ -493,7 +493,7 @@ public static class LevelCatalog
         d.Walls.Add(new WallDef(1.0f, -3.1f, 0.3f, 3.8f));
         d.Doors.Add(new DoorDef(1.0f, 0f, 90f) { Size = new Vector2(2.4f, 0.37f) });
         LevelDef.Ring(d.Balls, new Vector2(-2.5f, 0f), 0.7f, 6, 90f);      // 队伍从圈中间穿过
-        LevelDef.Ring(d.Balls, new Vector2(1.95f, 0f), 0.6f, 6, 0f);       // 闸后那团：最左那颗正对停住的队头（0.7）
+        LevelDef.Ring(d.Balls, new Vector2(1.98f, 0f), 0.6f, 6, 0f);       // 闸后那团：最左那颗正对停住的队头（0.73），不碰门
         return d;
     }
 

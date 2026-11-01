@@ -263,8 +263,9 @@ public static class AutoTest
                     var row = new System.Text.StringBuilder();
                     for (int ix = 0; ix < sw.nx; ix++)
                     {
-                        float x = sw.nx == 1 ? 0f : Mathf.Lerp(x0, x1, ix / (float)(sw.nx - 1));
-                        float y = sw.ny == 1 ? 0f : Mathf.Lerp(y0, y1, iy / (float)(sw.ny - 1));
+                        // 只有一列 / 一行时取区域中心（全屏时就是 0），否则定点扫会忽略 cx / cy
+                        float x = sw.nx == 1 ? (x0 + x1) / 2f : Mathf.Lerp(x0, x1, ix / (float)(sw.nx - 1));
+                        float y = sw.ny == 1 ? (y0 + y1) / 2f : Mathf.Lerp(y0, y1, iy / (float)(sw.ny - 1));
                         var acts = new List<Act>(sw.pre ?? new Act[0]);
                         acts.Add(new Act { t = t, type = "click", x = x, y = y });
                         var one = new Result();
