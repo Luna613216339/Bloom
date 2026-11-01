@@ -40,9 +40,9 @@ public class Door : MonoBehaviour
         {
             closedSprite = link != 0 ? SpriteHelper.DoorLinked(aspect) : SpriteHelper.DoorClosed(aspect);
             openSprite = SpriteHelper.DoorOpen(aspect);
-            // 贴图按门的长宽比生成，Sliced + size(1,1) 让它正好填满 1×1，再由 transform 缩放成门的尺寸
+            // 贴图按门的长宽比生成，Sliced + size(1,1) 让它正好填满 1×1，再由 transform 缩放成门的尺寸。
+            // size 在换 sprite 时会被重置成贴图的原始尺寸，所以每次换贴图都要再设一次（见 SetSprite）
             sr.drawMode = SpriteDrawMode.Sliced;
-            sr.size = Vector2.one;
         }
         else
         {
@@ -91,6 +91,13 @@ public class Door : MonoBehaviour
         this.closedColor = color;
         this.link = link;
         Index = index;
+    }
+
+    /// <summary>换门的贴图。白模的门是 Sliced 模式，换完 sprite 必须把 size 压回 1×1，否则会按贴图长宽比画长</summary>
+    void SetSprite(Sprite sprite)
+    {
+        sr.sprite = sprite;
+        if (sr.drawMode != SpriteDrawMode.Simple) sr.size = Vector2.one;
     }
 
     public bool ContainsPoint(Vector2 point)
@@ -149,7 +156,7 @@ public class Door : MonoBehaviour
         float toS = isOpen ? 0.6f : 1f;
 
         sr.enabled = true;
-        sr.sprite = closedSprite;
+        SetSprite(closedSprite);
         while (elapsed < animDuration)
         {
             elapsed += Time.deltaTime;
@@ -206,12 +213,12 @@ public class Door : MonoBehaviour
                 if (openSprite != null)
                 {
                     // 白模：空心框变实、轻微呼吸
-                    sr.sprite = openSprite;
+                    SetSprite(openSprite);
                     sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, Mathf.Lerp(0.55f, 0.9f, pulse));
                 }
                 else
                 {
-                    sr.sprite = closedSprite;
+                    SetSprite(closedSprite);
                     sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, Mathf.Lerp(0.18f, 0.35f, pulse));
                 }
                 transform.localScale = baseScale * Mathf.Lerp(0.95f, 1.05f, pulse);
@@ -237,7 +244,7 @@ public class Door : MonoBehaviour
             if (openSprite != null)
             {
                 sr.enabled = true;
-                sr.sprite = openSprite;
+                SetSprite(openSprite);
                 sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, OpenAlpha);
             }
             else
@@ -248,7 +255,7 @@ public class Door : MonoBehaviour
         else
         {
             sr.enabled = true;
-            sr.sprite = closedSprite;
+            SetSprite(closedSprite);
             sr.color = closedColor;
         }
     }
