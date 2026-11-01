@@ -14,7 +14,7 @@ using UnityEngine;
 public static class LevelOverview
 {
     const int W = 384, H = 216;         // 每格 16:9
-    const int Cols = 4;
+    const int Cols = 5;
     const int Pad = 10;
     const float HalfW = 5f * 16f / 9f, HalfH = 5f;
 
@@ -60,10 +60,12 @@ public static class LevelOverview
         var cell = new Cell { tex = tex, ox = ox, oy = oy };
         cell.FillRect(0, 0, W, H, Bg);
 
-        foreach (var w in d.Walls) cell.Obb(w.Center, w.Size * 0.5f, w.Rot, WallColor);
+        var palette = Look.Palette(d.Palette);
+        foreach (var w in d.Walls) cell.Obb(w.Center, w.Size * 0.5f, w.Rot, Look.Structure(WallColor));
         foreach (var c in d.Cages) DrawCage(cell, c);
         foreach (var door in d.Doors)
-            cell.Obb(door.Center, door.Size * 0.5f, door.Rot, door.StartsOpen ? DoorOpenColor : door.Color,
+            cell.Obb(door.Center, door.Size * 0.5f, door.Rot,
+                door.StartsOpen ? DoorOpenColor : Look.Door(door.Link != 0, door.Color),
                 hollow: door.StartsOpen);
 
         foreach (var s in d.Schools) DrawSchool(cell, s, d);
@@ -72,7 +74,7 @@ public static class LevelOverview
         foreach (var b in d.Balls)
         {
             float size = b.Size > 0f ? b.Size : d.BallSize;
-            cell.Ball(b.Pos, size * 0.5f, BallPalette.Cycle(d.Palette, colorIndex++), b.Kind);
+            cell.Ball(b.Pos, size * 0.5f, BallPalette.Cycle(palette, colorIndex++), b.Kind);
         }
 
         foreach (var sc in d.Scatter)
@@ -83,15 +85,19 @@ public static class LevelOverview
                 float x = Mathf.Lerp(sc.Region.xMin, sc.Region.xMax, (float)rng.NextDouble());
                 float y = Mathf.Lerp(sc.Region.yMin, sc.Region.yMax, (float)rng.NextDouble());
                 rng.NextDouble();   // 对齐 LevelBuilder 里取方向的那一次
-                cell.Ball(new Vector2(x, y), d.BallSize * 0.5f, BallPalette.Cycle(d.Palette, colorIndex++), sc.Kind);
+                cell.Ball(new Vector2(x, y), d.BallSize * 0.5f, BallPalette.Cycle(palette, colorIndex++), sc.Kind);
             }
         }
 
         // 边框、关号、随机标记
         cell.Border(Frame);
         cell.Number(d.Number, 8, H - 8 - 7 * 3, Ink, 3);
-        if (d.HasRandomLayout) cell.Glyph(Glyphs.R, W - 8 - 5 * 3, H - 8 - 7 * 3, Ink, 3);
-        if (d.Sample) cell.Glyph(Glyphs.S, W - 8 - 5 * 3 - (d.HasRandomLayout ? 20 : 0), H - 8 - 7 * 3, Ink, 3);
+        int gx = W - 8 - 5 * 3;
+        if (d.HasRandomLayout) { cell.Glyph(Glyphs.R, gx, H - 8 - 7 * 3, Ink, 3); gx -= 20; }
+        string[] mark = d.Pool == LevelPool.Sample ? Glyphs.S : d.Pool == LevelPool.Candidate ? Glyphs.C
+            : d.Pool == LevelPool.Experiment ? Glyphs.E : null;
+        if (mark != null) cell.Glyph(mark, gx, H - 8 - 7 * 3, Ink, 3);
+        if (d.Idle != null && d.Idle.Mode != IdleMode.None) cell.Glyph(Glyphs.I, gx - 14, H - 8 - 7 * 3, Ink, 3);
     }
 
     static void DrawCage(Cell cell, CageDef c)
@@ -101,8 +107,9 @@ public static class LevelOverview
         var rot = Quaternion.Euler(0f, 0f, c.Rot);
         Vector2 L(Vector2 local) => c.Center + (Vector2)(rot * (Vector3)local);
 
-        cell.Obb(L(new Vector2(0, c.Height / 2f)), new Vector2(fullW, t) * 0.5f, c.Rot, c.Color);
-        cell.Obb(L(new Vector2(0, -c.Height / 2f)), new Vector2(fullW, t) * 0.5f, c.Rot, c.Color);
+        var cc = Look.Structure(c.Color);
+        cell.Obb(L(new Vector2(0, c.Height / 2f)), new Vector2(fullW, t) * 0.5f, c.Rot, cc);
+        cell.Obb(L(new Vector2(0, -c.Height / 2f)), new Vector2(fullW, t) * 0.5f, c.Rot, cc);
         Side(-c.Width / 2f, c.LeftDoor);
         Side(c.Width / 2f, c.RightDoor);
 
@@ -112,11 +119,11 @@ public static class LevelOverview
             {
                 float seg = (c.Height - c.DoorGap) / 2f;
                 float off = (c.DoorGap + seg) / 2f;
-                cell.Obb(L(new Vector2(x, off)), new Vector2(t, seg) * 0.5f, c.Rot, c.Color);
-                cell.Obb(L(new Vector2(x, -off)), new Vector2(t, seg) * 0.5f, c.Rot, c.Color);
+                cell.Obb(L(new Vector2(x, off)), new Vector2(t, seg) * 0.5f, c.Rot, cc);
+                cell.Obb(L(new Vector2(x, -off)), new Vector2(t, seg) * 0.5f, c.Rot, cc);
             }
             else
-                cell.Obb(L(new Vector2(x, 0)), new Vector2(t, c.Height) * 0.5f, c.Rot, c.Color);
+                cell.Obb(L(new Vector2(x, 0)), new Vector2(t, c.Height) * 0.5f, c.Rot, cc);
         }
     }
 
@@ -138,7 +145,7 @@ public static class LevelOverview
 
         float head = (s.Count - 1) * s.Spacing + s.StartOffset;
         int normal = s.Count - s.Escape;
-        var palette = s.Palette ?? d.Palette;
+        var palette = Look.Palette(s.Palette ?? d.Palette, s.LightTone);
         for (int i = 0; i < s.Count; i++)
         {
             float dist = head - i * s.Spacing;
@@ -150,7 +157,7 @@ public static class LevelOverview
             }
             bool escape = i >= normal;
             var kind = s.Kinds != null && i < s.Kinds.Length ? s.Kinds[i] : BallKind.Normal;
-            cell.Ball(pos, s.BallSize * 0.5f, escape ? EscapeColor : BallPalette.Ramp(palette, i, normal), kind);
+            cell.Ball(pos, s.BallSize * 0.5f, escape ? Look.Escape(EscapeColor) : BallPalette.Ramp(palette, i, normal), kind);
         }
     }
 
@@ -325,6 +332,9 @@ public static class LevelOverview
         public static string[] Digit(int d) => Digits[Mathf.Clamp(d, 0, 9)];
         public static readonly string[] R = {"##.","#.#","#.#","##.","#.#","#.#","#.#"};
         public static readonly string[] S = {".##","#..","#..",".#.","..#","..#","##."};
+        public static readonly string[] C = {".##","#..","#..","#..","#..","#..",".##"};
+        public static readonly string[] E = {"###","#..","#..","##.","#..","#..","###"};
+        public static readonly string[] I = {"###",".#.",".#.",".#.",".#.",".#.","###"};
     }
 
     static void Fill(Texture2D tex, Color c)

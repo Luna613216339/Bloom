@@ -141,7 +141,7 @@ public class Ball : MonoBehaviour
         this.dangerRadius = dangerRadius;
         this.fleeSpeed = fleeSpeed;
         sr.sprite = SpriteHelper.StripedCircle;
-        sr.color = color;
+        sr.color = Look.Escape(color);
     }
 
     public void SetPreferredFleeDirection(Vector2 dir)
@@ -179,7 +179,7 @@ public class Ball : MonoBehaviour
         f.SourceId = GameManager.Instance.NextSourceId();
         f.sr.sprite = SpriteHelper.Rainbow;
         f.sr.sortingOrder = 2;
-        f.AddTrail(new Color(1f, 0.6f, 0.2f), 0.25f);
+        f.AddTrail(Look.SparkTrail, 0.25f);
         // 火星从出生起就是"活着的火"，连锁要等它烧完才算结束
         GameManager.Instance.ReactionStarted();
         return f;
@@ -374,11 +374,8 @@ public class Ball : MonoBehaviour
             GoldBurst.Create(transform.position, GoldColor, currentScale);
         }
 
-        // 半透明在白底上是"变浅"，在深色底上是"变暗" —— 后者会把霓虹球的光感抽掉，
-        // 所以深色主题下留多一点不透明度
-        var c = sr.color;
-        float alpha = GameManager.Instance.IsDarkBackground ? 0.7f : 0.45f;
-        sr.color = new Color(c.r, c.g, c.b, alpha);
+        // 着火的样子由外观层定：白模里换成强调色，彩色模式下是原色变半透明
+        sr.color = Look.Burn(sr.color, GameManager.Instance.IsDarkBackground);
         GameManager.Instance.OnBallTriggered(this);
         GameManager.Instance.ReactionStarted();
 

@@ -56,6 +56,7 @@ public static class AutoTest
         public int nx, ny;              // 0 = 这个 job 不是扫格（JsonUtility 会把缺省的对象字段建成默认实例，所以不能靠 null）
         public float[] times = { 0.5f };
         public Act[] pre;           // 每次尝试前先做的事（比如开某扇门）
+        public float cx, cy, w, h;  // 只扫一块区域：中心和宽高。w 为 0 = 全屏
     }
 
     [Serializable]
@@ -250,6 +251,7 @@ public static class AutoTest
         {
             var sw = job.sweep;
             float x0 = -8.4f, x1 = 8.4f, y0 = -4.6f, y1 = 4.6f;
+            if (sw.w > 0f) { x0 = sw.cx - sw.w / 2f; x1 = sw.cx + sw.w / 2f; y0 = sw.cy - sw.h / 2f; y1 = sw.cy + sw.h / 2f; }
             var heat = new List<string>();
             r.best = -1;
 

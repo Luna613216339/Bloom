@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public Color[] Palette => endlessMode
         ? BallPalette.ForTheme(ProgressManager.EquippedTheme)
-        : level.Palette;
+        : Look.Palette(level.Palette);
 
     /// <summary>
     /// 背景色。正式关卡永远白底（关卡配色是照白底调的），只有无尽模式跟着主题走。

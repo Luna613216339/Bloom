@@ -47,7 +47,7 @@ public class LevelBuilder
 
         var sr = go.AddComponent<SpriteRenderer>();
         sr.sprite = SpriteHelper.Square;
-        sr.color = WallColor;
+        sr.color = Look.Structure(WallColor);
         sr.sortingOrder = 3;
 
         var rb = go.AddComponent<Rigidbody2D>();
@@ -100,14 +100,26 @@ public class LevelBuilder
     public void SpawnBalls()
     {
         int colorIndex = 0;
+        var palette = GameManager.Instance.Palette;
+        var idleBalls = new List<Ball>();
         foreach (var b in def.Balls)
         {
             float size = b.Size > 0f ? b.Size : def.BallSize;
-            var ball = Ball.Create(b.Pos, b.Vel, BallPalette.Cycle(def.Palette, colorIndex++),
+            var ball = Ball.Create(b.Pos, b.Vel, BallPalette.Cycle(palette, colorIndex++),
                 size, def.ReactionMaxScale, def.ReactionDuration, def.ExpandSpeed);
             if (b.Vel == Vector2.zero)
+            {
                 ball.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+                idleBalls.Add(ball);
+            }
             ApplyKind(ball, b.Kind, b.SplitAxisDeg);
+        }
+
+        if (def.Idle != null && def.Idle.Mode != IdleMode.None && idleBalls.Count > 0)
+        {
+            var go = new GameObject("Idle");
+            go.transform.SetParent(Root.transform, false);
+            go.AddComponent<IdleGroup>().Configure(def.Idle, idleBalls);
         }
 
         foreach (var sc in def.Scatter)
@@ -119,7 +131,7 @@ public class LevelBuilder
                 Vector2 pos = PickFreePoint(sc.Region, rng, def.BallSize * 0.5f);
                 float a = (float)(rng.NextDouble() * Mathf.PI * 2.0);
                 var vel = new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * speed;
-                var ball = Ball.Create(pos, vel, BallPalette.Cycle(def.Palette, colorIndex++),
+                var ball = Ball.Create(pos, vel, BallPalette.Cycle(palette, colorIndex++),
                     def.BallSize, def.ReactionMaxScale, def.ReactionDuration, def.ExpandSpeed);
                 ApplyKind(ball, sc.Kind, float.NaN);
             }

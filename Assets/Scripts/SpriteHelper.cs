@@ -336,6 +336,75 @@ public static class SpriteHelper
         return Sprite.Create(tex, new Rect(0, 0, resolution, resolution), Vector2.one * 0.5f, resolution);
     }
 
+    // ---- 门（白模）----
+    // 门的尺寸全在 transform 的缩放里（碰撞体固定 1×1），贴图如果是正方形，花纹会被拉成扁的。
+    // 所以按门的长宽比生成贴图（按比例取整后缓存），花纹和描边在任何门上粗细一致。
+    // 三种：普通关着的门 = 斜条纹；联动门 = 横杠；开着的门 = 空心框（让玩家知道这里有扇门）。
+
+    static readonly System.Collections.Generic.Dictionary<string, Sprite> doorCache =
+        new System.Collections.Generic.Dictionary<string, Sprite>();
+
+    public static Sprite DoorClosed(float aspect) => DoorSprite("closed", aspect, 0);
+    public static Sprite DoorLinked(float aspect) => DoorSprite("linked", aspect, 1);
+    public static Sprite DoorOpen(float aspect) => DoorSprite("open", aspect, 2);
+
+    static Sprite DoorSprite(string kind, float aspect, int style)
+    {
+        aspect = Mathf.Clamp(aspect, 0.2f, 12f);
+        int h = 64;
+        int w = Mathf.Clamp(Mathf.RoundToInt(h * aspect), 16, 768);
+        string key = kind + ":" + w;
+        if (doorCache.TryGetValue(key, out var cached) && cached != null) return cached;
+
+        var tex = new Texture2D(w, h, TextureFormat.RGBA32, true);
+        const int ss = 3;                       // 每个像素 3×3 超采样，花纹边缘才干净
+        float border = 3.5f;                    // 描边粗细（像素）
+        float stripe = 5f;                      // 条纹粗细
+        float period = 14f;                     // 条纹间距
+        for (int y = 0; y < h; y++)
+        {
+            for (int x = 0; x < w; x++)
+            {
+                float cov = 0f;
+                for (int sy = 0; sy < ss; sy++)
+                    for (int sx = 0; sx < ss; sx++)
+                    {
+                        float px = x + (sx + 0.5f) / ss;
+                        float py = y + (sy + 0.5f) / ss;
+                        bool onBorder = px < border || py < border || px > w - border || py > h - border;
+                        bool on;
+                        if (style == 2) on = onBorder;
+                        else if (onBorder) on = true;
+                        else if (style == 0)
+                        {
+                            float d = (px + py) % period;             // 45° 斜条纹
+                            on = d < stripe;
+                        }
+                        else
+                        {
+                            float d = py % period;                    // 横杠
+                            on = d < stripe;
+                        }
+                        if (on) cov += 1f;
+                    }
+                cov /= ss * ss;
+                // 条纹之间不是全透明，留一点底，否则门看起来像一堆散的线
+                float alpha = style == 2 ? cov : Mathf.Max(cov, 0.22f);
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
+            }
+        }
+        tex.Apply();
+        tex.filterMode = FilterMode.Trilinear;
+        tex.wrapMode = TextureWrapMode.Clamp;
+        // 贴图是 w×h 像素。门的 transform 缩放已经是 (宽, 高)，所以 sprite 本身必须是 1×1 单位：
+        // Door 把 SpriteRenderer 设成 Sliced 模式、size = (1,1)，贴图整张拉进这个 1×1 的框里，
+        // 而贴图的长宽比和门一致，拉完花纹不变形。FullRect 网格是 Sliced 模式的要求。
+        var sprite = Sprite.Create(tex, new Rect(0, 0, w, h), Vector2.one * 0.5f, h, 0,
+            SpriteMeshType.FullRect);
+        doorCache[key] = sprite;
+        return sprite;
+    }
+
     static Sprite CreateSquareSprite(int resolution)
     {
         var tex = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true);

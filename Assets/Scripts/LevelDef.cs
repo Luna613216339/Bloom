@@ -9,6 +9,47 @@ using UnityEngine;
 public enum BallKind { Normal, Split, Hard, Fragment }
 
 /// <summary>
+/// 关卡属于哪个池子：正式序列、新机制样关、备选池（等用户挑）、实验（比如 idle 动法的几个变体）。
+/// 测试菜单按它分段和打标签。
+/// </summary>
+public enum LevelPool { Story, Sample, Candidate, Experiment }
+
+/// <summary>静止球群的 idle 动法。幅度都比连锁够得着的距离（0.825 / 0.94）小得多，不改变通关策略</summary>
+public enum IdleMode { None, Bob, Sway, Spin, Breathe, Drift }
+
+/// <summary>
+/// 静止球群怎么"活着"。只作用于关卡里摆好的静止球（Balls 里 Vel 为零的），蛇和散布球不受影响。
+/// 被点着的球立刻停止 idle。
+/// </summary>
+public class IdleDef
+{
+    public IdleMode Mode;
+    /// <summary>位移幅度（世界单位）。Spin 模式下是角速度（度/秒）</summary>
+    public float Amplitude;
+    public float Period = 3.2f;
+    public int Seed = 7;
+
+    /// <summary>
+    /// 每种动法的默认幅度。整团一起动的（Bob / Sway / Spin）球之间的距离不变，可以大一点；
+    /// Breathe 会拉开球距，Drift 每颗各自漂、相邻两颗可能反向，所以压得很小：
+    /// 第 7 关那一圈球相邻 0.7，够得着是 0.825，只剩 0.125 的余量。
+    /// </summary>
+    public static IdleDef Of(IdleMode mode)
+    {
+        var d = new IdleDef { Mode = mode };
+        switch (mode)
+        {
+            case IdleMode.Bob: d.Amplitude = 0.12f; d.Period = 3.2f; break;
+            case IdleMode.Sway: d.Amplitude = 0.12f; d.Period = 3.6f; break;
+            case IdleMode.Spin: d.Amplitude = 8f; break;
+            case IdleMode.Breathe: d.Amplitude = 0.05f; d.Period = 3.0f; break;
+            case IdleMode.Drift: d.Amplitude = 0.04f; d.Period = 4.0f; break;
+        }
+        return d;
+    }
+}
+
+/// <summary>
 /// 一面墙：轴对齐或带旋转的矩形，球撞上会弹回。爆炸不认墙（连锁检测是距离判断，穿墙）。
 /// </summary>
 public struct WallDef
@@ -96,6 +137,8 @@ public class SchoolDef
     public bool HoldWhenBlocked;
     public bool ShowPath;
     public Color[] Palette;         // 不填就用关卡配色
+    /// <summary>白模里用第二套（更浅的）灰，让两队球分得开。彩色模式下不起作用</summary>
+    public bool LightTone;
     public BallKind[] Kinds;        // 按队列索引指定特殊球，不填全是普通球
 
     public static SchoolDef Line(Vector2 a, Vector2 b, int count)
@@ -165,8 +208,21 @@ public class LevelDef
     public bool Puzzle;
     public bool AllowContinue = true;
 
-    /// <summary>样关：依赖还没批准的机制，关卡表里单独标</summary>
-    public bool Sample;
+    /// <summary>属于哪个池子。Sample = 依赖还没批准的机制的样关</summary>
+    public LevelPool Pool = LevelPool.Story;
+    public bool Sample
+    {
+        get => Pool == LevelPool.Sample;
+        set { if (value) Pool = LevelPool.Sample; }
+    }
+
+    /// <summary>一行中文说明这关的特色，测试菜单里显示，方便用户边玩边记感受</summary>
+    public string Note = "";
+    /// <summary>测试菜单里的分段标题（中文）。连续相同的关归成一段</summary>
+    public string Group = "";
+
+    /// <summary>静止球群的 idle 动法，null = 完全静止</summary>
+    public IdleDef Idle;
 
     public List<WallDef> Walls = new List<WallDef>();
     public List<DoorDef> Doors = new List<DoorDef>();

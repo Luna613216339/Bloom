@@ -19,17 +19,37 @@ public class Door : MonoBehaviour
     private Vector3 baseScale;
     private bool isHovered;
     private Coroutine animCoroutine;
+    private Sprite closedSprite;
+    private Sprite openSprite;
 
     private static readonly Color HoverColor = new Color(0.2f, 1f, 0.4f);
     private const float PulseSpeed = 5f;
     private const float PulseScaleMin = 1.05f;
     private const float PulseScaleMax = 1.2f;
+    /// <summary>白模里开着的门画成空心框，这是框的不透明度</summary>
+    private const float OpenAlpha = 0.32f;
 
     void Awake()
     {
         EnsureComponents();
         isOpen = startsOpen;
         baseScale = transform.localScale;
+        closedColor = Look.Door(link != 0, closedColor);
+        float aspect = baseScale.y > 0.0001f ? baseScale.x / baseScale.y : 1f;
+        if (Look.On)
+        {
+            closedSprite = link != 0 ? SpriteHelper.DoorLinked(aspect) : SpriteHelper.DoorClosed(aspect);
+            openSprite = SpriteHelper.DoorOpen(aspect);
+            // 贴图按门的长宽比生成，Sliced + size(1,1) 让它正好填满 1×1，再由 transform 缩放成门的尺寸
+            sr.drawMode = SpriteDrawMode.Sliced;
+            sr.size = Vector2.one;
+        }
+        else
+        {
+            closedSprite = SpriteHelper.Crosshatch;
+            openSprite = null;
+            sr.drawMode = SpriteDrawMode.Simple;
+        }
         ApplyVisual(instant: true);
     }
 
@@ -119,43 +139,26 @@ public class Door : MonoBehaviour
         ApplyVisual(instant: true);
     }
 
+    /// <summary>开门：实心门缩小淡出；关门：反过来。动画结束后交给 ApplyVisual 摆成静态的样子</summary>
     IEnumerator AnimateToggle()
     {
         float elapsed = 0f;
+        float fromA = isOpen ? closedColor.a : 0f;
+        float toA = isOpen ? 0f : closedColor.a;
+        float fromS = isOpen ? 1f : 0.6f;
+        float toS = isOpen ? 0.6f : 1f;
 
-        if (isOpen)
+        sr.enabled = true;
+        sr.sprite = closedSprite;
+        while (elapsed < animDuration)
         {
-            sr.sprite = SpriteHelper.Crosshatch;
-            while (elapsed < animDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = elapsed / animDuration;
-                float alpha = Mathf.Lerp(closedColor.a, 0f, t);
-                float scale = Mathf.Lerp(1f, 0.6f, t);
-                sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, alpha);
-                transform.localScale = baseScale * scale;
-                yield return null;
-            }
-            sr.enabled = false;
-            transform.localScale = baseScale;
+            elapsed += Time.deltaTime;
+            float t = elapsed / animDuration;
+            sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, Mathf.Lerp(fromA, toA, t));
+            transform.localScale = baseScale * Mathf.Lerp(fromS, toS, t);
+            yield return null;
         }
-        else
-        {
-            sr.enabled = true;
-            sr.sprite = SpriteHelper.Crosshatch;
-            while (elapsed < animDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = elapsed / animDuration;
-                float alpha = Mathf.Lerp(0f, closedColor.a, t);
-                float scale = Mathf.Lerp(0.6f, 1f, t);
-                sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, alpha);
-                transform.localScale = baseScale * scale;
-                yield return null;
-            }
-            ApplyVisual(instant: true);
-        }
-
+        ApplyVisual(instant: true);
         animCoroutine = null;
     }
 
@@ -174,17 +177,7 @@ public class Door : MonoBehaviour
         if (!Application.isPlaying || !isHovered) return;
         isHovered = false;
         if (animCoroutine == null)
-        {
-            if (isOpen)
-            {
-                sr.enabled = false;
-            }
-            else
-            {
-                transform.localScale = baseScale;
-                sr.color = closedColor;
-            }
-        }
+            ApplyVisual(instant: true);
     }
 
     void Update()
@@ -199,12 +192,7 @@ public class Door : MonoBehaviour
                 state != GameManager.GameState.ChainReacting)
             {
                 isHovered = false;
-                if (animCoroutine == null)
-                {
-                    transform.localScale = baseScale;
-                    if (isOpen) sr.enabled = false;
-                    else sr.color = closedColor;
-                }
+                if (animCoroutine == null) ApplyVisual(instant: true);
                 return;
             }
 
@@ -215,18 +203,26 @@ public class Door : MonoBehaviour
             if (isOpen)
             {
                 sr.enabled = true;
-                sr.sprite = SpriteHelper.Crosshatch;
-                float alpha = Mathf.Lerp(0.18f, 0.35f, pulse);
-                sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, alpha);
-                float s = Mathf.Lerp(0.95f, 1.05f, pulse);
-                transform.localScale = baseScale * s;
+                if (openSprite != null)
+                {
+                    // 白模：空心框变实、轻微呼吸
+                    sr.sprite = openSprite;
+                    sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, Mathf.Lerp(0.55f, 0.9f, pulse));
+                }
+                else
+                {
+                    sr.sprite = closedSprite;
+                    sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, Mathf.Lerp(0.18f, 0.35f, pulse));
+                }
+                transform.localScale = baseScale * Mathf.Lerp(0.95f, 1.05f, pulse);
             }
             else
             {
                 float s = Mathf.Lerp(PulseScaleMin, PulseScaleMax, pulse);
                 transform.localScale = baseScale * s;
-                Color c = Color.Lerp(closedColor, HoverColor, 0.5f + pulse * 0.5f);
-                sr.color = c;
+                // 白模只有一个强调色，留给"着火"；门的悬停反馈靠放大和变浅
+                Color target = Look.On ? new Color(0.62f, 0.62f, 0.62f) : HoverColor;
+                sr.color = Color.Lerp(closedColor, target, 0.5f + pulse * 0.5f);
             }
         }
     }
@@ -234,17 +230,26 @@ public class Door : MonoBehaviour
     void ApplyVisual(bool instant)
     {
         col.isTrigger = isOpen;
+        transform.localScale = baseScale;
 
         if (isOpen)
         {
-            sr.enabled = false;
+            if (openSprite != null)
+            {
+                sr.enabled = true;
+                sr.sprite = openSprite;
+                sr.color = new Color(closedColor.r, closedColor.g, closedColor.b, OpenAlpha);
+            }
+            else
+            {
+                sr.enabled = false;
+            }
         }
         else
         {
             sr.enabled = true;
-            sr.sprite = SpriteHelper.Crosshatch;
+            sr.sprite = closedSprite;
             sr.color = closedColor;
-            transform.localScale = baseScale;
         }
     }
 }

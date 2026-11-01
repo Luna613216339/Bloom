@@ -21,7 +21,7 @@ public class Cage : MonoBehaviour
     {
         this.width = width; this.height = height; this.doorGap = doorGap;
         hasLeftDoor = left; hasRightDoor = right;
-        wallThickness = thickness; wallColor = color;
+        wallThickness = thickness; wallColor = Look.Structure(color);
     }
 
     void Awake()
