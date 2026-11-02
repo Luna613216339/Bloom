@@ -362,6 +362,19 @@
    "maxTime": 20
   },
   {
+   "name": "drift 解法",
+   "id": "drift",
+   "actions": [
+    {
+     "t": 0.8,
+     "type": "click",
+     "x": 0,
+     "y": 0.6
+    }
+   ],
+   "maxTime": 15
+  },
+  {
    "name": "relay 解法",
    "id": "relay",
    "actions": [

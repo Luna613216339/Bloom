@@ -69,6 +69,7 @@ public static class LevelCatalog
         Add(Breathe(Binary()), dyn, "两条弧一内一外反向转，顶上一小团，两个队头同时到时点");           // 22
         Add(Loom(), dyn, "三列球上下穿梭，横着一条静止的线，像织布");                         // 23
         Add(Strings(), dyn, "五根静止的弦，一队球竖着穿过去，把五根弦一起拨响");             // 24
+        Add(Drift(), dyn, "一团球在框里漂来漂去，趁它穿过中间那条线的时候点线");            // 25
         // ---- 备选池：分裂球 ----
         const string spl = "备选 · 分裂球";
         Add(Breathe(Relay()), spl, "五颗五彩球隔着够不着的距离排一排，火星一路接力过去");             // 25
@@ -607,6 +608,26 @@ public static class LevelCatalog
         return d;
     }
 
+    /// <summary>
+    /// 漂流：一团六颗球整体以同一速度在一个框里漂流，撞墙一起反弹（弹性碰撞保形，队形永远不散）；
+    /// 框中间竖着一条静止的线。趁那团正穿过线的时候点线，线和团一起亮。每四秒左右穿一次。
+    /// 用的是旧「漂流」关的动法 —— 那关两个角落各一团，一下只够得着一团，做不到全清，所以撤了。
+    /// </summary>
+    static LevelDef Drift()
+    {
+        var d = new LevelDef { Id = "drift", NameZh = "漂流", NameEn = "Drift",
+            Palette = BallPalette.Tiffany, Pool = LevelPool.Candidate };
+        d.Walls.Add(new WallDef(0f, 3.4f, 9.3f, 0.3f));
+        d.Walls.Add(new WallDef(0f, -3.4f, 9.3f, 0.3f));
+        d.Walls.Add(new WallDef(-4.5f, 0f, 0.3f, 7.1f));
+        d.Walls.Add(new WallDef(4.5f, 0f, 0.3f, 7.1f));
+        LevelDef.Line(d.Balls, new Vector2(0f, -2.8f), new Vector2(0f, 2.8f), 9);
+        var mover = new List<BallDef>();
+        LevelDef.Cluster(mover, new Vector2(-3.0f, -1.6f), 0.55f, 5);
+        foreach (var m in mover) { var b = m; b.Vel = new Vector2(2.6f, 1.7f); d.Balls.Add(b); }
+        return d;
+    }
+
     // =====================================================================
     // 备选：分裂球
     // =====================================================================
@@ -633,8 +654,9 @@ public static class LevelCatalog
     /// </summary>
     static LevelDef Meteor()
     {
+        // 火烧得短一点（0.9 秒）：不然把火圈点在它的航线上等它撞进来也能过，随手一点 10%；缩短后只剩真正卡时机的那半秒
         var d = new LevelDef { Id = "meteor", NameZh = "流星", NameEn = "Meteor",
-            Palette = BallPalette.Rainbow, Pool = LevelPool.Candidate };
+            Palette = BallPalette.Rainbow, Pool = LevelPool.Candidate, ReactionDuration = 0.9f };
         LevelDef.Line(d.Balls, new Vector2(0f, -4.4f), new Vector2(0f, -0.2f), 7);
         var m = new BallDef(-3.0f, 0.6f, BallKind.Split) { SplitAxisDeg = 60f };
         m.Vel = new Vector2(2.0f, 0f);

@@ -313,6 +313,19 @@
    "maxTime": 20
   },
   {
+   "name": "drift 随手一点",
+   "id": "drift",
+   "sweep": {
+    "nx": 12,
+    "ny": 7,
+    "times": [
+     0.5,
+     4
+    ]
+   },
+   "maxTime": 15
+  },
+  {
    "name": "relay 随手一点",
    "id": "relay",
    "sweep": {
