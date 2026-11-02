@@ -253,7 +253,15 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (AutoTest.Active) return;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.LeftBracket)) { DebugJumpLevel(-1); return; }
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.RightBracket)) { DebugJumpLevel(1); return; }
+#endif
         if (!Input.GetMouseButtonDown(0)) return;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // 点在左下角的切关按钮上，不算这一关的那一下
+        if (GameUI.Instance != null && GameUI.Instance.PointerOnDebugNav(Input.mousePosition)) return;
+#endif
 
         Vector3 worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
         HandlePointer(worldPos);
@@ -457,4 +465,16 @@ public class GameManager : MonoBehaviour
         }
         StartLevel();
     }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    /// <summary>测试用：不用通关，直接跳到上一关 / 下一关。只在编辑器和开发包里有，无尽模式不管</summary>
+    public void DebugJumpLevel(int delta)
+    {
+        if (endlessMode) return;
+        int target = Mathf.Clamp(currentLevel + delta, 1, LevelCatalog.Count);
+        if (target == currentLevel) return;
+        currentLevel = target;
+        StartLevel();
+    }
+#endif
 }

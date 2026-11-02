@@ -41,6 +41,9 @@ public class GameUI : MonoBehaviour
         styleVersion = Loc.Version;
         coinStyle = null;
         moneyStyleCache = null;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        debugNavStyle = null;
+#endif
 
         // 深色主题下 HUD 要反过来。主题一局之内不会变（换主题得去商店，那是另一个场景），
         // 所以在这里定一次就够了
@@ -198,6 +201,10 @@ public class GameUI : MonoBehaviour
             Money.DrawRightAligned(sw - pad, moneyCenter, gm.CoinsThisRun, coinStyle, MoneyIconH);
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DrawDebugLevelNav(sh);
+#endif
+
         if (showRunOver)
         {
             DrawRunOver(sw, sh);
@@ -260,6 +267,40 @@ public class GameUI : MonoBehaviour
                 SceneManager.LoadScene("MainMenu");
         }
     }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    // 测试用的上一关 / 下一关：左下角两颗小按钮，键盘 ← → 或 [ ] 也行。只在编辑器和开发包里有
+    const float DebugNavSize = 32f;
+    const float DebugNavPad = 10f;
+    const float DebugNavGap = 6f;
+    GUIStyle debugNavStyle;
+
+    void DrawDebugLevelNav(float sh)
+    {
+        var gm = GameManager.Instance;
+        if (gm == null || gm.IsEndless) return;
+        if (debugNavStyle == null)
+            debugNavStyle = Loc.Fit(new GUIStyle(GUI.skin.button) { fontSize = 18 });
+
+        float y = sh - DebugNavSize - DebugNavPad;
+        if (GUI.Button(new Rect(DebugNavPad, y, DebugNavSize, DebugNavSize), "<", debugNavStyle))
+            gm.DebugJumpLevel(-1);
+        if (GUI.Button(new Rect(DebugNavPad + DebugNavSize + DebugNavGap, y, DebugNavSize, DebugNavSize), ">", debugNavStyle))
+            gm.DebugJumpLevel(1);
+    }
+
+    /// <summary>屏幕坐标（Input.mousePosition，原点在左下）是不是落在切关按钮上</summary>
+    public bool PointerOnDebugNav(Vector2 screenPos)
+    {
+        var gm = GameManager.Instance;
+        if (gm == null || gm.IsEndless) return false;
+        float scale = Screen.height / 600f;
+        float x = screenPos.x / scale;
+        float yFromBottom = screenPos.y / scale;
+        return x <= DebugNavPad + DebugNavSize * 2 + DebugNavGap + 4f
+            && yFromBottom <= DebugNavPad + DebugNavSize + 4f;
+    }
+#endif
 
     void DrawRunOver(float sw, float sh)
     {
