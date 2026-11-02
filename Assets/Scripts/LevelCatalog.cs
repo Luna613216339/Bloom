@@ -72,24 +72,24 @@ public static class LevelCatalog
         Add(Drift(), dyn, "一团球在框里漂来漂去，趁它穿过中间那条线的时候点线");            // 25
         // ---- 备选池：分裂球 ----
         const string spl = "备选 · 分裂球";
-        Add(Breathe(Relay()), spl, "五颗五彩球隔着够不着的距离排一排，火星一路接力过去");             // 25
-        Add(Breathe(Meteor()), spl, "一颗五彩球横着来回飞，趁它经过线顶那一刻点线");                   // 26
-        Add(Breathe(Boomerang()), spl, "从哪边点决定火星往哪飞：只有从正下方点才撞上斜墙折进两团");                           // 27
+        Add(Breathe(Relay()), spl, "五颗五彩球隔着够不着的距离排一排，火星一路接力过去"); // 26
+        Add(Breathe(Meteor()), spl, "一颗五彩球横着来回飞，趁它经过线顶那一刻点线"); // 27
+        Add(Breathe(Boomerang()), spl, "从哪边点决定火星往哪飞：只有从正下方点才撞上斜墙折进两团"); // 28
         // ---- 备选池：硬球 ----
         const string hrd = "备选 · 硬球";
-        Add(Breathe(TwoLocks()), hrd, "点中间五彩球：火星先敲碎两颗硬球的壳，绕桥而来的火再打第二下");                         // 28
-        Add(Breathe(Key()), hrd, "火沿着线烧到硬球只能敲裂，追上来的火星是第二把火");                 // 29
-        Add(Breathe(Bolt()), hrd, "先点硬球和线之间的缝，等一拍再开闸：撞上来的队头是第二把火");                             // 30
+        Add(Breathe(TwoLocks()), hrd, "点中间五彩球：火星先敲碎两颗硬球的壳，绕桥而来的火再打第二下"); // 29
+        Add(Breathe(Key()), hrd, "火沿着线烧到硬球只能敲裂，追上来的火星是第二把火"); // 30
+        Add(Breathe(Bolt()), hrd, "先点硬球和线之间的缝，等一拍再开闸：撞上来的队头是第二把火"); // 31
         // ---- 备选池：门与笼子 ----
         const string dr = "备选 · 门与笼子";
-        Add(ShiftChange(), dr, "两队球各有一扇联动门（画出了路线）：切一下，走的停、停的走"); // 31
-        Add(Jar(), dr, "整条蛇涌进右边封死的笼子，四颗逃跑球也进来了再关门");                 // 32
+        Add(ShiftChange(), dr, "两队球各有一扇联动门（画出了路线）：切一下，走的停、停的走"); // 32
+        Add(Jar(), dr, "整条蛇涌进右边封死的笼子，四颗逃跑球也进来了再关门"); // 33
         // ---- 调剂关：奇观（静止）----
         const string spc = "调剂 · 奇观";
-        Add(Spiral(), spc, "一条螺旋线，点中心火转着圈往外烧");                               // 33
-        Add(Rose(), spc, "三片花瓣在中心相连，点中心三片一起开");                             // 34
-        Add(Meander(), spc, "五行球首尾相接成一条长路，火要爬二十秒才到头");                 // 35
-        // 撤下的（2026-11-02 用户试玩后）：漂流（目标达不到全清，但"整团漂流撞墙反弹"的动法留着以后用，见 Drifter）、
+        Add(Spiral(), spc, "一条螺旋线，点中心火转着圈往外烧"); // 34
+        Add(Rose(), spc, "三片花瓣在中心相连，点中心三片一起开"); // 35
+        Add(Meander(), spc, "五行球首尾相接成一条长路，火要爬二十秒才到头"); // 36
+        // 撤下的（2026-11-02 用户试玩后）：旧漂流（两个角落各一团，一下够不着全部；动法在新的 漂流 里）、
         // 折返（队伍碰到球群就掉头，玩家会困惑）、再来一下（等于逼玩家花钱续命）、idle 五个对比变体（已按关挂到正式关上）。
     }
 
@@ -388,7 +388,7 @@ public static class LevelCatalog
     }
 
     // =====================================================================
-    // 引导关：分裂球 + 门。每关只教一件事，排在 15 开关 和 17 分岔 之间（理由见关卡表）
+    // 引导关：分裂球 + 门。每关只教一件事，排在 放行 和 分岔 之间（理由见关卡表）
     // =====================================================================
 
     /// <summary>
@@ -577,22 +577,6 @@ public static class LevelCatalog
     }
 
     /// <summary>
-    /// 漂流：一团七颗球整体以同一速度漂流，撞墙一起反弹（弹性碰撞保形，队形永远不散）。
-    /// 两个角落各一团静止的。漂流的那团经过静止那团时点，两团一起亮。
-    /// </summary>
-    static LevelDef Drifter()
-    {
-        var d = new LevelDef { Id = "drifter", NameZh = "漂流", NameEn = "Drifter", Target = 14,
-            Palette = BallPalette.Tiffany, Pool = LevelPool.Candidate };
-        var mover = new List<BallDef>();
-        LevelDef.Cluster(mover, new Vector2(-2.0f, 1.0f), 0.7f, 6);
-        foreach (var m in mover) { var b = m; b.Vel = new Vector2(1.4f, 1.0f); d.Balls.Add(b); }
-        LevelDef.Cluster(d.Balls, new Vector2(-5.5f, -2.5f), 0.7f, 6);
-        LevelDef.Cluster(d.Balls, new Vector2(5.5f, 2.5f), 0.7f, 6);
-        return d;
-    }
-
-    /// <summary>
     /// 琴弦：五根静止的横线，彼此隔着够不着的距离；一队球竖着穿过去。
     /// 队伍同时跨着五根弦的那一刻点中间，火借着队伍一根根往上爬，五根弦一起响。
     /// </summary>
@@ -672,7 +656,7 @@ public static class LevelCatalog
     /// 回旋：正中一颗五彩球，外面一圈六颗；左右上方两面斜墙，底下两团。
     /// 火星背着火源飞，所以从哪边点决定它往哪飞：只有从正下方点（先点着最下面那颗），
     /// 火星才以 50° / 130° 飞出、撞上斜墙折成竖直向下、落进底下两团。从上面或侧面点，火星飞到空地。
-    /// 墙：右墙面朝 340°（rot -110°），左墙面朝 20°（rot -70°），火星以 20° 入射角碰墙面，不会擦到端头。
+    /// 墙：右墙长边沿 340°（rot -110°，法线 250°），左墙长边沿 20°（rot -70°，法线 290°），火星离法线 20° 碰上墙面，不会擦到端头。
     /// </summary>
     static LevelDef Boomerang()
     {
