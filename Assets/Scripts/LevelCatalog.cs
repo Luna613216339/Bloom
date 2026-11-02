@@ -50,15 +50,15 @@ public static class LevelCatalog
         Add(Kaleidoscope(), ch2, "五条弧绕中心转，一次全中（简单关）");                      // 9
         // ---- 新机制的样关 ----
         const string smp = "样关（新机制）";
-        Add(Breathe(SampleSpark()), smp, "火烧到五彩球，裂出两颗火星飞向远处的两小团");               // 10
-        Add(Breathe(SampleBackfire()), smp, "火星背着火源飞：点大团没用，要点五彩球的另一侧");         // 11
-        Add(Breathe(SampleSwitch()), smp, "火星路上有扇关着的门，先开门再点");                         // 12
+        Add(Breathe(SampleSpark()), smp, "引线通到五彩球，火星像喷泉分成两股飞向上方两条线");               // 10
+        Add(Breathe(SampleBackfire()), smp, "火星背着火源飞：点底下大团没用，要点五彩球的上面");         // 11
+        Add(Breathe(SampleRelease()), smp, "开闸放队伍走，掐准时间点引线，火星正好砸在队头上");                         // 12
         Add(SampleShell(), smp, "一圈球顶上一颗硬球：火打掉壳之后，要绕一圈回来再打一次");                   // 13
-        Add(Breathe(SampleFork()), smp, "两颗火星各走一条路，联动门要在飞行中切换");                   // 14
+        Add(Breathe(SampleFork()), smp, "火星一上一下，两扇联动门一开一关，要在飞行中切换");                   // 14
         // ---- 引导关：分裂球 + 门 ----
-        const string gd = "引导关（分裂球 + 门，建议排在 开关 和 分岔 之间）";
-        Add(Breathe(GuideBounce()), gd, "火星撞上关着的门会弹回来，弹回来的火星照样能用");             // 15
-        Add(Breathe(GuideReroute()), gd, "门开着火星会飞到空地；把门关上，让它弹进那一团");           // 16
+        const string gd = "引导关（分裂球 + 门，建议排在 放行 和 分岔 之间）";
+        Add(Breathe(GuideBounce()), gd, "下落的火星撞上斜门弹回来，落进左边那团（看就行，不用操作）");             // 15
+        Add(Breathe(GuideReroute()), gd, "门开着火星飞到空地；把门关上，让它弹进下面那团");           // 16
         Add(Breathe(GuidePrepare()), gd, "两扇普通门，一扇要开一扇要关，点火前先准备好");             // 17
         // ---- 备选池：动静结合（用户最喜欢的一类）----
         const string dyn = "备选 · 动静结合";
@@ -72,16 +72,16 @@ public static class LevelCatalog
         // ---- 备选池：分裂球 ----
         const string spl = "备选 · 分裂球";
         Add(Breathe(Relay()), spl, "五颗五彩球隔着够不着的距离排一排，火星一路接力过去");             // 25
-        Add(Fireworks(), spl, "转动的环里嵌着五彩球，火星向四周射向小团");                   // 26
-        Add(Breathe(Boomerang()), spl, "火星撞上斜墙拐弯，俯冲进下面两团");                           // 27
+        Add(Breathe(Meteor()), spl, "一颗五彩球横着来回飞，趁它经过线顶那一刻点线");                   // 26
+        Add(Breathe(Boomerang()), spl, "从哪边点决定火星往哪飞：只有从正下方点才撞上斜墙折进两团");                           // 27
         // ---- 备选池：硬球 ----
         const string hrd = "备选 · 硬球";
-        Add(Breathe(TwoLocks()), hrd, "两头是大团，中间两颗硬球夹一条双排线");                         // 28
+        Add(Breathe(TwoLocks()), hrd, "点中间五彩球：火星先敲碎两颗硬球的壳，绕桥而来的火再打第二下");                         // 28
         Add(Breathe(Key()), hrd, "火沿着线烧到硬球只能敲裂，追上来的火星是第二把火");                 // 29
-        Add(Breathe(Bolt()), hrd, "队伍停在闸前，闸后一颗硬球挡着一条线");                             // 30
+        Add(Breathe(Bolt()), hrd, "先点硬球和线之间的缝，等一拍再开闸：撞上来的队头是第二把火");                             // 30
         // ---- 备选池：门与笼子 ----
         const string dr = "备选 · 门与笼子";
-        Add(ShiftChange(), dr, "两队球各有一扇联动门：切一下，走的停、停的走，让两队都进中间"); // 31
+        Add(ShiftChange(), dr, "两队球各有一扇联动门（画出了路线）：切一下，走的停、停的走"); // 31
         Add(Jar(), dr, "整条蛇涌进右边封死的笼子，四颗逃跑球也进来了再关门");                 // 32
         // ---- 调剂关：奇观（静止）----
         const string spc = "调剂 · 奇观";
@@ -278,56 +278,67 @@ public static class LevelCatalog
         return new Vector2(Mathf.Cos(a), Mathf.Sin(a));
     }
 
+    /// <summary>角度转单位向量</summary>
+    static Vector2 Dir(float deg) => new Vector2(Mathf.Cos(deg * Mathf.Deg2Rad), Mathf.Sin(deg * Mathf.Deg2Rad));
+
     /// <summary>
-    /// 样关 · 火种：左边一团球，一条桥通到一颗五彩球；点左边那团，火顺着桥烧到五彩球，
-    /// 炸出两颗火星，飞向右上、右下的两小团。教"五彩球会把火带到远处"。
+    /// 样关 · 火种：底下一截竖直的引线通到五彩球。点引线最下面，火往上烧到五彩球，
+    /// 炸出两颗火星，像喷泉一样分成两股飞向上方左右两条短线。教"五彩球会把火带到远处"。
     /// </summary>
     static LevelDef SampleSpark()
     {
-        var d = new LevelDef { Id = "spark", NameZh = "火种", NameEn = "Spark", Target = 24,
+        var d = new LevelDef { Id = "spark", NameZh = "火种", NameEn = "Spark",
             Palette = BallPalette.HazySummer, Sample = true };
-        LevelDef.Cluster(d.Balls, new Vector2(-5.6f, 0f), 0.7f, 6);
-        LevelDef.Line(d.Balls, new Vector2(-4.2f, 0f), new Vector2(-1.8f, 0f), 4);
-        var split = new Vector2(-1.0f, 0f);
+        LevelDef.Line(d.Balls, new Vector2(0f, -4.4f), new Vector2(0f, -1.6f), 5);
+        var split = new Vector2(0f, -0.8f);
         d.Balls.Add(new BallDef(split.x, split.y, BallKind.Split));
         foreach (float sign in new[] { 1f, -1f })
-            LevelDef.Cluster(d.Balls, split + SparkDir(0f, sign) * 4.8f, 0.55f, 6);
+        {
+            var c = split + SparkDir(90f, sign) * 4.5f;
+            LevelDef.Line(d.Balls, new Vector2(c.x - 1.4f, c.y), new Vector2(c.x + 1.4f, c.y), 5);
+        }
         return d;
     }
 
     /// <summary>
-    /// 样关 · 回火：第一反应是点左边那一大团，可火星会背着火源往右飞，右边什么都没有。
-    /// 要想通：点五彩球的右侧，让火星往左飞到大团背后的两小团，五彩球自己的爆炸再顺桥烧回大团。
+    /// 样关 · 回火：底下一大团，一截桥往上通到五彩球。第一反应是点大团，可火星会背着火源往上飞，上面什么都没有。
+    /// 要想通：点五彩球的上方，让火星往下飞到大团左右两边的两小团，五彩球自己的爆炸再顺桥烧回大团。
     /// </summary>
     static LevelDef SampleBackfire()
     {
-        var d = new LevelDef { Id = "backfire", NameZh = "回火", NameEn = "Backfire", Target = 23,
+        var d = new LevelDef { Id = "backfire", NameZh = "回火", NameEn = "Backfire",
             Palette = BallPalette.ShibuyaNight, Sample = true, Puzzle = true };
-        LevelDef.Cluster(d.Balls, new Vector2(-5.2f, 0f), 0.9f, 9);
-        LevelDef.Line(d.Balls, new Vector2(-3.9f, 0f), new Vector2(-1.8f, 0f), 4);
-        var split = new Vector2(-1.0f, 0f);
+        LevelDef.Cluster(d.Balls, new Vector2(0f, -3.2f), 0.9f, 9);
+        LevelDef.Line(d.Balls, new Vector2(0f, -2.0f), new Vector2(0f, -0.5f), 3);
+        var split = new Vector2(0f, 0.3f);
         d.Balls.Add(new BallDef(split.x, split.y, BallKind.Split));
         foreach (float sign in new[] { 1f, -1f })
-            LevelDef.Cluster(d.Balls, split + SparkDir(180f, sign) * 4.8f, 0.55f, 6);
+            LevelDef.Cluster(d.Balls, split + SparkDir(270f, sign) * 4.8f, 0.55f, 6);
         return d;
     }
 
     /// <summary>
-    /// 样关 · 开关：和火种一样的布局，但下面那条火星的路上横着一扇关着的门。
-    /// 门关着火星会被弹开；先开门再点火，两团都能到。教"门也能挡火星"。
+    /// 样关 · 放行：一队球被闸拦在左下；右上一截引线通到五彩球，一颗火星近乎竖直地落到队伍的路上，另一颗飞向右边的小团。
+    /// 开闸放队伍走，再掐准时间点引线：火星落下来那一刻正好砸在队头上，整队跟着亮。
+    /// 开早了、开晚了火星都落在空路上；不开闸队伍停在远处够不着。门不是"先开好"的前置步骤，而是时机本身。
     /// </summary>
-    static LevelDef SampleSwitch()
+    static LevelDef SampleRelease()
     {
-        var d = new LevelDef { Id = "switch", NameZh = "开关", NameEn = "Switch", Target = 24,
+        var d = new LevelDef { Id = "release", NameZh = "放行", NameEn = "Release",
             Palette = BallPalette.Tiffany, Sample = true };
-        LevelDef.Cluster(d.Balls, new Vector2(-6.0f, 0f), 0.7f, 6);
-        LevelDef.Line(d.Balls, new Vector2(-4.6f, 0f), new Vector2(-2.5f, 0f), 4);
-        var split = new Vector2(-1.7f, 0f);
+        var split = new Vector2(0.5f, 1.6f);
+        var feed = Dir(120f);
+        LevelDef.Line(d.Balls, split + feed * 0.8f, split + feed * 3.2f, 4);
         d.Balls.Add(new BallDef(split.x, split.y, BallKind.Split));
-        foreach (float sign in new[] { 1f, -1f })
-            LevelDef.Cluster(d.Balls, split + SparkDir(0f, sign) * 5.2f, 0.55f, 6);
-        var doorPos = split + SparkDir(0f, -1f) * 2.6f;
-        d.Doors.Add(new DoorDef(doorPos.x, doorPos.y, 90f - Ball.SplitHalfAngleDeg));
+        // 火从 120° 方向来，火星背着它飞：-60° ± 40° = -20°（去右边小团）和 -100°（落到路上 x ≈ -0.2）
+        LevelDef.Cluster(d.Balls, split + SparkDir(-60f, 1f) * 5.85f, 0.5f, 6);
+        // 起点再往左一点，队头一出生就停在闸前而不是嵌在门里；走慢些，火星砸队头的窗口才有半秒多
+        var s = SchoolDef.Line(new Vector2(-10.0f, -2.5f), new Vector2(9.6f, -2.5f), 10);
+        s.HoldWhenBlocked = true; s.Wave = false; s.Speed = 1.0f;
+        d.Schools.Add(s);
+        d.Walls.Add(new WallDef(-5.0f, -0.4f, 0.3f, 1.8f));
+        d.Walls.Add(new WallDef(-5.0f, -4.35f, 0.3f, 1.3f));
+        d.Doors.Add(new DoorDef(-5.0f, -2.5f, 90f) { Size = new Vector2(2.4f, 0.37f) });
         return d;
     }
 
@@ -357,27 +368,21 @@ public static class LevelCatalog
     // =====================================================================
 
     /// <summary>
-    /// 样关 · 分岔：两颗火星各走一条路，路上各一扇门，两扇门是联动的（一开另一关）。
-    /// 上面那扇离得近、一开始开着；下面那扇远、关着。上面的火星过门之后再点一下门，
-    /// 下面的火星才赶得上开门。联动门把"先把门都开好"变成了"在飞行中切换"。
+    /// 样关 · 分岔：火从右边烧到正中的五彩球，火星固定一上一下飞。上路近、门开着；下路远、门关着；两扇门联动。
+    /// 上面的火星过了门再点一下门，下面的火星才赶得上开门。联动门把"先把门都开好"变成了"在飞行中切换"。
     /// </summary>
     static LevelDef SampleFork()
     {
-        var d = new LevelDef { Id = "fork", NameZh = "分岔", NameEn = "Fork", Target = 23,
+        var d = new LevelDef { Id = "fork", NameZh = "分岔", NameEn = "Fork",
             Palette = BallPalette.TealOrange, Sample = true };
-        LevelDef.Cluster(d.Balls, new Vector2(-6.2f, 0f), 0.7f, 6);
-        LevelDef.Line(d.Balls, new Vector2(-4.8f, 0f), new Vector2(-2.7f, 0f), 4);
-        var split = new Vector2(-1.9f, 0f);
-        d.Balls.Add(new BallDef(split.x, split.y, BallKind.Split));
-        var up = SparkDir(0f, 1f);
-        var down = SparkDir(0f, -1f);
-        LevelDef.Cluster(d.Balls, split + up * 4.6f, 0.55f, 6);
-        LevelDef.Cluster(d.Balls, split + down * 6.2f, 0.55f, 6);
-        // 上门近、下门远：两颗火星同时出发，先过上门，再过下门，中间那 0.9 秒就是切换的窗口
-        var d1 = split + up * 1.0f;
-        var d2 = split + down * 5.2f;
-        d.Doors.Add(new DoorDef(d1.x, d1.y, -(90f - Ball.SplitHalfAngleDeg), startsOpen: true, link: 1));
-        d.Doors.Add(new DoorDef(d2.x, d2.y, 90f - Ball.SplitHalfAngleDeg, startsOpen: false, link: 1));
+        LevelDef.Cluster(d.Balls, new Vector2(5.6f, 0f), 0.7f, 6);
+        LevelDef.Line(d.Balls, new Vector2(4.2f, 0f), new Vector2(0.9f, 0f), 5);
+        d.Balls.Add(new BallDef(0f, 0f, BallKind.Split) { SplitAxisDeg = 90f });
+        LevelDef.Line(d.Balls, new Vector2(-1.4f, 3.9f), new Vector2(1.4f, 3.9f), 5);
+        LevelDef.Cluster(d.Balls, new Vector2(0f, -4.4f), 0.5f, 5);
+        // 上门 0.2 秒就到，下门 0.76 秒才到，中间那半秒就是切换的窗口
+        d.Doors.Add(new DoorDef(0f, 0.9f, 0f, startsOpen: true, link: 1));
+        d.Doors.Add(new DoorDef(0f, -3.4f, 0f, startsOpen: false, link: 1));
         return d;
     }
 
@@ -386,69 +391,68 @@ public static class LevelCatalog
     // =====================================================================
 
     /// <summary>
-    /// 引导 · 弹回：和火种一样的左团 + 桥 + 五彩球。上面那颗火星直飞右上的小团；
-    /// 下面那颗火星撞上一扇斜着的关着的门，被弹成竖直向下，落进正下方那一团。
-    /// 什么都不用操作，点左团就全亮 —— 只为了让玩家亲眼看见"火星会被门弹回，而且弹回来还有用"。
-    /// 门近乎竖直（转 95°）：火星以 45° 入射、反射成朝左下 130° 飞。第一版让门斜 115° 想把火星
-    /// 折成竖直向下，结果入射角只有 25°，火星先擦到门的端头、反射方向偏了 18°，所以改成这样。
+    /// 引导 · 弹回：顶上一团、一截桥竖直往下通到五彩球。右下那颗火星直飞右下的小团；
+    /// 左下那颗撞上一扇近乎水平的关着的门，被弹成朝左上飞，落进左边那一团。
+    /// 什么都不用操作，点顶上那团就全亮 —— 只为了让玩家亲眼看见"火星会被门弹回，而且弹回来还有用"。
+    /// 门转 5°（法线 95°）：火星以 230° 入射、45° 碰上门面、反射成 140°。
     /// </summary>
     static LevelDef GuideBounce()
     {
-        var d = new LevelDef { Id = "guide-bounce", NameZh = "弹回", NameEn = "Bounce", Target = 25,
+        var d = new LevelDef { Id = "guide-bounce", NameZh = "弹回", NameEn = "Bounce",
             Palette = BallPalette.HazySummer, Pool = LevelPool.Candidate };
-        var split = BuildSparkFeed(d, new Vector2(-6.2f, 0.8f), new Vector2(-1.6f, 0.8f));
-        LevelDef.Cluster(d.Balls, split + SparkDir(0f, 1f) * 4.6f, 0.55f, 6);        // 右上，直达
-        var doorPos = split + SparkDir(0f, -1f) * 2.4f;
-        d.Doors.Add(new DoorDef(doorPos.x, doorPos.y, 95f));
-        LevelDef.Cluster(d.Balls, doorPos + BounceDir * 2.4f, 0.55f, 6);              // 弹回后的落点
+        LevelDef.Cluster(d.Balls, new Vector2(0f, 3.8f), 0.7f, 6);
+        LevelDef.Line(d.Balls, new Vector2(0f, 2.4f), new Vector2(0f, 0.9f), 3);
+        var split = new Vector2(0f, 0.1f);
+        d.Balls.Add(new BallDef(split.x, split.y, BallKind.Split));
+        LevelDef.Cluster(d.Balls, split + SparkDir(270f, 1f) * 4.4f, 0.55f, 6);      // 310°，直达
+        var door = split + SparkDir(270f, -1f) * 2.2f;                                // 230°，撞门
+        d.Doors.Add(new DoorDef(door.x, door.y, 5f));
+        LevelDef.Cluster(d.Balls, door + Dir(140f) * 2.8f, 0.55f, 6);                 // 弹回后的落点
         return d;
     }
 
     /// <summary>
-    /// 引导 · 改道：布局同弹回，但那扇斜门一开始是开着的 —— 火星穿过去飞到空地，什么也没有。
-    /// 把门关上（点火前关，或者点火之后 0.5 秒内关都来得及），火星才会被弹进下面那团。
-    /// 教"关门也是工具"：15 开关 教的是开门放火星过，这里反过来。
+    /// 引导 · 改道：火从右边来。左上那颗火星直达左上的小团；左下那颗路上有扇近乎竖直的门，
+    /// 一开始开着 —— 火星穿过去飞到空地，什么也没有。把门关上（点火前关，或点火后半秒内关），
+    /// 火星才被弹成朝右下飞，落进下面那团。教"关门也是工具"。门转 -95°（法线 -5°）：220° 入射反射成 310°。
     /// </summary>
     static LevelDef GuideReroute()
     {
-        var d = GuideBounce();
-        d.Id = "guide-reroute"; d.NameZh = "改道"; d.NameEn = "Reroute"; d.Target = 24;
-        d.Palette = BallPalette.Tiffany;
-        d.Doors[0].StartsOpen = true;
+        var d = new LevelDef { Id = "guide-reroute", NameZh = "改道", NameEn = "Reroute",
+            Palette = BallPalette.Tiffany, Pool = LevelPool.Candidate };
+        LevelDef.Cluster(d.Balls, new Vector2(6.0f, 0.5f), 0.7f, 6);
+        LevelDef.Line(d.Balls, new Vector2(4.6f, 0.5f), new Vector2(2.5f, 0.5f), 4);
+        var split = new Vector2(1.6f, 0.5f);
+        d.Balls.Add(new BallDef(split.x, split.y, BallKind.Split));
+        LevelDef.Cluster(d.Balls, split + SparkDir(180f, -1f) * 4.4f, 0.55f, 6);     // 140°，直达
+        var door = split + SparkDir(180f, 1f) * 2.0f;                                 // 220°，门开着
+        d.Doors.Add(new DoorDef(door.x, door.y, -95f, startsOpen: true));
+        LevelDef.Cluster(d.Balls, door + Dir(310f) * 2.8f, 0.55f, 6);                 // 关门后的落点
         return d;
     }
 
     /// <summary>
-    /// 引导 · 预备：两颗火星各走一条路，两扇普通门（不联动）：上面那扇关着（要开），
-    /// 下面那扇开着（要关，关上火星才弹进下团）。两件事点火前都能准备好，没有时机压力。
-    /// 这是 17 分岔 的前一步：分岔把两扇门联动起来，就只能在飞行中切了。
+    /// 引导 · 预备：斜着来。左下一团，桥沿 30° 往右上通到五彩球。上路那颗火星（70°）撞上一扇正对着它的关着的门，要开；
+    /// 下路那颗（-10°）路上有扇开着的门，要关，关上它火星才被折成竖直向下、落进底下那团。
+    /// 两件事点火前都能准备好，没有时机压力。这是 分岔 的前一步：分岔把两扇门联动起来，就只能在飞行中切了。
     /// </summary>
     static LevelDef GuidePrepare()
     {
-        var d = new LevelDef { Id = "guide-prepare", NameZh = "预备", NameEn = "Prepare", Target = 24,
+        var d = new LevelDef { Id = "guide-prepare", NameZh = "预备", NameEn = "Prepare",
             Palette = BallPalette.Emerald, Pool = LevelPool.Candidate };
-        var split = BuildSparkFeed(d, new Vector2(-6.2f, 0.4f), new Vector2(-1.6f, 0.4f));
-        var up = SparkDir(0f, 1f);
-        LevelDef.Cluster(d.Balls, split + up * 4.8f, 0.55f, 6);
-        var upDoor = split + up * 2.2f;
-        d.Doors.Add(new DoorDef(upDoor.x, upDoor.y, -(90f - Ball.SplitHalfAngleDeg)));          // 关着，横在路上
-        var downDoor = split + SparkDir(0f, -1f) * 2.4f;
-        d.Doors.Add(new DoorDef(downDoor.x, downDoor.y, 95f, startsOpen: true));                 // 开着，要关
-        LevelDef.Cluster(d.Balls, downDoor + BounceDir * 2.4f, 0.55f, 6);
-        return d;
-    }
-
-    /// <summary>火星撞上转 95° 的门之后的方向：入射 -40°，门的法线 5°，反射成 -130°</summary>
-    static readonly Vector2 BounceDir = new Vector2(Mathf.Cos(-130f * Mathf.Deg2Rad), Mathf.Sin(-130f * Mathf.Deg2Rad));
-
-    /// <summary>左团 + 桥 + 五彩球，火种那套喂火的布局。返回五彩球的位置</summary>
-    static Vector2 BuildSparkFeed(LevelDef d, Vector2 cluster, Vector2 split)
-    {
-        LevelDef.Cluster(d.Balls, cluster, 0.7f, 6);
-        float x0 = cluster.x + 1.4f, x1 = split.x - 0.8f;
-        LevelDef.Line(d.Balls, new Vector2(x0, cluster.y), new Vector2(x1, cluster.y), 4);
+        var c0 = new Vector2(-6.0f, -3.4f);
+        var u = Dir(30f);
+        LevelDef.Cluster(d.Balls, c0, 0.7f, 6);
+        LevelDef.Line(d.Balls, c0 + u * 1.4f, c0 + u * 3.8f, 4);
+        var split = c0 + u * 4.6f;
         d.Balls.Add(new BallDef(split.x, split.y, BallKind.Split));
-        return split;
+        var upDoor = split + SparkDir(30f, 1f) * 2.0f;
+        d.Doors.Add(new DoorDef(upDoor.x, upDoor.y, -20f));                          // 关着，法线正对火星
+        LevelDef.Cluster(d.Balls, split + SparkDir(30f, 1f) * 4.6f, 0.55f, 6);
+        var downDoor = split + SparkDir(30f, -1f) * 2.4f;
+        d.Doors.Add(new DoorDef(downDoor.x, downDoor.y, 125f, startsOpen: true));    // 开着，要关；法线 215°：-10° 反射成 -100°
+        LevelDef.Cluster(d.Balls, downDoor + Dir(-100f) * 2.6f, 0.5f, 5);
+        return d;
     }
 
     // =====================================================================
@@ -622,39 +626,42 @@ public static class LevelCatalog
         return d;
     }
 
-    /// <summary>烟花：转动的环里每三颗有一颗五彩球，周围六小团。点环，火星向四周射出去</summary>
-    static LevelDef Fireworks()
+    /// <summary>
+    /// 流星：一颗五彩球在两根柱子之间横着来回飞，底下一条竖线伸到它的航线下面一点点。
+    /// 只有它经过线顶的那一刻（约半秒）点线顶，火才够得着它；火星固定沿 60° 正反飞，一颗到右上的小团，一颗到左下的小团。
+    /// 点线的下半截也行，但要提前点 —— 火往上爬要一秒多。
+    /// </summary>
+    static LevelDef Meteor()
     {
-        var d = SchoolLevel("fireworks", "烟花", "Fireworks", 20, BallPalette.Rainbow);
-        d.Pool = LevelPool.Candidate;
-        var s = SchoolDef.Orbit(Vector2.zero, 2.4f, 12, false, 90f);
-        s.Spacing = 0.6f; s.Speed = 1.65f; s.ShowPath = true;
-        s.Kinds = new BallKind[12];
-        for (int i = 2; i < 12; i += 3) s.Kinds[i] = BallKind.Split;
-        d.Schools.Add(s);
-        for (int k = 0; k < 6; k++)
-        {
-            float a = k * 60f * Mathf.Deg2Rad;
-            LevelDef.Cluster(d.Balls, new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * 4.3f, 0.45f, 5);
-        }
+        var d = new LevelDef { Id = "meteor", NameZh = "流星", NameEn = "Meteor",
+            Palette = BallPalette.Rainbow, Pool = LevelPool.Candidate };
+        LevelDef.Line(d.Balls, new Vector2(0f, -4.4f), new Vector2(0f, -0.2f), 7);
+        var m = new BallDef(-3.0f, 0.6f, BallKind.Split) { SplitAxisDeg = 60f };
+        m.Vel = new Vector2(2.0f, 0f);
+        d.Balls.Add(m);
+        d.Walls.Add(new WallDef(4.0f, 0.6f, 0.3f, 1.2f));
+        d.Walls.Add(new WallDef(-4.0f, 0.6f, 0.3f, 1.2f));
+        LevelDef.Cluster(d.Balls, new Vector2(2.0f, 4.06f), 0.5f, 5);
+        LevelDef.Cluster(d.Balls, new Vector2(-2.0f, -2.86f), 0.5f, 5);
         return d;
     }
 
     /// <summary>
-    /// 回旋：顶上一颗五彩球（外面一圈普通球），火星固定左右飞；两侧各一面 45° 的斜墙，
-    /// 把火星折成竖直向下，俯冲进下面两团。
+    /// 回旋：正中一颗五彩球，外面一圈六颗；左右上方两面斜墙，底下两团。
+    /// 火星背着火源飞，所以从哪边点决定它往哪飞：只有从正下方点（先点着最下面那颗），
+    /// 火星才以 50° / 130° 飞出、撞上斜墙折成竖直向下、落进底下两团。从上面或侧面点，火星飞到空地。
+    /// 墙：右墙面朝 340°（rot -110°），左墙面朝 20°（rot -70°），火星以 20° 入射角碰墙面，不会擦到端头。
     /// </summary>
     static LevelDef Boomerang()
     {
-        var d = new LevelDef { Id = "boomerang", NameZh = "回旋", NameEn = "Boomerang", Target = 21,
-            Palette = BallPalette.TealOrange, Pool = LevelPool.Candidate };
-        d.Balls.Add(new BallDef(0f, 3.2f, BallKind.Split) { SplitAxisDeg = 0f });
-        LevelDef.Ring(d.Balls, new Vector2(0f, 3.2f), 0.7f, 6, 0f);
-        // 墙的长边是局部 Y 轴：右墙转 +45° 成"\"，把向右的火星折向下；左墙镜像
-        d.Walls.Add(new WallDef(3.2f, 3.2f, 0.3f, 1.8f, 45f));
-        d.Walls.Add(new WallDef(-3.2f, 3.2f, 0.3f, 1.8f, -45f));
-        LevelDef.Cluster(d.Balls, new Vector2(3.2f, -0.6f), 0.55f, 6);
-        LevelDef.Cluster(d.Balls, new Vector2(-3.2f, -0.6f), 0.55f, 6);
+        var d = new LevelDef { Id = "boomerang", NameZh = "回旋", NameEn = "Boomerang",
+            Palette = BallPalette.TealOrange, Pool = LevelPool.Candidate, Puzzle = true };
+        d.Balls.Add(new BallDef(0f, 0f, BallKind.Split));
+        LevelDef.Ring(d.Balls, Vector2.zero, 0.7f, 6, 90f);
+        d.Walls.Add(new WallDef(1.29f, 1.53f, 0.3f, 1.8f, -110f));
+        d.Walls.Add(new WallDef(-1.29f, 1.53f, 0.3f, 1.8f, -70f));
+        LevelDef.Cluster(d.Balls, new Vector2(1.29f, -3.0f), 0.55f, 6);
+        LevelDef.Cluster(d.Balls, new Vector2(-1.29f, -3.0f), 0.55f, 6);
         return d;
     }
 
@@ -663,19 +670,24 @@ public static class LevelCatalog
     // =====================================================================
 
     /// <summary>
-    /// 双锁：两头各一大团（最想点的地方），中间两颗硬球夹着一条双排线。
-    /// 点大团：火单线烧到硬球，只敲裂，停。点中间的双排线：两排各算一把火，两颗硬球一起开，两头全亮。
+    /// 双锁：正中一颗五彩球（火星固定左右飞），两边各一道拱桥绕到一颗硬球，硬球后面各一团。
+    /// 点五彩球：火星一瞬间飞到两颗硬球，敲碎壳；火沿着拱桥慢慢绕过来（三秒多），再打第二下，硬球炸，两团全亮。
+    /// 点大团：火只能敲碎硬球的壳，桥在硬球另一头够不着，停。点桥：火星和桥火到得太近，有一边打不开。
+    /// 用蛇形关的慢膨胀（1.5/秒），桥火才足够慢。
     /// </summary>
     static LevelDef TwoLocks()
     {
-        var d = new LevelDef { Id = "two-locks", NameZh = "双锁", NameEn = "Two Locks", Target = 40,
-            Palette = BallPalette.Emerald, Pool = LevelPool.Candidate, Puzzle = true };
-        LevelDef.Cluster(d.Balls, new Vector2(-6.5f, 0f), 0.9f, 8);
-        LevelDef.Cluster(d.Balls, new Vector2(6.5f, 0f), 0.9f, 8);
-        d.Balls.Add(new BallDef(-4.7f, 0f, BallKind.Hard));
-        d.Balls.Add(new BallDef(4.7f, 0f, BallKind.Hard));
-        LevelDef.Line(d.Balls, new Vector2(-3.9f, 0.35f), new Vector2(3.9f, 0.35f), 10);
-        LevelDef.Line(d.Balls, new Vector2(-3.9f, -0.35f), new Vector2(3.9f, -0.35f), 10);
+        var d = SchoolLevel("two-locks", "双锁", "Two Locks", 0, BallPalette.Emerald);
+        d.Pool = LevelPool.Candidate; d.Puzzle = true;
+        d.Balls.Add(new BallDef(0f, 0f, BallKind.Split) { SplitAxisDeg = 0f });
+        float[] bx = { 0.6f, 1.3f, 2.05f, 2.8f, 3.45f };
+        float[] by = { 0.5f, 0.78f, 0.9f, 0.78f, 0.48f };
+        foreach (float sx in new[] { -1f, 1f })
+        {
+            for (int i = 0; i < bx.Length; i++) d.Balls.Add(new BallDef(sx * bx[i], by[i]));
+            d.Balls.Add(new BallDef(sx * 3.9f, 0f, BallKind.Hard));
+            LevelDef.Cluster(d.Balls, new Vector2(sx * 5.3f, 0f), 0.7f, 6);
+        }
         return d;
     }
 
@@ -697,22 +709,26 @@ public static class LevelCatalog
     }
 
     /// <summary>
-    /// 门闩：队伍停在闸前，闸后紧挨一颗硬球，硬球后面一条单线。点线：单线烧到硬球只敲裂。
-    /// 点硬球和线第一颗之间的缝：点出的圈是一把火，被点着的那颗线球是第二把，硬球炸开，
-    /// 火跳到闸前停着的队头，整队亮。开闸是错的。
+    /// 门闩：队伍走到闸前停下（开场约 2.5 秒到）；闸后紧挨着一颗硬球，硬球挡着一条线。
+    /// 点硬球和线之间的缝：壳碎了，线烧起来，但线火和敲壳是同一波，硬球不炸。
+    /// 等一拍再开闸（点缝之后约 0.6–1.8 秒）：队头走进还没散的火圈里着火，它是新的一把火，正好贴着硬球 —— 门闩断了，整队跟着亮。
+    /// 开了闸马上点：队头到硬球跟前时才着火，和敲壳是同一波，硬球留下。点了缝不开闸：硬球裂着，队伍停着。
+    /// 另一种解：闸一直开着，趁队头离硬球还有两步远时点缝，队头走进火圈时壳已经碎了一秒多。
+    /// 这关的火烧得久一点（2.2 秒），窗口才够宽。
     /// </summary>
     static LevelDef Bolt()
     {
-        var d = SchoolLevel("bolt", "门闩", "Bolt", 16, BallPalette.HazySummer);
+        var d = SchoolLevel("bolt", "门闩", "Bolt", 0, BallPalette.HazySummer);
         d.Pool = LevelPool.Candidate; d.Puzzle = true;
+        d.ReactionDuration = 2.2f;
         var s = SchoolDef.Line(new Vector2(-9.6f, 0f), new Vector2(9.6f, 0f), 10);
-        s.HoldWhenBlocked = true; s.Wave = false;
+        s.HoldWhenBlocked = true; s.Wave = false; s.Duration = 2.2f;
         d.Schools.Add(s);
         d.Walls.Add(new WallDef(-1.0f, 2.6f, 0.3f, 2.8f));
         d.Walls.Add(new WallDef(-1.0f, -2.6f, 0.3f, 2.8f));
         d.Doors.Add(new DoorDef(-1.0f, 0f, 90f) { Size = new Vector2(2.4f, 0.37f) });
-        d.Balls.Add(new BallDef(-0.6f, 0f, BallKind.Hard));
-        LevelDef.Line(d.Balls, new Vector2(0.2f, 0f), new Vector2(3.4f, 0f), 5);
+        d.Balls.Add(new BallDef(-0.3f, 0f, BallKind.Hard));
+        LevelDef.Line(d.Balls, new Vector2(0.4f, 0f), new Vector2(3.2f, 0f), 5);
         return d;
     }
 
@@ -731,7 +747,7 @@ public static class LevelCatalog
         d.Pool = LevelPool.Candidate;
         var a = SchoolDef.Line(new Vector2(-9.6f, 1.2f), new Vector2(9.6f, 1.2f), 10);
         var b = SchoolDef.Line(new Vector2(9.6f, -1.2f), new Vector2(-9.6f, -1.2f), 10);
-        foreach (var s in new[] { a, b }) { s.HoldWhenBlocked = true; s.Wave = false; d.Schools.Add(s); }
+        foreach (var s in new[] { a, b }) { s.HoldWhenBlocked = true; s.Wave = false; s.ShowPath = true; d.Schools.Add(s); }
         // 两扇门都在圈的右边：上队（向右）停下时队身横过圈；下队（向左）在圈右边等，一放就进圈
         d.Doors.Add(new DoorDef(2.0f, 1.2f, 90f, startsOpen: true, link: 1));
         d.Doors.Add(new DoorDef(2.0f, -1.2f, 90f, startsOpen: false, link: 1));
@@ -740,22 +756,29 @@ public static class LevelCatalog
     }
 
     /// <summary>
-    /// 瓮中：路笔直穿进一个右边封死的笼子。队头撞上笼底，整条蛇一颗颗涌进来、在里面乱撞；
-    /// 尾巴四颗逃跑球也进来之后关门、点笼子里 —— 逃跑球往回逃撞上关着的门，留在笼子里。
-    /// 第一版让路在笼子里折返，结果掉头之后"往回逃"就是朝着火跑，门根本用不上，改成这样。
-    /// 和第 8 关收网同一个原理，但是正着放、逃跑球更多、笼子更窄。
+    /// 瓮中：路笔直穿进右边封死的笼子，到了里面盘成一圈（路不循环，队头走到头停住，后面的球沿着圈排进来）。
+    /// 四颗逃跑球也盘进来之后关门，点笼子中间；逃跑球往回逃，撞上关着的门停在门口，还在火圈里。
+    /// 火圈放大到 1.7（够得着 1.03），笼子里任何角落都在一次点击的范围里。
+    /// 第一版让蛇撞死墙乱弹，有的球从开着的门弹出去，抓不全 —— 改成盘进来就是为了去掉随机。
     /// </summary>
     static LevelDef Jar()
     {
-        // 目标 9：四颗逃跑球里总有一颗停在火够不着的角落，抓住三颗就算
-        var d = SchoolLevel("jar", "瓮中", "In the Jar", 9, BallPalette.HazySummer);
+        var d = SchoolLevel("jar", "瓮中", "In the Jar", 0, BallPalette.HazySummer);
         d.Pool = LevelPool.Candidate;
-        var s = SchoolDef.Line(new Vector2(-9.6f, 0f), new Vector2(9.6f, 0f), 10);
-        s.Escape = 4;
+        d.ReactionMaxScale = 1.7f;
+        var s = new SchoolDef
+        {
+            Waypoints = new[]
+            {
+                new Vector2(-9.6f, 0f), new Vector2(2.6f, 0f), new Vector2(3.9f, 0f), new Vector2(3.9f, 0.6f),
+                new Vector2(2.7f, 0.6f), new Vector2(2.7f, -0.6f), new Vector2(3.9f, -0.6f), new Vector2(3.9f, -0.2f),
+                new Vector2(3.3f, -0.2f),
+            },
+            Loop = false, Count = 10, Escape = 4, Wave = false, MaxScale = 1.7f,
+        };
         d.Schools.Add(s);
-        // 笼子要窄：逃跑球撞上关着的门停在门口，必须还在笼子中间那团火够得着的范围里
-        d.Cages.Add(new CageDef(3.2f, 0f, 2.2f, 2.4f, 0f, true, false));
-        d.Doors.Add(new DoorDef(2.1f, 0f, 90f, startsOpen: true));
+        d.Cages.Add(new CageDef(3.2f, 0f, 2.0f, 2.0f, 0f, true, false));
+        d.Doors.Add(new DoorDef(2.2f, 0f, 90f, startsOpen: true));
         return d;
     }
 

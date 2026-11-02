@@ -144,8 +144,8 @@
    "maxTime": 15
   },
   {
-   "name": "switch 随手一点",
-   "id": "switch",
+   "name": "release 随手一点",
+   "id": "release",
    "sweep": {
     "nx": 12,
     "ny": 7,
@@ -326,8 +326,8 @@
    "maxTime": 15
   },
   {
-   "name": "fireworks 随手一点",
-   "id": "fireworks",
+   "name": "meteor 随手一点",
+   "id": "meteor",
    "sweep": {
     "nx": 12,
     "ny": 7,
