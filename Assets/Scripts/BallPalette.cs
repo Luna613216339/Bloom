@@ -138,7 +138,7 @@ public static class BallPalette
     /// <summary>白模的硬球（壳和壳碎之后剩下的那颗都是这个色）</summary>
     public static readonly Color WhiteboxHard = C("#138A72");
 
-    // 原版彩虹，只留给第 10 关
+    // 彩虹，只留给第 10 关
     public static readonly Color[] Rainbow =
     {
         C("#FF5959"), C("#FF9933"), C("#FFE64D"), C("#66FF80"),
@@ -179,7 +179,7 @@ public static class BallPalette
     /// <summary>主题名的中文版，索引和 ThemeNames 一一对应。取名走 Loc.ThemeName(i)</summary>
     public static readonly string[] ThemeNamesZh =
     {
-        "朦胧夏日", "青苔", "樱花", "蒂芙尼", "涩谷夜", "原版彩虹",
+        "朦胧夏日", "青苔", "樱花", "蒂芙尼", "涩谷夜", "彩虹",
         "涩谷夜·暗", "极光", "午夜植物园", "熔岩", "糖霜",
     };
 
