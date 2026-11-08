@@ -208,6 +208,7 @@ public static class Loc
 
         // 游戏内
         { "game.level",      new[]{ "Level {0}",       "第 {0} 关" } },
+        { "game.levelNamed", new[]{ "Level {0} · {1}", "第 {0} 关 · {1}" } },
         { "game.round",      new[]{ "Endless · Level {0}", "无尽 · 第 {0} 关" } },
         { "game.congrats",   new[]{ "Congratulations!", "全部通关！" } },
         { "game.passed",     new[]{ "Passed!  {0} / {1}",   "过关！  {0} / {1}" } },
@@ -248,6 +249,7 @@ public static class Loc
         foreach (var pair in Table.Values) Eat(pair[(int)Lang.EN]);
         foreach (var n in BallPalette.ThemeNamesZh) Eat(n);
         foreach (var n in BallPalette.ThemeNames) Eat(n);
+        foreach (var d in LevelCatalog.All) { Eat(d.NameZh); Eat(d.NameEn); }
         return new string(new List<char>(set).ToArray());
     }
 #endif

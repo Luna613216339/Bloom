@@ -37,6 +37,19 @@ pyftsubset "$SRC" \
   --text-file=/tmp/_bloom_chars.txt \
   --output-file=Assets/Resources/Fonts/UIFont.ttf \
   --layout-features='' --no-hinting --desubroutinize \
-  --drop-tables+=DSIG --name-IDs=''
+  --drop-tables+=DSIG --name-IDs='0,1,2,3,4,5,6'
+
+# 字体名必须留着：Unity 读不到 family_name 会导入失败（2026-11-08 踩过）。
+# 可变字体固定字重后名字会变成 "Thin"，这里统一改回 Regular 的名字
+python3 - <<'PY'
+from fontTools.ttLib import TTFont
+p = 'Assets/Resources/Fonts/UIFont.ttf'
+f = TTFont(p)
+for rec in f['name'].names:
+    if rec.nameID in (1, 4): rec.string = 'Noto Sans SC'
+    elif rec.nameID == 3: rec.string = 'NotoSansSC-Regular;Bloom-subset'
+    elif rec.nameID == 6: rec.string = 'NotoSansSC-Regular'
+f.save(p)
+PY
 
 echo "完成： $(ls -lh Assets/Resources/Fonts/UIFont.ttf | awk '{print $5}')"

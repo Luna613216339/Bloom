@@ -129,6 +129,15 @@ public static class ProgressMenu
         EditorUtility.RevealInFinder(path);
     }
 
+    /// <summary>命令行用：-batchmode -executeMethod ProgressMenu.ExportCharsetBatch，之后跑 tools-rebuild-font.sh</summary>
+    public static void ExportCharsetBatch()
+    {
+        string chars = Loc.EditorAllChineseChars();
+        string path = System.IO.Path.Combine(Application.dataPath, "..", "FontCharset.txt");
+        System.IO.File.WriteAllText(path, chars, System.Text.Encoding.UTF8);
+        Debug.Log($"[Bloom] 已导出 {chars.Length} 个字符到 FontCharset.txt");
+    }
+
     [MenuItem("Tools/Bloom/Run Log/Clear")]
     static void ClearRunLog()
     {

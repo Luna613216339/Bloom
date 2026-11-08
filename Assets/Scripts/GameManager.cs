@@ -140,7 +140,10 @@ public class GameManager : MonoBehaviour
         else
         {
             level = LevelCatalog.Get(currentLevel);
-            title = Loc.F("game.level", currentLevel);
+            string levelTitle = level == null ? null : (Loc.IsZh ? level.NameZh : level.NameEn);
+            title = string.IsNullOrEmpty(levelTitle)
+                ? Loc.F("game.level", currentLevel)
+                : Loc.F("game.levelNamed", currentLevel, levelTitle);
         }
 
         GameUI.Instance.ShowGameplay(title, TargetCount, CurrentBallCount);
