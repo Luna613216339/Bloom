@@ -158,8 +158,9 @@ public static class BallPalette
     // ---- 商店主题。只在无尽模式生效，正式关卡永远用 ByLevel 表 ----
 
     // 0 号是免费初始主题，玩家一进商店就已经装备着它。
-    // 排列顺序：先白底后深色，深色排最后 —— 商店从左上往右下扫过去，
-    // 观感是"由浅入深"，最后那三张黑卡自成一组，不会和白底卡混在一起。
+    // 2026-11-08 用户定：深色主题全部删掉（深色底永远不要）。原来排在 6–10 号，
+    // 是数组末尾，删掉不影响前面主题的存档索引；老存档里买过的深色主题自动失效、装备回 0 号。
+    // 涩谷夜·暗、极光、午夜植物园、熔岩、糖霜的配色数组留在上面没删，git 里也能找回。
     //
     // ⚠️ 改动这几个数组会打乱存档索引（存档存的是索引号，不是名字）。
     // ProgressManager 有个 ThemeSchema 版本号，改完记得 +1，
@@ -167,20 +168,17 @@ public static class BallPalette
     static readonly Color[][] ThemePalettes =
     {
         HazySummer, Emerald, Sakura, Tiffany, ShibuyaNight, Rainbow,
-        ShibuyaNightDark, Aurora, MidnightGarden, Lava, Frosting,
     };
 
     public static readonly string[] ThemeNames =
     {
         "Hazy Summer", "Emerald", "Sakura", "Tiffany", "Shibuya Night", "Rainbow",
-        "Shibuya Dark", "Aurora", "Midnight Garden", "Lava", "Frosting",
     };
 
     /// <summary>主题名的中文版，索引和 ThemeNames 一一对应。取名走 Loc.ThemeName(i)</summary>
     public static readonly string[] ThemeNamesZh =
     {
         "朦胧夏日", "青苔", "樱花", "蒂芙尼", "涩谷夜", "彩虹",
-        "涩谷夜·暗", "极光", "午夜植物园", "熔岩", "糖霜",
     };
 
     /// <summary>按当前语言取主题名</summary>
@@ -197,36 +195,24 @@ public static class BallPalette
     ///
     /// 结构是一个金字塔，不是一条阶梯：
     ///   0    朦胧夏日 —— 免费默认
-    ///   50   青苔 / 涩谷夜·暗 —— **入场券，一浅一深**。
-    ///        定这么低是为了让第一次购买发生在第一局之内，而且让玩家一开始
-    ///        就能尝到深色。商店如果第一局摸不到，玩家就当它是装饰，之后不会再点。
-    ///   100~200  中间档，按主题本身定，没有"深色一律更贵"这种一刀切 ——
-    ///        深色占到商店一半时它就不是稀有品类了。
-    ///   300  蒂芙尼 / 极光 —— **两个旗舰**。只留两个，是为了让"最贵"这件事
-    ///        还有意义；三个以上就变成一堵墙，而且挡住的往往正是最花力气的东西。
+    ///   50   青苔 —— **入场券**。定这么低是为了让第一次购买发生在第一局之内；
+    ///        商店如果第一局摸不到，玩家就当它是装饰，之后不会再点。
+    ///   100~150  中间档，按主题本身定。
+    ///   300  蒂芙尼 —— 旗舰。（原来还有极光一个，2026-11-08 随深色主题一起删了）
     /// </summary>
     public static readonly int[] ThemePrices =
     {
         //  朦胧夏日 青苔 樱花 蒂芙尼 涩谷夜 彩虹
               0,     50, 100,  300,   100,  150,
-        //  涩谷夜·暗 极光 午夜植物园 熔岩 糖霜
-              50,    300,  200,     200, 200,
     };
 
     /// <summary>
-    /// 每个主题的背景色。白底是这个游戏的默认，深色主题各自带自己的底。
-    ///
-    /// 深色底不用纯黑：纯黑配霓虹会产生刺眼的振动感，而且任何 UI 接缝都会露出来。
-    /// 抬一点、往紫偏一点，才读得出"夜"而不是"关掉的屏幕"。
+    /// 每个主题的背景色。现在全是白底（深色主题 2026-11-08 删了），
+    /// 留着这张表和 IsDarkTheme 是因为深色分支的代码还在，以后不用再拆。
     /// </summary>
     static readonly Color[] ThemeBackgrounds =
     {
         Color.white, Color.white, Color.white, Color.white, Color.white, Color.white,
-        C("#15121E"),   // 涩谷夜·深色版：近黑的紫调
-        C("#0A1024"),   // 极光：近黑的夜蓝
-        C("#0D1512"),   // 午夜植物园：墨绿黑
-        C("#0C0304"),   // 熔岩：近纯黑，带一点红
-        C("#16131C"),   // 糖霜：近黑微紫
     };
 
     public static int ThemeCount => ThemePalettes.Length;

@@ -208,7 +208,7 @@ public class ShopUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 卡片的显示顺序。两列时左列全排浅色主题、右列全排深色 ——
+    /// 卡片的显示顺序。没有深色主题时（现在就是）按价格顺排；有深色时两列分开，左列浅色、右列深色 ——
     /// 浅和深是两种完全不同的观感，混在一起扫的时候眼睛要不停切换。
     /// 某一边先排完就留空位（-1），另一边继续往下走。
     /// 列数不是 2 时退回原来的顺序排列。
@@ -239,6 +239,9 @@ public class ShopUI : MonoBehaviour
         // 并列价把选择还给审美。
         light = light.OrderBy(i => BallPalette.ThemePrices[i]).ToList();
         dark = dark.OrderBy(i => BallPalette.ThemePrices[i]).ToList();
+
+        // 没有深色主题（2026-11-08 起就是这样）：不分左右两列，按价格从左到右、从上到下排
+        if (dark.Count == 0) return light.ToArray();
 
         int rows = Mathf.Max(light.Count, dark.Count);
         var order = new int[rows * 2];
