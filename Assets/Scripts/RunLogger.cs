@@ -46,6 +46,32 @@ public static class RunLogger
 #endif
     }
 
+    /// <summary>
+    /// 续命时调：刚记下的那行"没过"作废，这一轮打完会重新记一行。
+    /// 不撤的话同一轮会有一行没过、一行过了，平衡数据里通关率被压低。
+    /// </summary>
+    public static void DropLastRow()
+    {
+        var rows = new List<string>(StoredRows());
+        if (rows.Count == 0) return;
+        rows.RemoveAt(rows.Count - 1);
+        PlayerPrefs.SetString(Key, string.Join("\n", rows));
+        PlayerPrefs.Save();
+#if UNITY_EDITOR
+        try
+        {
+            if (!System.IO.File.Exists(FilePath)) return;
+            var lines = new List<string>(System.IO.File.ReadAllLines(FilePath));
+            if (lines.Count > 1) lines.RemoveAt(lines.Count - 1);   // 第一行是表头，不动
+            System.IO.File.WriteAllLines(FilePath, lines);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[RunLogger] 撤销最后一行失败：{e.Message}");
+        }
+#endif
+    }
+
     static void AppendToPrefs(string row)
     {
         var rows = new List<string>(StoredRows());

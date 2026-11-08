@@ -434,6 +434,7 @@ public class GameManager : MonoBehaviour
         if (!CanContinue) return false;
         if (!ProgressManager.TrySpendCoins(ContinuePrice)) return false;
         continuesUsed++;
+        if (endlessMode) RunLogger.DropLastRow();   // 失败那行作废，这轮打完重记
         lastPassed = false;
         State = GameState.WaitingForInput;
         GameUI.Instance.HideResult();
