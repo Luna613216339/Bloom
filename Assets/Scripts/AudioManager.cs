@@ -32,6 +32,16 @@ public class AudioManager : MonoBehaviour
     private AudioSource[] voices;
     private int nextVoice;
 
+    /// <summary>
+    /// 测试时整局静音：自动测试包（-autotest / -batchmode / -mute）一律不出声，
+    /// 不然半夜跑测试会突然响一串加速的连锁音。编辑器里 AI 进 Play 截图用
+    /// Editor/TestMute.cs 打开 Game 视图的 Mute Audio，退出 Play 自动恢复。
+    /// </summary>
+    public static bool Muted { get; private set; }
+
+    static bool HasArg(string key)
+        => System.Array.IndexOf(System.Environment.GetCommandLineArgs(), key) >= 0;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void Bootstrap()
     {
@@ -51,6 +61,15 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        Muted = !Application.isEditor &&
+                (Application.isBatchMode || HasArg("-autotest") || HasArg("-mute"));
+        if (Muted)
+        {
+            AudioListener.volume = 0f;
+            AudioListener.pause = true;
+            Debug.Log("[Audio] 测试运行，整局静音");
+        }
+
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.loop = true;
         musicSource.playOnAwake = false;
@@ -64,7 +83,7 @@ public class AudioManager : MonoBehaviour
             voices[i] = src;
         }
 
-        if (music != null)
+        if (music != null && !Muted)
         {
             musicSource.clip = music;
             musicSource.Play();
@@ -73,7 +92,7 @@ public class AudioManager : MonoBehaviour
 
     void Play(AudioClip clip, float pitch, float volumeScale)
     {
-        if (clip == null || voices == null) return;
+        if (Muted || clip == null || voices == null) return;
 
         var src = voices[nextVoice];
         nextVoice = (nextVoice + 1) % voices.Length;
