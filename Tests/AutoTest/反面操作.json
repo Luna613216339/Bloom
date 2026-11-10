@@ -142,13 +142,77 @@
    "id": "pincer",
    "actions": [
     {
-     "t": 4.6,
+     "t": 5.0,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
    "maxTime": 15
+  },
+  {
+   "name": "pincer 只关一扇门",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.8,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 5.5,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 关早了",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.0,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 4.0,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 4.6,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 关好门以后点笼子一头",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.8,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 4.8,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 6.0,
+     "type": "click",
+     "x": -1.6,
+     "y": -0.9
+    }
+   ],
+   "maxTime": 20
   },
   {
    "name": "jar 不关门",

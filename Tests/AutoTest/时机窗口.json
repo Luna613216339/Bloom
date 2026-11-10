@@ -944,7 +944,7 @@
    "maxTime": 20
   },
   {
-   "name": "pincer 两门同关@3.5、0.3 秒后点",
+   "name": "pincer 两门同关@3.5、0.5 秒后点正中",
    "id": "pincer",
    "actions": [
     {
@@ -958,16 +958,16 @@
      "door": 1
     },
     {
-     "t": 3.8,
+     "t": 4.0,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
   },
   {
-   "name": "pincer 两门同关@3.75、0.3 秒后点",
+   "name": "pincer 两门同关@3.75、0.5 秒后点正中",
    "id": "pincer",
    "actions": [
     {
@@ -981,16 +981,16 @@
      "door": 1
     },
     {
-     "t": 4.05,
+     "t": 4.25,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
   },
   {
-   "name": "pincer 两门同关@4.0、0.3 秒后点",
+   "name": "pincer 两门同关@4.0、0.5 秒后点正中",
    "id": "pincer",
    "actions": [
     {
@@ -1004,16 +1004,16 @@
      "door": 1
     },
     {
-     "t": 4.3,
+     "t": 4.5,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
   },
   {
-   "name": "pincer 两门同关@4.25、0.3 秒后点",
+   "name": "pincer 两门同关@4.25、0.5 秒后点正中",
    "id": "pincer",
    "actions": [
     {
@@ -1027,16 +1027,16 @@
      "door": 1
     },
     {
-     "t": 4.55,
+     "t": 4.75,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
   },
   {
-   "name": "pincer 两门同关@4.5、0.3 秒后点",
+   "name": "pincer 两门同关@4.5、0.5 秒后点正中",
    "id": "pincer",
    "actions": [
     {
@@ -1050,16 +1050,16 @@
      "door": 1
     },
     {
-     "t": 4.8,
+     "t": 5.0,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
   },
   {
-   "name": "pincer 两门同关@4.75、0.3 秒后点",
+   "name": "pincer 两门同关@4.75、0.5 秒后点正中",
    "id": "pincer",
    "actions": [
     {
@@ -1073,16 +1073,16 @@
      "door": 1
     },
     {
-     "t": 5.05,
+     "t": 5.25,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
   },
   {
-   "name": "pincer 两门同关@5.0、0.3 秒后点",
+   "name": "pincer 两门同关@5.0、0.5 秒后点正中",
    "id": "pincer",
    "actions": [
     {
@@ -1096,16 +1096,16 @@
      "door": 1
     },
     {
-     "t": 5.3,
+     "t": 5.5,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
   },
   {
-   "name": "pincer 两门同关@5.25、0.3 秒后点",
+   "name": "pincer 两门同关@5.25、0.5 秒后点正中",
    "id": "pincer",
    "actions": [
     {
@@ -1119,16 +1119,16 @@
      "door": 1
     },
     {
-     "t": 5.55,
+     "t": 5.75,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
   },
   {
-   "name": "pincer 两门同关@5.5、0.3 秒后点",
+   "name": "pincer 两门同关@5.5、0.5 秒后点正中",
    "id": "pincer",
    "actions": [
     {
@@ -1142,13 +1142,197 @@
      "door": 1
     },
     {
-     "t": 5.8,
+     "t": 6.0,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 两门同关@5.75、0.5 秒后点正中",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 5.75,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 5.75,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 6.25,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 两门同关@6.0、0.5 秒后点正中",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 6.0,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 6.0,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 6.5,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 左门@4.5、右门@3.5、8 秒点正中",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.5,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 3.5,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 8,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 左门@4.5、右门@4.0、8 秒点正中",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.5,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 4.0,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 8,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 左门@4.5、右门@4.5、8 秒点正中",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.5,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 4.5,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 8,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 左门@4.5、右门@5.0、8 秒点正中",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.5,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 5.0,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 8,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 左门@4.5、右门@5.5、8 秒点正中",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.5,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 5.5,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 8,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 左门@4.5、右门@6.0、8 秒点正中",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.5,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 6.0,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 8,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
   },
   {
    "name": "crossing 0.5 关左门、3.0 开、0.75 秒后点",

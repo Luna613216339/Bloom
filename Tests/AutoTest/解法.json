@@ -90,23 +90,23 @@
    "id": "pincer",
    "actions": [
     {
-     "t": 4.3,
+     "t": 4.8,
      "type": "door",
      "door": 0
     },
     {
-     "t": 4.3,
+     "t": 4.8,
      "type": "door",
      "door": 1
     },
     {
-     "t": 4.6,
+     "t": 5.4,
      "type": "click",
      "x": 0,
      "y": 0
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
   },
   {
    "name": "kaleidoscope 解法",

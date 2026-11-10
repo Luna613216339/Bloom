@@ -315,17 +315,24 @@ public static class LevelCatalog
         return d;
     }
 
-    /// <summary>旧第 8 关原样：两条蛇相向而行，各带两颗逃跑球，中间一个双门笼子</summary>
+    /// <summary>
+    /// 合围：两条蛇相向而行，各带两颗逃跑球，中间一个两头有门的笼子。两条蛇都钻进笼子的那一段时间里把两扇门都关上，再点笼子里。
+    /// 旧版（原第 8 关）笼子短，两扇门得在同一个 0.6 秒里都点到，两下点击落在半秒里太苛刻；
+    /// 关上以后球在笼子里各自随机乱弹。现在笼子加长（窗口 1.3 秒），队头被门拦住就整队停下，不再乱弹：
+    /// 关早了那条蛇在门外等着，再开它接着走；关晚了队头已经出去。
+    /// </summary>
     static LevelDef Pincer()
     {
         var d = SchoolLevel("pincer", "合围", "Pincer", 12, BallPalette.HazySummer);
         var a = SchoolDef.Line(new Vector2(-7.01f, -3.95f), new Vector2(6.89f, 3.97f), 6);
         var b = SchoolDef.Line(new Vector2(6.89f, 3.97f), new Vector2(-7.0f, -3.96f), 6);
-        a.Escape = 2; b.Escape = 2;
-        d.Schools.Add(a); d.Schools.Add(b);
-        d.Cages.Add(new CageDef(0.019f, 0.029f, 3.8f, 1.91f, 29.9f, true, true));
-        d.Doors.Add(new DoorDef(-1.614f, -0.916f, -60.2f, startsOpen: true));
-        d.Doors.Add(new DoorDef(1.673f, 0.965f, -60.2f, startsOpen: true));
+        foreach (var s in new[] { a, b }) { s.Escape = 2; s.Wave = false; s.HoldWhenBlocked = true; d.Schools.Add(s); }
+        const float w = 4.8f, rot = 29.9f;
+        var c = new Vector2(0.019f, 0.029f);
+        var u = Dir(rot) * (w * 0.5f);
+        d.Cages.Add(new CageDef(c.x, c.y, w, 1.91f, rot, true, true));
+        d.Doors.Add(new DoorDef(c.x - u.x, c.y - u.y, rot - 90f, startsOpen: true));
+        d.Doors.Add(new DoorDef(c.x + u.x, c.y + u.y, rot - 90f, startsOpen: true));
         return d;
     }
 
