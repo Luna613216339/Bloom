@@ -1,0 +1,610 @@
+{
+ "jobs": [
+  {
+   "name": "one-line 点队伍中段偏后",
+   "id": "one-line",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -3.8,
+     "y": -1.5
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "gate 不开闸",
+   "id": "gate",
+   "actions": [
+    {
+     "t": 7.0,
+     "type": "click",
+     "x": 5.2,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "waiting-line 开了闸再点",
+   "id": "waiting-line",
+   "actions": [
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 5.0,
+     "type": "click",
+     "x": -2.5,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "halt 不关门",
+   "id": "halt",
+   "actions": [
+    {
+     "t": 3.0,
+     "type": "click",
+     "x": -7,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "crossing 不动门",
+   "id": "crossing",
+   "actions": [
+    {
+     "t": 5.75,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "two-gates 一开场就开两闸",
+   "id": "two-gates",
+   "actions": [
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 5.0,
+     "type": "click",
+     "x": 5.0,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "net 不关门点笼子正中",
+   "id": "net",
+   "actions": [
+    {
+     "t": 8.0,
+     "type": "click",
+     "x": 0.4,
+     "y": 2.3
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "net 不关门点蓝球",
+   "id": "net",
+   "actions": [
+    {
+     "t": 8.0,
+     "type": "click",
+     "x": 0,
+     "y": 1.8
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "net 队尾还没进来就关门",
+   "id": "net",
+   "actions": [
+    {
+     "t": 4.5,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 8.0,
+     "type": "click",
+     "x": 0.4,
+     "y": 2.3
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "pincer 不关门",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 4.6,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "jar 不关门",
+   "id": "jar",
+   "actions": [
+    {
+     "t": 8.0,
+     "type": "click",
+     "x": 3.6,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "jar 关早了（队尾还在门外）",
+   "id": "jar",
+   "actions": [
+    {
+     "t": 6.2,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 7.7,
+     "type": "click",
+     "x": 3.6,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "jar 关晚了（队头已经出去）",
+   "id": "jar",
+   "actions": [
+    {
+     "t": 8.8,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 10.3,
+     "type": "click",
+     "x": 3.6,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "drift 开场就点线",
+   "id": "drift",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "drift 过了线再点",
+   "id": "drift",
+   "actions": [
+    {
+     "t": 3.9,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "backfire 点大团",
+   "id": "backfire",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": -3.2
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "guide-reroute 不关门",
+   "id": "guide-reroute",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 6.0,
+     "y": 0.5
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "guide-prepare 什么都不动",
+   "id": "guide-prepare",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -6.0,
+     "y": -3.4
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "guide-prepare 只开上门",
+   "id": "guide-prepare",
+   "actions": [
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -6.0,
+     "y": -3.4
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "guide-prepare 只关下门",
+   "id": "guide-prepare",
+   "actions": [
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 1
+    },
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -6.0,
+     "y": -3.4
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "fork 不切",
+   "id": "fork",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "click",
+     "x": 5.6,
+     "y": 1.6
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "fork 切早了",
+   "id": "fork",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "click",
+     "x": 5.6,
+     "y": 1.6
+    },
+    {
+     "t": 1.5,
+     "type": "door",
+     "door": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "fork 切晚了",
+   "id": "fork",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "click",
+     "x": 5.6,
+     "y": 1.6
+    },
+    {
+     "t": 2.7,
+     "type": "door",
+     "door": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "release 不开闸",
+   "id": "release",
+   "actions": [
+    {
+     "t": 3.6,
+     "type": "click",
+     "x": -1.1,
+     "y": 4.37
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "release 开闸马上点",
+   "id": "release",
+   "actions": [
+    {
+     "t": 0.2,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -1.1,
+     "y": 4.37
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "meteor 开场就点线顶",
+   "id": "meteor",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "click",
+     "x": 0,
+     "y": -0.2
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "meteor 飞过了再点",
+   "id": "meteor",
+   "actions": [
+    {
+     "t": 3.6,
+     "type": "click",
+     "x": 0,
+     "y": -0.2
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "shift-change 不切",
+   "id": "shift-change",
+   "actions": [
+    {
+     "t": 1.8,
+     "type": "click",
+     "x": 0,
+     "y": -0.7
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "boomerang 从上面点",
+   "id": "boomerang",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": 1.1
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "boomerang 从侧面点",
+   "id": "boomerang",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 1.1,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "shell 点正对面",
+   "id": "shell",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": -3.3
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "shell 点外面那截线",
+   "id": "shell",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": 4.65
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "key 点伞顶",
+   "id": "key",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -1.5,
+     "y": 2.9
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "key 点硬球",
+   "id": "key",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 2.0,
+     "y": -0.6
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "key 点尾巴",
+   "id": "key",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 2.0,
+     "y": -3.0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "two-locks 点五彩球",
+   "id": "two-locks",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 0,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "two-locks 点右锁那头",
+   "id": "two-locks",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 3.9,
+     "y": 0.8
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "two-locks 点左桥顶",
+   "id": "two-locks",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -2.05,
+     "y": 0.9
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "two-locks 点右路顶",
+   "id": "two-locks",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": 2.2,
+     "y": 4.2
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "two-locks 点左团",
+   "id": "two-locks",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -4.3,
+     "y": -1.35
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "bolt 开闸马上点",
+   "id": "bolt",
+   "actions": [
+    {
+     "t": 3.0,
+     "type": "door",
+     "door": 0
+    },
+    {
+     "t": 3.05,
+     "type": "click",
+     "x": 0.05,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  },
+  {
+   "name": "bolt 只点不开",
+   "id": "bolt",
+   "actions": [
+    {
+     "t": 3.0,
+     "type": "click",
+     "x": 0.05,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
+  }
+ ]
+}

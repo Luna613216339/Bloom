@@ -49,23 +49,18 @@
    "id": "net",
    "actions": [
     {
-     "t": 0.1,
+     "t": 7.5,
      "type": "door",
      "door": 0
     },
     {
-     "t": 6.3,
-     "type": "door",
-     "door": 0
-    },
-    {
-     "t": 6.6,
+     "t": 8.0,
      "type": "click",
-     "x": 0.9,
-     "y": 0.1
+     "x": 0.4,
+     "y": 2.3
     }
    ],
-   "maxTime": 15
+   "maxTime": 20
   },
   {
    "name": "crossing 解法",
@@ -191,10 +186,10 @@
      "t": 0.3,
      "type": "click",
      "x": 5.6,
-     "y": 0
+     "y": 1.6
     },
     {
-     "t": 1.9,
+     "t": 2.0,
      "type": "door",
      "door": 0
     }
@@ -366,10 +361,10 @@
    "id": "drift",
    "actions": [
     {
-     "t": 0.8,
+     "t": 2.8,
      "type": "click",
      "x": 0,
-     "y": 0.6
+     "y": 0
     }
    ],
    "maxTime": 15
@@ -392,7 +387,7 @@
    "id": "meteor",
    "actions": [
     {
-     "t": 1.2,
+     "t": 2.5,
      "type": "click",
      "x": 0,
      "y": -0.2
@@ -420,8 +415,8 @@
     {
      "t": 0.5,
      "type": "click",
-     "x": 0,
-     "y": 0
+     "x": -3.7,
+     "y": 0.25
     }
    ],
    "maxTime": 15
@@ -433,8 +428,8 @@
     {
      "t": 0.5,
      "type": "click",
-     "x": -3.8,
-     "y": 0
+     "x": -1.5,
+     "y": -0.6
     }
    ],
    "maxTime": 15
@@ -480,14 +475,14 @@
    "id": "jar",
    "actions": [
     {
-     "t": 8.3,
+     "t": 7.5,
      "type": "door",
      "door": 0
     },
     {
-     "t": 8.5,
+     "t": 8.6,
      "type": "click",
-     "x": 3.2,
+     "x": 3.6,
      "y": 0
     }
    ],
@@ -531,6 +526,32 @@
     }
    ],
    "maxTime": 35
+  },
+  {
+   "name": "long-wave 解法",
+   "id": "long-wave",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -8.2,
+     "y": 0
+    }
+   ],
+   "maxTime": 20
+  },
+  {
+   "name": "one-line 解法",
+   "id": "one-line",
+   "actions": [
+    {
+     "t": 0.5,
+     "type": "click",
+     "x": -0.8,
+     "y": 0
+    }
+   ],
+   "maxTime": 15
   }
  ]
 }
