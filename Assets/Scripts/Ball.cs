@@ -58,6 +58,7 @@ public class Ball : MonoBehaviour
     private Vector2 preferredFleeDir;
 
     private float splitAxisDeg = float.NaN;
+    private float splitAxisDeg2 = float.NaN;
     private float crackedAt = -1f;
     private readonly System.Collections.Generic.HashSet<int> spentSources = new System.Collections.Generic.HashSet<int>();
     private float fuse;
@@ -158,16 +159,41 @@ public class Ball : MonoBehaviour
 
     /// <summary>
     /// 分裂球：五彩外观，颜色烤在贴图里，不跟关卡配色走 —— 它必须在任何配色里都一眼认出来。
-    /// axisDeg 给了就沿固定方向正反飞，不给（NaN）就背着火源飞。
+    /// axisDeg 给了就是定向的：两颗火星沿固定方向飞（axisDeg2 不给就和第一颗正相反），并且画出瞄准虚线；
+    /// 不给（NaN）就背着火源飞，没有虚线。
     /// </summary>
-    public void SetAsSplitBall(float axisDeg = float.NaN)
+    public void SetAsSplitBall(float axisDeg = float.NaN, float axisDeg2 = float.NaN)
     {
         Kind = BallKind.Split;
         splitAxisDeg = axisDeg;
+        splitAxisDeg2 = axisDeg2;
         sr.sprite = SpriteHelper.Rainbow;
         sr.color = Color.white;
         sr.sortingOrder = 2;
+        if (IsAimed && Look.AimLines) gameObject.AddComponent<AimLine>().Configure(this);
     }
+
+    /// <summary>定向的分裂球（火星方向固定，和火从哪来无关）</summary>
+    public bool IsAimed => Kind == BallKind.Split && !float.IsNaN(splitAxisDeg);
+
+    /// <summary>定向分裂球的两个火星方向。瞄准虚线和真正分裂用的是同一份</summary>
+    public void AimDirections(out Vector2 a, out Vector2 b)
+    {
+        float r = splitAxisDeg * Mathf.Deg2Rad;
+        a = new Vector2(Mathf.Cos(r), Mathf.Sin(r));
+        if (float.IsNaN(splitAxisDeg2)) b = -a;
+        else
+        {
+            float r2 = splitAxisDeg2 * Mathf.Deg2Rad;
+            b = new Vector2(Mathf.Cos(r2), Mathf.Sin(r2));
+        }
+    }
+
+    /// <summary>火星从出生到自己炸掉能飞多远</summary>
+    public const float FragmentRange = FragmentSpeed * FragmentFuse;
+    /// <summary>火星的半径（相对分裂球直径）和出生时离球心的距离，瞄准虚线照这个描</summary>
+    public float FragmentRadius => currentScale * FragmentSizeRatio * 0.5f;
+    public float FragmentSpawnOffset => currentScale * 0.5f;
 
     /// <summary>硬球：外面多一层壳。壳用贴图里的透明环表现，颜色仍是关卡配色</summary>
     public void SetAsHardBall()
@@ -417,12 +443,7 @@ public class Ball : MonoBehaviour
     {
         Vector2 pos = transform.position;
         Vector2 a, b;
-        if (!float.IsNaN(splitAxisDeg))
-        {
-            float r = splitAxisDeg * Mathf.Deg2Rad;
-            a = new Vector2(Mathf.Cos(r), Mathf.Sin(r));
-            b = -a;
-        }
+        if (IsAimed) AimDirections(out a, out b);
         else
         {
             Vector2 forward = pos - from;

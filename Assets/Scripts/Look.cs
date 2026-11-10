@@ -12,6 +12,15 @@ public static class Look
     /// <summary>白模开关。关掉就回到每关各自的作者配色</summary>
     public static bool Whitebox = true;
 
+    /// <summary>
+    /// 定向分裂球的瞄准虚线：从五彩球画出两条点线，照着火星真正会飞的路线描（碰到关着的门和墙会折）。
+    /// 关掉就回到"看不见火星往哪飞"的旧样子，关卡照样能过。2026-11-10 Fable 定，要用户试玩确认。
+    /// </summary>
+    public static bool AimLines = true;
+
+    /// <summary>瞄准虚线的颜色。朱红留给"着火"，虚线用灰</summary>
+    public static Color Aim => new Color(0.42f, 0.42f, 0.42f, 0.55f);
+
     static bool Story => GameManager.Instance == null || !GameManager.Instance.IsEndless;
 
     /// <summary>此刻该不该按白模画：开关开着，而且不是无尽模式</summary>

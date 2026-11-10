@@ -112,7 +112,7 @@ public class LevelBuilder
                 ball.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
                 idleBalls.Add(ball);
             }
-            ApplyKind(ball, b.Kind, b.SplitAxisDeg);
+            ApplyKind(ball, b.Kind, b.SplitAxisDeg, b.SplitAxisDeg2);
         }
 
         if (def.Idle != null && def.Idle.Mode != IdleMode.None && idleBalls.Count > 0)
@@ -133,16 +133,16 @@ public class LevelBuilder
                 var vel = new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * speed;
                 var ball = Ball.Create(pos, vel, BallPalette.Cycle(palette, colorIndex++),
                     def.BallSize, def.ReactionMaxScale, def.ReactionDuration, def.ExpandSpeed);
-                ApplyKind(ball, sc.Kind, float.NaN);
+                ApplyKind(ball, sc.Kind, float.NaN, float.NaN);
             }
         }
     }
 
-    static void ApplyKind(Ball ball, BallKind kind, float splitAxis)
+    static void ApplyKind(Ball ball, BallKind kind, float splitAxis, float splitAxis2)
     {
         switch (kind)
         {
-            case BallKind.Split: ball.SetAsSplitBall(splitAxis); break;
+            case BallKind.Split: ball.SetAsSplitBall(splitAxis, splitAxis2); break;
             case BallKind.Hard: ball.SetAsHardBall(); break;
         }
     }
