@@ -16,6 +16,7 @@ public class Ball : MonoBehaviour
     /// 同一波火的几颗邻居会在这段时间里先后碰到它；要等火从别的路绕回来、或者火星飞到，才是第二次。
     /// </summary>
     public const float HardCooldown = 1.0f;
+    const float CrackBlinkPeriod = 0.2f;
 
     /// <summary>火星不算通关数，也不算场上球数</summary>
     public bool CountsForTarget => Kind != BallKind.Fragment;
@@ -245,6 +246,16 @@ public class Ball : MonoBehaviour
 
             // Rigidbody 勾了 FreezeRotation，物理不会转它，所以直接改 transform 就行
             transform.Rotate(0f, 0f, spinSpeed * Time.deltaTime);
+        }
+
+        // 硬球碎壳后的那一秒里来的火都不算数。这段时间它一闪一闪（像别的游戏里刚挨过打的无敌时间），
+        // 闪完了才吃得进第二把火 —— 不然玩家看着第二把火明明碰到了它却没炸，不知道为什么。
+        if (IsCracked && CurrentState == BallState.Moving)
+        {
+            float since = Time.time - crackedAt;
+            float alpha = since < HardCooldown && Mathf.Repeat(since, CrackBlinkPeriod) < CrackBlinkPeriod * 0.5f ? 0.3f : 1f;
+            var c = sr.color;
+            if (!Mathf.Approximately(c.a, alpha)) sr.color = new Color(c.r, c.g, c.b, alpha);
         }
 
         if (Kind == BallKind.Fragment && CurrentState == BallState.Moving)
