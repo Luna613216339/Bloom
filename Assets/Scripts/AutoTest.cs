@@ -39,7 +39,7 @@ public static class AutoTest
 
     /// <summary>
     /// type = "click"（x, y）、"door"（door = 建关顺序里第几扇，0 起）、
-    /// "shot"（截图到 -autoshots 目录，文件名 name；只在带窗口运行时有图）
+    /// "shot"（截图到 -autoshots 目录，文件名 name；带窗口运行时拍整屏，-batchmode 不带 -nographics 时拍相机画面）
     /// </summary>
     [Serializable]
     public class Act
@@ -250,7 +250,32 @@ public static class AutoTest
         static void Shot(string name)
         {
             if (string.IsNullOrEmpty(shotDir)) return;
-            ScreenCapture.CaptureScreenshot(Path.Combine(shotDir, name + ".png"));
+            string path = Path.Combine(shotDir, name + ".png");
+            if (!Application.isBatchMode)
+            {
+                ScreenCapture.CaptureScreenshot(path);
+                return;
+            }
+            // -batchmode 没有窗口，ScreenCapture 拍不到；让相机画到一张离屏贴图上再存。
+            // 没有 OnGUI 的字，但关卡本身（球、门、路线、瞄准虚线）都在。不能加 -nographics。
+            // 无人值守时带窗口的包起不来，这是 AI 自己看画面的办法。
+            var cam = Camera.main;
+            if (cam == null) return;
+            const int w = 1280, h = 720;
+            var rt = RenderTexture.GetTemporary(w, h, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default, 4);
+            var prevTarget = cam.targetTexture;
+            var prevActive = RenderTexture.active;
+            cam.targetTexture = rt;
+            cam.Render();
+            cam.targetTexture = prevTarget;
+            RenderTexture.active = rt;
+            var tex = new Texture2D(w, h, TextureFormat.RGB24, false);
+            tex.ReadPixels(new Rect(0, 0, w, h), 0, 0);
+            tex.Apply();
+            RenderTexture.active = prevActive;
+            RenderTexture.ReleaseTemporary(rt);
+            File.WriteAllBytes(path, tex.EncodeToPNG());
+            UnityEngine.Object.Destroy(tex);
         }
 
         IEnumerator RunScripted(Job job, Result r)
