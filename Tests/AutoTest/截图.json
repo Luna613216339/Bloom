@@ -1,0 +1,436 @@
+{
+ "jobs": [
+  {
+   "name": "截图 01 long-wave",
+   "id": "long-wave",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "01-long-wave"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 02 one-line",
+   "id": "one-line",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "02-one-line"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 03 ripple",
+   "id": "ripple",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "03-ripple"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 04 gears",
+   "id": "gears",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "04-gears"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 05 hoop",
+   "id": "hoop",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "05-hoop"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 06 kaleidoscope",
+   "id": "kaleidoscope",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "06-kaleidoscope"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 07 gate",
+   "id": "gate",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "07-gate"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 08 waiting-line",
+   "id": "waiting-line",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "08-waiting-line"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 09 halt",
+   "id": "halt",
+   "actions": [
+    {
+     "t": 2.0,
+     "type": "shot",
+     "name": "09-halt"
+    }
+   ],
+   "maxTime": 2.5
+  },
+  {
+   "name": "截图 10 crossing",
+   "id": "crossing",
+   "actions": [
+    {
+     "t": 2.0,
+     "type": "shot",
+     "name": "10-crossing"
+    }
+   ],
+   "maxTime": 2.5
+  },
+  {
+   "name": "截图 11 two-gates",
+   "id": "two-gates",
+   "actions": [
+    {
+     "t": 4.0,
+     "type": "shot",
+     "name": "11-two-gates"
+    }
+   ],
+   "maxTime": 4.5
+  },
+  {
+   "name": "截图 12 rose",
+   "id": "rose",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "12-rose"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 13 net",
+   "id": "net",
+   "actions": [
+    {
+     "t": 4.0,
+     "type": "shot",
+     "name": "13-net"
+    }
+   ],
+   "maxTime": 4.5
+  },
+  {
+   "name": "截图 14 pincer",
+   "id": "pincer",
+   "actions": [
+    {
+     "t": 2.0,
+     "type": "shot",
+     "name": "14-pincer"
+    }
+   ],
+   "maxTime": 2.5
+  },
+  {
+   "name": "截图 15 jar",
+   "id": "jar",
+   "actions": [
+    {
+     "t": 2.0,
+     "type": "shot",
+     "name": "15-jar"
+    }
+   ],
+   "maxTime": 2.5
+  },
+  {
+   "name": "截图 16 loom",
+   "id": "loom",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "16-loom"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 17 drift",
+   "id": "drift",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "17-drift"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 18 strings",
+   "id": "strings",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "18-strings"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 19 spark",
+   "id": "spark",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "19-spark"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 20 relay",
+   "id": "relay",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "20-relay"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 21 guide-bounce",
+   "id": "guide-bounce",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "21-guide-bounce"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 22 guide-reroute",
+   "id": "guide-reroute",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "22-guide-reroute"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 23 guide-prepare",
+   "id": "guide-prepare",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "23-guide-prepare"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 24 fork",
+   "id": "fork",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "24-fork"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 25 release",
+   "id": "release",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "25-release"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 26 meteor",
+   "id": "meteor",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "26-meteor"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 27 binary",
+   "id": "binary",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "27-binary"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 28 shift-change",
+   "id": "shift-change",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "28-shift-change"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 29 backfire",
+   "id": "backfire",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "29-backfire"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 30 boomerang",
+   "id": "boomerang",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "30-boomerang"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 31 shell",
+   "id": "shell",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "31-shell"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 32 key",
+   "id": "key",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "32-key"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 33 spiral",
+   "id": "spiral",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "33-spiral"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 34 two-locks",
+   "id": "two-locks",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "34-two-locks"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 35 bolt",
+   "id": "bolt",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "35-bolt"
+    }
+   ],
+   "maxTime": 0.8
+  },
+  {
+   "name": "截图 36 meander",
+   "id": "meander",
+   "actions": [
+    {
+     "t": 0.3,
+     "type": "shot",
+     "name": "36-meander"
+    }
+   ],
+   "maxTime": 0.8
+  }
+ ]
+}
