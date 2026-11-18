@@ -1,0 +1,254 @@
+<title>Bloom 美术方案第二轮</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* 版式：单栏，没有目录。每一项是一块：你上次说的话 → 一张大图（左右换关、上面换方案）→ 一排选择 + 备注。最下面自动拼回复。只做深色。 */
+:root {
+  color-scheme: dark;
+  --bg: #12161b; --panel: #1a2027; --panel2: #222a33; --line: #2e3742;
+  --fg: #e6ebf0; --dim: #9aa7b4; --faint: #6c7986;
+  --accent: #ff6a45; --accent-ink: #1a0d08; --blue: #8fc4ea; --ok: #59c9a5;
+  --sans: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.7 var(--sans); }
+.wrap { max-width: 1280px; margin: 0 auto; padding-block: 28px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: .02em; text-wrap: balance; }
+h2 { font-size: 19px; margin: 56px 0 4px; color: var(--blue); font-weight: 600; }
+h3 { font-size: 18px; margin: 0; font-weight: 600; }
+p { margin: 8px 0; max-width: 46em; }
+.lead { color: var(--dim); }
+.how { background: var(--panel); border-radius: 10px; padding: 14px 18px; margin: 18px 0; }
+.how li { margin: 3px 0; } .how ul { margin: 6px 0; padding-left: 1.3em; }
+kbd { font: 12px var(--mono); background: var(--panel2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(6px);
+  display: flex; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--dim); }
+.bar b { color: var(--fg); font-variant-numeric: tabular-nums; }
+.bar .meter { flex: 1; height: 4px; background: var(--panel2); border-radius: 2px; overflow: hidden; min-width: 40px; }
+.bar .meter i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+.bar a { color: var(--fg); text-decoration: none; background: var(--panel2); padding: 4px 12px; border-radius: 6px; white-space: nowrap; }
+
+.item { margin: 26px 0 0; padding: 20px 0 0; border-top: 1px solid var(--line); scroll-margin-top: 60px; }
+.item .id { font: 600 13px var(--mono); color: var(--accent); margin-right: 10px; }
+.said { color: var(--dim); border-left: 3px solid var(--line); padding: 2px 0 2px 12px; margin: 10px 0; max-width: 52em; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 10px; }
+.tab { font: inherit; color: var(--dim); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 14px; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.tab b { font: 700 16px var(--mono); color: var(--fg); }
+.tab[aria-pressed="true"] { background: var(--panel2); border-color: var(--blue); color: var(--fg); }
+.tab .rec { font-size: 11px; color: var(--ok); border: 1px solid var(--ok); border-radius: 4px; padding: 0 5px; }
+.stage { position: relative; background: #0b0e11; border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 9; max-width: 100%; }
+.stage img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.stage .wait { position: absolute; inset: 0; display: grid; place-items: center; color: var(--faint); }
+.nav { position: absolute; top: 0; bottom: 0; width: 13%; min-width: 44px; border: 0; background: transparent; color: #fff; cursor: pointer; font-size: 30px; opacity: .0; transition: opacity .15s; }
+.stage:hover .nav, .nav:focus-visible { opacity: .9; }
+.nav span { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: rgba(10,14,18,.62); }
+.nav.l { left: 0; } .nav.r { right: 0; }
+.under { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 8px 0 0; color: var(--dim); font-size: 13.5px; }
+.lv { display: flex; flex-wrap: wrap; gap: 6px; }
+.lv button { font: inherit; font-size: 13px; color: var(--dim); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 2px 11px; cursor: pointer; }
+.lv button[aria-pressed="true"] { color: var(--bg); background: var(--fg); border-color: var(--fg); }
+.idea { margin: 10px 0 0; min-height: 3.4em; }
+.idea b { color: var(--blue); }
+.why { color: var(--dim); font-size: 14px; }
+.pick { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 14px 0 0; background: var(--panel); border-radius: 10px; padding: 10px 12px; }
+.pick > span { color: var(--dim); font-size: 13px; margin-right: 2px; }
+.pick button { font: 600 14px var(--sans); min-width: 48px; color: var(--fg); background: var(--panel2); border: 1px solid var(--line); border-radius: 7px; padding: 6px 13px; cursor: pointer; }
+.pick button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.pick input { flex: 1 1 260px; min-width: 0; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 7px; padding: 6px 10px; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.tw { overflow-x: auto; margin: 12px 0; }
+table { border-collapse: collapse; font-size: 14px; min-width: 620px; }
+th, td { text-align: left; padding: 7px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--dim); font-weight: 500; white-space: nowrap; }
+td.k { font: 700 14px var(--mono); color: var(--accent); }
+.good { color: var(--ok); } .bad { color: var(--accent); }
+.grid36 { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; margin: 12px 0; }
+.grid36 div { background: var(--panel); border-radius: 7px; padding: 6px 9px; font-size: 13px; display: flex; justify-content: space-between; gap: 6px; }
+.grid36 b { font-family: var(--mono); } .grid36 .C b { color: var(--accent); } .grid36 .B b { color: var(--blue); }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 12px 0; }
+.thumbs figure { margin: 0; } .thumbs img { border-radius: 8px; display: block; width: 100%; } .thumbs figcaption { font-size: 13px; color: var(--dim); margin-top: 4px; }
+.done { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin: 14px 0; }
+.done div { background: var(--panel); border-radius: 9px; padding: 10px 14px; }
+.done b { display: block; } .done i { font-style: normal; color: var(--ok); font-size: 13.5px; } .done span { color: var(--dim); font-size: 13.5px; display: block; }
+#reply { width: 100%; box-sizing: border-box; min-height: 300px; font: 14px/1.7 var(--sans); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; resize: vertical; }
+.copy { font: 600 15px var(--sans); background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 9px 20px; cursor: pointer; margin: 10px 10px 0 0; }
+#copied { color: var(--ok); }
+@media (max-width: 600px) { .nav { opacity: .9; } h1 { font-size: 22px; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <h1>Bloom 美术方案 · 第二轮</h1>
+  <p class="lead">2026-11-18。按你对第一轮的回复重做。关卡画面这一轮全部是游戏里真跑出来的截图和动图，颜色和形状就是游戏里的样子；只有「四、界面」是效果图。</p>
+  <div class="how">
+    <ul>
+      <li>每一项一张大图。图上面的 <b>A / B / C</b> 换方案，图下面的关名（或键盘 <kbd>←</kbd> <kbd>→</kbd>）换关卡；换方案时停在同一关，方便来回比。键盘 <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 也能换方案。</li>
+      <li>看完在「我选」那一排点一下，想说的写在旁边那一格。页面最下面会自动拼好回复，一键复制发给我。</li>
+      <li>先看<b>硬球</b>那三项（规则要你拍板），再看配色，其余可以跳着看。</li>
+    </ul>
+  </div>
+  <div class="bar"><span>已选 <b id="n">0</b> / <b id="N">0</b></span><div class="meter"><i id="meter"></i></div><a href="#reply-sec">去复制回复 ↓</a></div>
+  <div id="main"></div>
+
+  <h2 id="reply-sec">回复</h2>
+  <p class="lead">下面是按你的选择拼好的，可以直接改。没选的项写着「还没选」。</p>
+  <textarea id="reply" aria-label="拼好的回复"></textarea>
+  <div><button class="copy" id="copy">复制回复</button><span id="copied" hidden>已复制</span></div>
+</div>
+
+<script>
+const DATA = /*DATA*/null;
+const KEY = 'bloom-art-round2';
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+const el = (tag, attrs, ...kids) => { const n = document.createElement(tag); for (const k in attrs || {}) { if (k === 'class') n.className = attrs[k]; else if (k.startsWith('on')) n.addEventListener(k.slice(2), attrs[k]); else n.setAttribute(k, attrs[k]); } for (const c of kids) n.append(c); return n; };
+const main = document.getElementById('main');
+const views = {};   // 每一项现在看的是哪个方案、哪一关
+let active = null;  // 键盘左右键作用在哪一项上
+
+// 我对「三层球」的理解、硬球规则的测试表：只属于硬球那一节
+const HARD_EXTRA = `
+<p><b>我对「三层球」的理解</b>（请确认）：硬球要挨<b>三下</b>才炸，画出来是芯外面套两层壳，每挨一下掉一层，最后一下打的是芯。不是「一秒内不算」那种等待，也不是外面再套一颗会着火的球。下面的 A 就是照这个理解做的。</p>
+<p>三个候选在四个硬球关上实测的结果（自动测试包跑的真实游戏代码；「随手一点」= 全屏撒点各点一次，过关的比例，越低说明越要想）：</p>
+<div class="tw"><table>
+<tr><th>关</th><th>现在的规则</th><th>A 数层数</th><th>B 一场火一层</th><th>C 两面夹</th></tr>
+<tr><td>31 硬壳</td><td>解法过；点正对面 19/23；随手一点 15%</td><td><span class="good">解法过；点正对面 19/23</span>；随手一点 2%。只要把这颗硬球标成三层，关卡不用动</td><td><span class="good">和现在一样</span>，随手一点 15%</td><td><span class="bad">点哪都过</span>（14%），要重摆</td></tr>
+<tr><td>32 钥匙</td><td>解法过；随手一点 6%</td><td><span class="good">不用改</span>（两层），6%</td><td><span class="good">不用改</span>，6%</td><td><span class="good">不用改</span>，6%</td></tr>
+<tr><td>34 双锁</td><td>解法过；随手一点 1%</td><td><span class="bad">谜题没了</span>：点五彩球就过，17%。要重做</td><td><span class="bad">原来的解法过不了</span>（27/35），要重做</td><td><span class="bad">谜题没了</span>，17%。要重做</td></tr>
+<tr><td>35 门闩</td><td>解法过；开闸马上点差一颗；随手一点 0%</td><td>解法过；<span class="good">开闸马上点也过</span>（不再卡那一拍）；只点不开闸不过；0%。可以不改</td><td><span class="bad">原来的解法差一颗</span>，要改</td><td>和 A 一样，可以不改</td></tr>
+</table></div>
+<p class="why">34 双锁的谜面本来就建在「两把火一秒内撞车」上，倒计时一删它一定要重做；你也说过它形状难看，正好一起换。在你选定之前，游戏里的正式规则没有动，36 关照旧全过。</p>`;
+
+function showIdx(it, v) { return Math.min(v.shot, it.shots.length - 1); }
+
+function render() {
+  let cat = '';
+  DATA.items.forEach(it => {
+    if (it.cat !== cat) {
+      cat = it.cat; main.append(el('h2', {}, cat));
+      if (cat.startsWith('一、')) decidedBlock();
+    }
+    const v = views[it.id] = { scheme: Math.max(0, it.schemes.findIndex(s => s.key === it.recommend)), shot: 0 };
+    const box = el('section', { class: 'item', id: 'i' + it.id.replace('.', '-') });
+    box.addEventListener('pointerenter', () => active = it.id);
+    box.addEventListener('focusin', () => active = it.id);
+    box.append(el('h3', {}, el('span', { class: 'id' }, it.id), it.name));
+    box.append(el('p', { class: 'said' }, it.feedback));
+    box.append(el('p', {}, it.decides));
+    if (it.id === 'H.1') box.append(el('div', {})), box.lastChild.innerHTML = HARD_EXTRA;
+
+    const tabs = el('div', { class: 'tabs' });
+    const img = el('img', { alt: '' }), wait = el('div', { class: 'wait' }, '这张图还在出，稍后补上');
+    const stage = el('div', { class: 'stage' }, img, wait);
+    const lv = el('div', { class: 'lv' }), note = el('span', {}), idea = el('p', { class: 'idea' });
+    const draw = () => {
+      const sc = it.schemes[v.scheme], i = showIdx(it, v), src = sc.imgs[i];
+      img.hidden = !src; wait.hidden = !!src;
+      if (src && img.getAttribute('src') !== src) img.src = src;
+      img.alt = `${it.name} ${sc.key} ${sc.name}，${it.shots[i].label}`;
+      [...tabs.children].forEach((b, k) => b.setAttribute('aria-pressed', k === v.scheme));
+      [...lv.children].forEach((b, k) => b.setAttribute('aria-pressed', k === i));
+      note.textContent = it.shots[i].note || '';
+      idea.replaceChildren(el('b', {}, `${sc.key}　${sc.name}　`), sc.idea);
+    };
+    v.draw = draw; v.n = it.shots.length; v.ns = it.schemes.length;
+    it.schemes.forEach((sc, k) => {
+      const b = el('button', { class: 'tab', type: 'button', onclick: () => { v.scheme = k; draw(); } }, el('b', {}, sc.key), sc.name);
+      if (it.kind === 'choice' && sc.key === it.recommend) b.append(el('span', { class: 'rec' }, '我推荐'));
+      tabs.append(b);
+    });
+    if (it.schemes.length > 1) box.append(tabs);
+    if (it.shots.length > 1) {
+      stage.append(el('button', { class: 'nav l', type: 'button', 'aria-label': '上一关', onclick: () => { v.shot = (showIdx(it, v) + v.n - 1) % v.n; draw(); } }, el('span', {}, '‹')));
+      stage.append(el('button', { class: 'nav r', type: 'button', 'aria-label': '下一关', onclick: () => { v.shot = (showIdx(it, v) + 1) % v.n; draw(); } }, el('span', {}, '›')));
+    }
+    it.shots.forEach((s, k) => lv.append(el('button', { type: 'button', onclick: () => { v.shot = k; draw(); } }, s.label)));
+    box.append(stage, el('div', { class: 'under' }, lv, note), idea);
+    if (it.why) box.append(el('p', { class: 'why' }, (it.kind === 'choice' ? `我推荐 ${it.recommend}。` : '') + it.why));
+    if (it.id === '3.7a') introTable(box);
+    box.append(pickRow(it.id, it.kind === 'choice' ? it.schemes.map(s => s.key).concat('都不要') : ['可以', '要改']));
+    main.append(box); draw();
+  });
+  wallsBlock();
+  document.getElementById('N').textContent = pickIds.length;
+  update();
+}
+
+const pickIds = [], pickNames = {};
+function pickRow(id, options, name) {
+  pickIds.push(id); pickNames[id] = name || (DATA.items.find(i => i.id === id) || {}).name || id;
+  const st = state[id] = state[id] || { pick: '', note: '' };
+  const row = el('div', { class: 'pick' }, el('span', {}, '我选'));
+  options.forEach(o => row.append(el('button', { type: 'button', 'aria-pressed': st.pick === o, onclick: e => {
+    st.pick = st.pick === o ? '' : o;
+    [...row.querySelectorAll('button')].forEach(b => b.setAttribute('aria-pressed', b.textContent === st.pick));
+    save(); update();
+  } }, o)));
+  const inp = el('input', { type: 'text', id: 'note-' + id.replace('.', '-'), placeholder: '想说的写这里（可以不写）', 'aria-label': id + ' 备注', value: st.note });
+  inp.addEventListener('input', () => { st.note = inp.value; save(); update(); });
+  row.append(inp);
+  return row;
+}
+
+function decidedBlock() {
+  main.append(el('p', { class: 'lead' }, '先说已经定了的。这九项这一轮不再出方案，已经并进新的「暂定基准」，下面所有图都带着它们：'));
+  const g = el('div', { class: 'done' });
+  DATA.decided.forEach(([n, pick, what]) => g.append(el('div', {}, el('b', {}, n), el('i', {}, '定：' + pick), el('span', {}, what))));
+  main.append(g);
+}
+
+function introTable(box) {
+  const g = el('div', { class: 'grid36' });
+  DATA.intros.forEach(([no, zh, k]) => g.append(el('div', { class: k }, `${+no} ${zh}`, el('b', {}, k))));
+  box.append(el('p', { class: 'why' }, '整张表（C = 从中心冒出来，B = 沿队伍长出来）：'), g);
+}
+
+function wallsBlock() {
+  main.append(el('h2', {}, '按关用的表：墙和笼子'));
+  const box = el('section', { class: 'item' });
+  box.append(el('h3', {}, el('span', { class: 'id' }, '2.5'), '墙和笼子，哪关用哪种'));
+  box.append(el('p', { class: 'said' }, '你说：笼子要厚重，用 A；墙个别关可以用 B（第 7 关用 B 更好看，但 B 不适合第 13 关）；第 17 关用 C 最好看。三种都保留，每关选最好看的那种，列一张表确认。'));
+  box.append(el('p', {}, '全游戏只有这十关有墙或笼子。规律是：笼子和要让火星撞的墙用 A 实心，「一堵墙中间一扇门」的闸用 B 空心，17 用 C。三种的样子是上一轮的效果图（旧配色，只看质感）：'));
+  const th = el('div', { class: 'thumbs' });
+  [['A', 'A 实心（第 13 关）'], ['B', 'B 空心描边（第 7 关）'], ['C', 'C 斜纹剖面（第 17 关）']].forEach(([k, cap]) => {
+    if (DATA.wallsImg[k]) th.append(el('figure', {}, el('img', { src: DATA.wallsImg[k], alt: cap, loading: 'lazy' }), el('figcaption', {}, cap)));
+  });
+  box.append(th);
+  const t = el('table', {}), tw = el('div', { class: 'tw' }, t);
+  t.append(el('tr', {}, ...['关', '这关有什么', '用', '为什么'].map(h => el('th', {}, h))));
+  DATA.walls.forEach(([no, zh, what, k, why]) => t.append(el('tr', {}, el('td', {}, `${+no} ${zh}`), el('td', {}, what), el('td', { class: 'k' }, k), el('td', {}, why))));
+  box.append(tw, pickRow('2.5', ['可以', '要改'], '墙和笼子的表'));
+  main.append(box);
+}
+
+function update() {
+  let n = 0;
+  const lines = pickIds.map(id => {
+    const st = state[id] || {}; if (st.pick) n++;
+    return `- ${id} ${pickNames[id]}：${st.pick || '还没选'}${st.note ? '，' + st.note.trim() : ''}`;
+  });
+  document.getElementById('n').textContent = n;
+  document.getElementById('meter').style.width = (pickIds.length ? 100 * n / pickIds.length : 0) + '%';
+  const ta = document.getElementById('reply');
+  if (document.activeElement !== ta) ta.value = '第二轮美术方案的回复：\n' + lines.join('\n');
+}
+
+document.addEventListener('keydown', e => {
+  if (/INPUT|TEXTAREA/.test(document.activeElement.tagName) || !active || !views[active]) return;
+  const v = views[active];
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { v.shot = (Math.min(v.shot, v.n - 1) + (e.key === 'ArrowRight' ? 1 : v.n - 1)) % v.n; v.draw(); e.preventDefault(); }
+  else if (/^[1-3]$/.test(e.key) && +e.key <= v.ns) { v.scheme = +e.key - 1; v.draw(); }
+});
+
+document.getElementById('copy').addEventListener('click', async () => {
+  const ta = document.getElementById('reply'), ok = document.getElementById('copied');
+  try { await navigator.clipboard.writeText(ta.value); ok.textContent = '已复制'; }
+  catch (e) { ta.focus(); ta.select(); ok.textContent = '没能自动复制，已经帮你全选，按 ⌘C'; }
+  ok.hidden = false; setTimeout(() => ok.hidden = true, 4000);
+});
+
+render();
+</script>
