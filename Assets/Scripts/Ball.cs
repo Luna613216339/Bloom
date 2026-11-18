@@ -66,6 +66,11 @@ public class Ball : MonoBehaviour
 
     public static PhysicsMaterial2D bounceMat;
 
+    // 给外观层（Fx）读的，只读
+    public float Scale => currentScale;
+    public SpriteRenderer Renderer => sr;
+    public Rigidbody2D Body => rb;
+
     private SpriteRenderer sr;
     private Rigidbody2D rb;
     private CircleCollider2D col;
@@ -151,7 +156,7 @@ public class Ball : MonoBehaviour
         IsEscapeBall = true;
         this.dangerRadius = dangerRadius;
         this.fleeSpeed = fleeSpeed;
-        sr.sprite = SpriteHelper.StripedCircle;
+        sr.sprite = Look.Skinned ? SpriteHelper.Circle : SpriteHelper.StripedCircle;
         sr.color = Look.Escape(color);
     }
 
@@ -170,7 +175,7 @@ public class Ball : MonoBehaviour
         Kind = BallKind.Split;
         splitAxisDeg = axisDeg;
         splitAxisDeg2 = axisDeg2;
-        sr.sprite = SpriteHelper.Rainbow;
+        sr.sprite = Look.Skinned ? SpriteHelper.Bands : SpriteHelper.Rainbow;
         sr.color = Color.white;
         sr.sortingOrder = 2;
         if (IsAimed && Look.AimLines) gameObject.AddComponent<AimLine>().Configure(this);
@@ -214,9 +219,11 @@ public class Ball : MonoBehaviour
         f.Kind = BallKind.Fragment;
         f.fuse = FragmentFuse;
         f.SourceId = GameManager.Instance.NextSourceId();
-        f.sr.sprite = SpriteHelper.Rainbow;
+        f.sr.sprite = Look.Skinned ? SpriteHelper.Circle : SpriteHelper.Rainbow;
+        if (Look.Skinned) f.sr.color = Look.Fire;
         f.sr.sortingOrder = 2;
-        f.AddTrail(Look.SparkTrail, 0.25f);
+        if (Look.On && Look.SparkFx != FxV.A) Fx.Spark(f);
+        else f.AddTrail(Look.SparkTrail, 0.25f);
         // 火星从出生起就是"活着的火"，连锁要等它烧完才算结束
         GameManager.Instance.ReactionStarted();
         return f;
@@ -252,7 +259,7 @@ public class Ball : MonoBehaviour
 
         // 硬球碎壳后的那一秒里来的火都不算数。这段时间它一闪一闪（像别的游戏里刚挨过打的无敌时间），
         // 闪完了才吃得进第二把火 —— 不然玩家看着第二把火明明碰到了它却没炸，不知道为什么。
-        if (IsCracked && CurrentState == BallState.Moving)
+        if (IsCracked && CurrentState == BallState.Moving && !(Look.On && Look.CrackFx != FxV.A))
         {
             float since = Time.time - crackedAt;
             float alpha = since < HardCooldown && Mathf.Repeat(since, CrackBlinkPeriod) < CrackBlinkPeriod * 0.5f ? 0.3f : 1f;
@@ -281,12 +288,14 @@ public class Ball : MonoBehaviour
                 if (triggerTimer <= 0f)
                 {
                     CurrentState = BallState.Shrinking;
-                    if (Look.Afterglow)
+                    if (Look.SoftVanish)
                     {
-                        Afterglow.Spawn(transform.position, currentScale, sr.color,
-                                       restColor.a > 0f ? restColor : BallPalette.WhiteboxStructure);
+                        if (Look.Afterglow)
+                            Afterglow.Spawn(transform.position, currentScale, sr.color,
+                                           restColor.a > 0f ? restColor : BallPalette.WhiteboxStructure);
                         vanishTimer = Look.VanishTime;
                     }
+                    if (CountsForTarget) Fx.NoteBurned(transform.position, currentScale);
                     GameManager.Instance.ReactionEnded();
                 }
                 break;
@@ -348,7 +357,9 @@ public class Ball : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.linearVelocity = direction * fleeSpeed;
         col.enabled = true;
-        AddTrail(sr.color, 0.4f);
+        AutoTest.Mark("flee");
+        if (Look.On && Look.FleeFx != FxV.A) Fx.Flee(this);
+        else AddTrail(sr.color, 0.4f);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -424,7 +435,9 @@ public class Ball : MonoBehaviour
     void Crack()
     {
         sr.sprite = SpriteHelper.Circle;
-        ShellBurst.Create(transform.position, currentScale, sr.color);
+        AutoTest.Mark("crack");
+        if (Look.On && Look.CrackFx != FxV.A) Fx.Crack(this);
+        else ShellBurst.Create(transform.position, currentScale, sr.color);
         if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
     }
 
@@ -452,7 +465,14 @@ public class Ball : MonoBehaviour
 
         // 着火的样子由外观层定：白模里换成强调色，彩色模式下是原色变半透明
         restColor = sr.color;
+        if (Look.Skinned && Kind == BallKind.Split)
+        {
+            // 色带贴图的颜色是烤进去的，着火时换回纯圆才能染成火的颜色
+            sr.sprite = SpriteHelper.Circle;
+            restColor = Look.Ink;
+        }
         sr.color = Look.Burn(sr.color, GameManager.Instance.IsDarkBackground);
+        Fx.Burn(this);
         GameManager.Instance.OnBallTriggered(this);
         GameManager.Instance.ReactionStarted();
 
@@ -469,9 +489,11 @@ public class Ball : MonoBehaviour
         triggerTimer = reactionDuration;
         var trail = GetComponent<TrailRenderer>();
         if (trail != null) trail.emitting = false;
+        if (Look.On && Look.SparkFx == FxV.C) sr.enabled = true;   // C 版飞的时候是线画的空心环，炸的时候换回实心
         var c = sr.color;
         restColor = c;
         sr.color = new Color(c.r, c.g, c.b, 0.45f);
+        Fx.Burn(this);
     }
 
     void SpawnFragments(Vector2 from)
@@ -487,6 +509,8 @@ public class Ball : MonoBehaviour
             a = Rotate(forward, SplitHalfAngleDeg);
             b = Rotate(forward, -SplitHalfAngleDeg);
         }
+        AutoTest.Mark("split");
+        Fx.SplitMoment(pos, a, b, currentScale);
         CreateFragment(pos, a, currentScale, reactionDuration);
         CreateFragment(pos, b, currentScale, reactionDuration);
     }

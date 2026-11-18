@@ -14,6 +14,8 @@ public class Door : MonoBehaviour
     public int Link => link;
     public int Index { get; private set; }
     public bool IsOpen => isOpen;
+    public bool Hovered => isHovered;
+    public Vector3 BaseScale => baseScale;
     private SpriteRenderer sr;
     private BoxCollider2D col;
     private Vector3 baseScale;
@@ -51,6 +53,8 @@ public class Door : MonoBehaviour
             sr.drawMode = SpriteDrawMode.Simple;
         }
         ApplyVisual(instant: true);
+        // 基准皮：门由 DoorSkin 另外画（两片门叶 / 百叶 / 转门），自己这张贴图不显示
+        if (Application.isPlaying && Look.Skinned) DoorSkin.Attach(this, sr);
     }
 
     void EnsureComponents()

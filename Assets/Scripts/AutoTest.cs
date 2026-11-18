@@ -20,6 +20,20 @@ public static class AutoTest
     static bool verbose;
     static bool trace;
     static string shotDir;
+    static int shotW = 1280, shotH = 720;
+    static bool marks;
+
+    /// <summary>当前这次尝试已经过了多少秒（Mark 用）</summary>
+    public static float TrialTime;
+
+    /// <summary>
+    /// 带 -automarks 时，游戏里的关键时刻（碎壳、分裂、逃跑、结算）各打一行日志 "[Mark] t=… 事件"。
+    /// 抓动图前先跑一遍看时间，再决定从第几秒开始录。正式游戏里什么都不做。
+    /// </summary>
+    public static void Mark(string what)
+    {
+        if (Active && marks) Debug.Log($"[Mark] t={TrialTime:F2} {what}");
+    }
 
     /// <summary>自动测试里的假钱包：不碰真实存档（编辑器和包共用同一份 PlayerPrefs），又能让续命按钮出现</summary>
     public static int FakeCoins = 999;
@@ -39,7 +53,9 @@ public static class AutoTest
 
     /// <summary>
     /// type = "click"（x, y）、"door"（door = 建关顺序里第几扇，0 起）、
-    /// "shot"（截图到 -autoshots 目录，文件名 name；带窗口运行时拍整屏，-batchmode 不带 -nographics 时拍相机画面）
+    /// "shot"（截图到 -autoshots 目录，文件名 name；带窗口运行时拍整屏，-batchmode 不带 -nographics 时拍相机画面）、
+    /// "film"（从 t 起连拍：x = 拍多少秒，y = 每秒几帧，默认 20；文件名 name-0001.png …，拼动图用。结算之后也接着拍）
+    /// 截图尺寸默认 1280×720，-autoshotsize 960x540 可以改。
     /// </summary>
     [Serializable]
     public class Act
@@ -99,6 +115,13 @@ public static class AutoTest
         driver.outPath = Arg("-autoout") ?? "autotest-result.json";
         verbose = Array.IndexOf(Environment.GetCommandLineArgs(), "-autoverbose") >= 0;
         trace = Array.IndexOf(Environment.GetCommandLineArgs(), "-autotrace") >= 0;
+        marks = Array.IndexOf(Environment.GetCommandLineArgs(), "-automarks") >= 0;
+        string size = Arg("-autoshotsize");
+        if (!string.IsNullOrEmpty(size))
+        {
+            var wh = size.ToLowerInvariant().Split('x');
+            if (wh.Length == 2 && int.TryParse(wh[0], out int sw) && int.TryParse(wh[1], out int sh)) { shotW = sw; shotH = sh; }
+        }
         shotDir = Arg("-autoshots");
         if (!string.IsNullOrEmpty(shotDir)) Directory.CreateDirectory(shotDir);
     }
@@ -261,7 +284,7 @@ public static class AutoTest
             // 无人值守时带窗口的包起不来，这是 AI 自己看画面的办法。
             var cam = Camera.main;
             if (cam == null) return;
-            const int w = 1280, h = 720;
+            int w = shotW, h = shotH;
             var rt = RenderTexture.GetTemporary(w, h, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default, 4);
             var prevTarget = cam.targetTexture;
             var prevActive = RenderTexture.active;
@@ -356,13 +379,23 @@ public static class AutoTest
             float t = 0f;
             int next = 0;
             bool finished = false;
+            string filmName = null;
+            float filmEnd = -1f, filmStep = 0.05f, filmNext = 0f;
+            int filmIndex = 0;
+            TrialTime = 0f;
             while (true)
             {
+                TrialTime = t;
                 while (next < acts.Count && acts[next].t <= t)
                 {
                     var a = acts[next++];
                     if (a.type == "door") gm.ToggleDoor(a.door);
                     else if (a.type == "shot") Shot(a.name);
+                    else if (a.type == "film")
+                    {
+                        filmName = a.name; filmEnd = t + a.x; filmStep = 1f / (a.y > 0f ? a.y : 20f);
+                        filmNext = t; filmIndex = 0;
+                    }
                     else if (a.type == "continue")
                     {
                         bool ok = gm.TryContinue();
@@ -372,9 +405,15 @@ public static class AutoTest
                     else gm.HandlePointer(new Vector2(a.x, a.y));
                 }
                 // 还有截图没拍完、或者后面还要续命，就先别收：结算面板也要拍到
-                bool pending = next < acts.Count && (acts[next].type == "shot" || acts[next].type == "continue");
-                if (gm.ResultCounter != resultBefore && !pending) { finished = true; break; }
-                if (t > maxTime) break;
+                bool pending = next < acts.Count && (acts[next].type == "shot" || acts[next].type == "continue" || acts[next].type == "film");
+                bool filming = filmName != null && t < filmEnd;
+                if (filming && t >= filmNext - 0.0001f)
+                {
+                    Shot($"{filmName}-{++filmIndex:D4}");
+                    filmNext += filmStep;
+                }
+                if (gm.ResultCounter != resultBefore && !pending && !filming) { finished = true; break; }
+                if (t > maxTime && !filming) break;
                 if (trace && Time.frameCount % 6 == 0)
                 {
                     var sb = new System.Text.StringBuilder($"[Trace] t={t:F2}");

@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public Color Background => endlessMode
         ? BallPalette.BackgroundForTheme(ProgressManager.EquippedTheme)
-        : Color.white;
+        : Look.Backdrop;
 
     /// <summary>HUD、点击圈这些灰度元素要靠它决定往亮还是往暗走</summary>
     public bool IsDarkBackground => endlessMode
@@ -159,11 +159,13 @@ public class GameManager : MonoBehaviour
             foreach (var school in built.Schools)
                 school.Init();
             built.SpawnBalls();
+            Fx.Intro(AllBalls);
         }
     }
 
     void ClearBalls()
     {
+        Fx.Reset();
         for (int i = AllBalls.Count - 1; i >= 0; i--)
         {
             if (AllBalls[i] != null)
@@ -348,6 +350,7 @@ public class GameManager : MonoBehaviour
             LastResultTriggered = triggeredCount;
             LastResultTarget = TargetCount;
             ResultCounter++;
+            AutoTest.Mark(lastPassed ? "result pass" : "result fail");
 
             if (endlessMode)
             {
@@ -438,6 +441,7 @@ public class GameManager : MonoBehaviour
         lastPassed = false;
         State = GameState.WaitingForInput;
         GameUI.Instance.HideResult();
+        Fx.ClearEnding();
         if (AudioManager.Instance != null) AudioManager.Instance.PlayPurchase();
         return true;
     }

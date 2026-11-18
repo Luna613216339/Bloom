@@ -147,7 +147,9 @@ public class GameUI : MonoBehaviour
 
     public void ShowResult(bool passed, int triggered, int target, bool hasNext)
     {
-        if (passed) Afterglow.Celebrate();   // 过关：满屏的余韵环从中心往外依次亮一下
+        // 过关：满屏的余韵环动一下；没过：余韵淡掉、没收到的球被标出来（各有三版，见 Look / Fx）
+        if (GameManager.Instance != null && !GameManager.Instance.IsEndless)
+            Fx.Result(passed, GameManager.Instance.AllBalls);
 
         this.currentCount = triggered;
         this.targetCount = target;

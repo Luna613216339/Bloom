@@ -40,12 +40,39 @@ public class Afterglow : MonoBehaviour
     Phase phase;
     float phaseTime;
     float flashDelay;
+    float flashTime = FlashTime, flashAlpha = FlashAlpha, flashGrow = FlashGrow, fadeTime = FadeTime;
     float fadeFrom;
     float sizeFrom;
+
+    public static int Count => live.Count;
+    public const float SweepSpeed = 11f;   // 过关 B 版那道大环扫出去的速度
+
+    /// <summary>换关 / 重开：上一局的环全部清掉</summary>
+    public static void ClearAll()
+    {
+        foreach (var a in live.ToArray()) if (a != null) Destroy(a.gameObject);
+        live.Clear();
+    }
+
+    /// <summary>直接生一圈看不见的残留环（场上没有余韵环、过关时又要让烧过的位置亮一下时用）</summary>
+    public static void SpawnResidue(Vector2 position, float diameter, Color burn, Color residue)
+    {
+        var a = Make(position, diameter, burn, residue);
+        a.tint = a.tintTo;
+        a.phase = Phase.Residue;
+        a.Apply(diameter, 0f);
+    }
 
     public static void Spawn(Vector2 position, float diameter, Color burn, Color residue)
     {
         if (!Look.Afterglow || diameter <= 0.01f) return;
+        var a = Make(position, diameter, burn, residue);
+        a.phase = Phase.Spread;
+        a.Apply(diameter, RingPeakAlpha);
+    }
+
+    static Afterglow Make(Vector2 position, float diameter, Color burn, Color residue)
+    {
 
         var go = new GameObject("Afterglow");
         go.transform.position = new Vector3(position.x, position.y, 0.5f);
@@ -59,22 +86,38 @@ public class Afterglow : MonoBehaviour
         a.tintFrom = new Color(burn.r, burn.g, burn.b, 1f);
         a.tintTo = new Color(residue.r, residue.g, residue.b, 1f);
         a.tint = a.tintFrom;
-        a.phase = Phase.Spread;
-        a.Apply(diameter, RingPeakAlpha);
         live.Add(a);
+        return a;
     }
 
     /// <summary>过关：从全场残留环的中心往外，一圈一圈依次亮一下，然后一起散掉</summary>
-    public static void Celebrate()
+    public static void Celebrate() => Celebrate(FxV.A, Vector2.zero);
+
+    /// <summary>
+    /// 过关的三版：A 从全场的中心往外依次亮；B 从最后一颗球（origin）扫出去，亮一下马上被带走；
+    /// C 全场一起慢慢长大、叠成花，再一起散。
+    /// </summary>
+    public static void Celebrate(FxV mode, Vector2 origin)
     {
         if (live.Count == 0) return;
         Vector2 c = Vector2.zero;
         foreach (var a in live) c += (Vector2)a.transform.position;
         c /= live.Count;
+        int i = 0;
         foreach (var a in live)
         {
-            float d = Vector2.Distance(c, a.transform.position);
+            float d = Vector2.Distance(mode == FxV.B ? origin : c, a.transform.position);
+            a.flashTime = FlashTime; a.flashAlpha = FlashAlpha; a.flashGrow = FlashGrow; a.fadeTime = FadeTime;
             a.flashDelay = d / WaveSpeed;
+            if (mode == FxV.B)
+            {
+                a.flashDelay = d / SweepSpeed; a.flashTime = 0.22f; a.flashAlpha = 0.85f; a.flashGrow = 0.1f; a.fadeTime = 0.35f;
+            }
+            else if (mode == FxV.C)
+            {
+                a.flashDelay = (i % 5) * 0.03f; a.flashTime = 1.5f; a.flashAlpha = 0.6f; a.flashGrow = 0.85f; a.fadeTime = 1.2f;
+            }
+            i++;
             a.sizeFrom = a.CurrentSize;
             a.fadeFrom = a.ring.color.a;
             a.phase = Phase.Flash;
@@ -91,6 +134,7 @@ public class Afterglow : MonoBehaviour
             a.sizeFrom = a.CurrentSize;
             a.phase = Phase.Fade;
             a.phaseTime = 0f;
+            a.fadeTime = FadeTime;
         }
     }
 
@@ -126,7 +170,7 @@ public class Afterglow : MonoBehaviour
 
             case Phase.Flash:
             {
-                float t = (phaseTime - flashDelay) / FlashTime;
+                float t = (phaseTime - flashDelay) / flashTime;
                 if (t < 0f) break;
                 if (t >= 1f)
                 {
@@ -139,12 +183,12 @@ public class Afterglow : MonoBehaviour
                 float bump = Mathf.Sin(t * Mathf.PI);                  // 亮起再回落
                 float grow = 1f - (1f - t) * (1f - t);                  // 一直往外长一点
                 tint = Color.Lerp(tintTo, tintFrom, bump);             // 亮起时短暂回到火的颜色
-                Apply(sizeFrom * (1f + FlashGrow * grow), Mathf.Lerp(fadeFrom, FlashAlpha, bump));
+                Apply(sizeFrom * (1f + flashGrow * grow), Mathf.Lerp(fadeFrom, flashAlpha, bump));
                 break;
             }
             case Phase.Fade:
             {
-                float t = Mathf.Clamp01(phaseTime / FadeTime);
+                float t = Mathf.Clamp01(phaseTime / fadeTime);
                 Apply(sizeFrom * (1f + 0.08f * t), fadeFrom * (1f - t) * (1f - t));
                 if (t >= 1f) Destroy(gameObject);
                 break;

@@ -19,6 +19,34 @@ public static class SpriteHelper
     /// 它的任务是在任何配色里都一眼认出"这颗不一样"，和逃跑球的条纹是同一个道理。
     /// 饱和度压到 0.8、明度 0.92，否则黄色那一瓣在白底上会飘。
     /// </summary>
+    private static Sprite _bands;
+    /// <summary>基准皮的分裂球：正圆里五道横向色带（降了饱和度的五彩），颜色烤在贴图里</summary>
+    public static Sprite Bands
+    {
+        get
+        {
+            if (_bands != null) return _bands;
+            const int res = 256;
+            string[] hex = { "#8A7A9E", "#7C97B5", "#8FA98C", "#D9705A", "#D9A441" };   // 自下而上
+            var cols = new Color[hex.Length];
+            for (int i = 0; i < hex.Length; i++) ColorUtility.TryParseHtmlString(hex[i], out cols[i]);
+            var tex = new Texture2D(res, res, TextureFormat.RGBA32, true);
+            float center = res / 2f, radius = center - 1f;
+            for (int y = 0; y < res; y++)
+                for (int x = 0; x < res; x++)
+                {
+                    float dist = Vector2.Distance(new Vector2(x, y), new Vector2(center, center));
+                    var c = cols[Mathf.Clamp(y * hex.Length / res, 0, hex.Length - 1)];
+                    c.a = Mathf.Clamp01(radius - dist);
+                    tex.SetPixel(x, y, c);
+                }
+            tex.Apply();
+            tex.filterMode = FilterMode.Trilinear;
+            _bands = Sprite.Create(tex, new Rect(0, 0, res, res), Vector2.one * 0.5f, res);
+            return _bands;
+        }
+    }
+
     public static Sprite Rainbow
     {
         get

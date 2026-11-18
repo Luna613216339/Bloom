@@ -9,6 +9,10 @@ public class ClickReaction : MonoBehaviour
     private int sourceId;
     private float vanish = -1f;
 
+    /// <summary>给外观层读：现在的直径、收尾时从 1 淡到 0 的进度</summary>
+    public float Scale => currentScale;
+    public float Fade01 => vanish >= 0f ? Mathf.Clamp01(vanish / Look.VanishTime) : 1f;
+
     private const float ExpandSpeed = 5f;
     private const float ShrinkSpeed = 4f;
 
@@ -32,6 +36,7 @@ public class ClickReaction : MonoBehaviour
         cr.sourceId = GameManager.Instance.NextSourceId();
 
         GameManager.Instance.ReactionStarted();
+        Fx.Click(cr, sr);
         return cr;
     }
 
@@ -51,10 +56,10 @@ public class ClickReaction : MonoBehaviour
             if (timer <= 0f)
             {
                 shrinking = true;
-                if (Look.Afterglow)
+                if (Look.SoftVanish)
                 {
                     // 玩家点出来的圈也留一道余韵，和球一样：实心淡掉，细环外扩
-                    Afterglow.Spawn(transform.position, currentScale, BallPalette.Accent, BallPalette.Accent);
+                    if (Look.Afterglow) Afterglow.Spawn(transform.position, currentScale, Look.Fire, Look.Fire);
                     vanish = Look.VanishTime;
                 }
                 GameManager.Instance.ReactionEnded();
