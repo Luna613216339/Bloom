@@ -165,9 +165,10 @@ public struct BallDef
     public float Size;              // 0 = 用关卡默认
     public float SplitAxisDeg;      // 分裂球专用：火星固定沿这个方向飞；NaN = 背着火源飞（不画瞄准虚线）
     public float SplitAxisDeg2;     // 第二颗火星的方向；NaN = 和第一颗正相反
+    public int Layers;              // 硬球专用：一共要挨几下才炸；0 = 默认。只有原型规则读它（见 Look.HardHits）
     public BallDef(float x, float y, BallKind kind = BallKind.Normal)
     {
-        Pos = new Vector2(x, y); Vel = Vector2.zero; Kind = kind; Size = 0f;
+        Pos = new Vector2(x, y); Vel = Vector2.zero; Kind = kind; Size = 0f; Layers = 0;
         SplitAxisDeg = float.NaN; SplitAxisDeg2 = float.NaN;
     }
 

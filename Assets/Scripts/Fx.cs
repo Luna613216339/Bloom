@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 动画方案（2026-11-18 美术方案审核）：每一项 A / B / C 三版里的 B 和 C 都在这个文件，A 是原来的代码。
-/// 选哪一版看 Look.cs 里的 ClickFx / PopFx / FleeFx / CrackFx / SparkFx / DoorFx / IntroFx / WinFx / FailFx。
+/// 动画方案（美术方案审核）：每一项除了 A（原来的代码）以外的版本都在这个文件。
+/// 选哪一版看 Look.cs 里的 ClickFx / PopFx / CrackFx / DoorFx / IntroFx / WinFx / FailFx。
+/// 第一轮没被选中的版本（逃跑 B/C、火星 B/C、点击圈 B/C、消失 C、碎壳 B/C、失败 B）已经删掉。
 ///
 /// 规矩：这里只画东西，不碰判定和时间。所有效果都是另外生出来的物体，读球的状态、跟着画；
 /// 不改球的 transform 缩放、碰撞体、状态机。球自己那张贴图最多被关掉显示（renderer.enabled）。
@@ -76,360 +77,232 @@ public static class Fx
     }
 
     // ================= 3.1 玩家点出的圈 =================
+    // 第二轮：用户要 A 的形态（一片淡淡的圆盘）里面再加涟漪，不要有很实的边。
+    //   D 圆盘里两道涟漪：点下去以后两圈细波先后从落点荡出去，快到边上就淡没了。
+    //   E 涟漪不断：圆盘还在的时候，每隔一小会儿从落点再荡出一圈。
+    //   F 只有涟漪：不画整片圆盘，圆盘本身就是几道很宽很淡的波，最外一道淡到看不出边。
 
     public static void Click(ClickReaction cr, SpriteRenderer sr)
     {
         if (!Look.On || Look.ClickFx == FxV.A) return;
         Vector2 pos = cr.transform.position;
         Color fire = Look.Fire;
-        sr.enabled = false;
+        var mode = Look.ClickFx;
 
-        if (Look.ClickFx == FxV.B)
+        if (mode == FxV.F)
         {
-            // 细环加落点：只画判定的那一圈边，里面几乎是空的，点下去的地方留一颗小点
-            var ring = Ring("ClickRing", pos, 2);
-            var fill = Disc("ClickFill", pos, 0f, A(fire, 0.07f), 0);
-            var dot = Disc("ClickDot", pos, 0.17f, fire, 2);
-            const float w = 0.07f;
-            FxRun.Go(ring.gameObject, age =>
+            sr.enabled = false;
+            var bands = new RingLine[4];
+            for (int i = 0; i < bands.Length; i++) bands[i] = Ring("ClickWave", pos, 2);
+            FxRun.Go(bands[0].gameObject, age =>
             {
                 if (cr == null)
                 {
-                    Object.Destroy(fill.gameObject); Object.Destroy(dot.gameObject);
+                    for (int i = 1; i < bands.Length; i++) Object.Destroy(bands[i].gameObject);
                     return false;
                 }
-                float r = cr.Scale * 0.5f, f = cr.Fade01;
-                ring.Set(Mathf.Max(0f, r - w * 0.5f), Mathf.Min(w, r), A(fire, 0.95f * f));
-                fill.transform.localScale = Vector3.one * cr.Scale;
-                fill.color = A(fire, 0.07f * f);
-                dot.transform.localScale = Vector3.one * 0.17f * Mathf.Min(1f, age / 0.08f) * f;
-                return true;
-            });
-        }
-        else
-        {
-            // 三道涟漪：最外一圈是判定边界，里面两圈慢一拍跟出来，先后撞到边上
-            var outer = Ring("ClickRing", pos, 2);
-            var in1 = Ring("ClickRipple1", pos, 2);
-            var in2 = Ring("ClickRipple2", pos, 2);
-            var fill = Disc("ClickFill", pos, 0f, A(fire, 0.16f), 0);
-            const float w = 0.06f;
-            FxRun.Go(outer.gameObject, age =>
-            {
-                if (cr == null)
+                float R = cr.Scale * 0.5f, f = cr.Fade01;
+                // 四道宽波一起撑满整个圆：越靠外越淡，每道波还在慢慢往外走，走到头从中心再出来
+                for (int i = 0; i < bands.Length; i++)
                 {
-                    Object.Destroy(in1.gameObject); Object.Destroy(in2.gameObject); Object.Destroy(fill.gameObject);
-                    return false;
+                    float u = Mathf.Repeat(i / (float)bands.Length + age * 0.22f, 1f);     // 0 = 圆心，1 = 边上
+                    float w = R / bands.Length * 0.62f;
+                    float a = 0.34f * (1f - u * u) * Mathf.Clamp01(u * 6f);
+                    bands[i].Set(Mathf.Max(w * 0.5f, R * u), w, A(fire, a * f));
                 }
-                float r = cr.Scale * 0.5f, f = cr.Fade01;
-                outer.Set(Mathf.Max(0f, r - w * 0.5f), Mathf.Min(w, r), A(fire, 0.95f * f));
-                fill.transform.localScale = Vector3.one * cr.Scale;
-                fill.color = A(fire, 0.16f * f);
-                float r1 = 1.5f * (age - 0.10f), r2 = 0.95f * (age - 0.20f);
-                in1.Set(Mathf.Max(0f, r1), 0.045f, A(fire, r1 > 0f && r1 < r - 0.03f ? 0.6f * f : 0f));
-                in2.Set(Mathf.Max(0f, r2), 0.04f, A(fire, r2 > 0f && r2 < r - 0.03f ? 0.42f * f : 0f));
                 return true;
             });
+            return;
         }
+
+        // D / E：圆盘就是原来那张贴图（稍微淡一点，给涟漪让位），上面叠涟漪
+        var c0 = sr.color;
+        sr.color = A(c0, c0.a * 0.8f);
+        int count = mode == FxV.D ? 2 : 12;
+        float gap = mode == FxV.D ? 0.16f : 0.34f, speed = mode == FxV.D ? 1.25f : 0.95f;
+        var rings = new RingLine[count];
+        for (int i = 0; i < count; i++) rings[i] = Ring("ClickRipple", pos, 2);
+        FxRun.Go(rings[0].gameObject, age =>
+        {
+            if (cr == null)
+            {
+                for (int i = 1; i < count; i++) Object.Destroy(rings[i].gameObject);
+                return false;
+            }
+            float R = cr.Scale * 0.5f, f = cr.Fade01;
+            for (int i = 0; i < count; i++)
+            {
+                float r = speed * (age - 0.06f - gap * i);
+                // 离边越近越淡，到边之前就没了，所以圆盘的边上不会多出一道实线
+                float k = R > 0.01f ? Mathf.Clamp01(r / R) : 1f;
+                float a = r <= 0f || k >= 1f ? 0f : 0.5f * (1f - k) * (1f - k) * Mathf.Clamp01(r * 8f);
+                rings[i].Set(Mathf.Max(0f, r), 0.04f, A(fire, a * f));
+            }
+            return true;
+        });
     }
 
     // ================= 3.2 普通球膨胀、消失 =================
+    // B 是第一轮的"从中心空掉"。用户：方向对，但最后不要剩一道很实的线。第二轮三版都在 B 上改：
+    //   D 空掉的同时变淡：空洞往外长，剩下的那圈边越薄越淡，最后是淡没的，不是"一道线啪地没了"。
+    //   E 空到一半就散：空洞只长到一半，剩下的宽环整个淡掉，从头到尾没有细线。
+    //   F 只淡出：不空，整片往外松一点、淡掉，什么线都不留。
 
-    /// <summary>球被点着的那一刻调。B：实心盘照旧，烧完从中心空掉；C：空心环加一颗实心小核</summary>
+    /// <summary>球被点着的那一刻调</summary>
     public static void Burn(Ball ball)
     {
         if (!Look.On || Look.PopFx == FxV.A || ball.IsGoldBall) return;
         var sr = ball.Renderer;
         Vector2 pos = ball.transform.position;
-        float baseSize = ball.Scale;
         Color burn = sr.color;                       // Look.Burn 给的颜色（带透明度）
-        Color fire = A(burn, 1f);
+        var mode = Look.PopFx;
 
-        if (Look.PopFx == FxV.B)
+        RingLine hole = null;
+        float endAt = -1f;
+        FxRun.Go(Track(new GameObject("Pop")), age =>
         {
-            RingLine hole = null;
-            float endAt = -1f;
-            FxRun.Go(Track(new GameObject("PopB")), age =>
+            if (ball == null) { if (hole != null) Object.Destroy(hole.gameObject); return false; }
+            if (ball.CurrentState != Ball.BallState.Shrinking) return true;
+            if (hole == null)
             {
-                if (ball == null) { if (hole != null) Object.Destroy(hole.gameObject); return false; }
-                if (ball.CurrentState != Ball.BallState.Shrinking) return true;
-                if (hole == null)
-                {
-                    hole = Ring("PopHole", pos, sr.sortingOrder);
-                    sr.enabled = false;
-                    endAt = age;
-                }
-                // 中心先空，空洞往外长，最后只剩一圈边，然后没了
-                float h = InOut((age - endAt) / Look.VanishTime);
-                float R = ball.Scale * 0.5f, w = R * (1f - h);
-                hole.Set(R - w * 0.5f, w, burn);
-                return true;
-            });
-        }
-        else
-        {
-            sr.enabled = false;
-            var core = Disc("PopCore", pos, baseSize, fire, 2);
-            var fill = Disc("PopFill", pos, baseSize, A(fire, 0.10f), 0);
-            var ring = Ring("PopRing", pos, 1);
-            const float w = 0.055f;
-            float endAt = -1f;
-            FxRun.Go(ring.gameObject, age =>
-            {
-                if (ball == null)
-                {
-                    Object.Destroy(core.gameObject); Object.Destroy(fill.gameObject);
-                    return false;
-                }
-                float f = 1f;
-                if (ball.CurrentState == Ball.BallState.Shrinking)
-                {
-                    if (endAt < 0f) endAt = age;
-                    f = 1f - Mathf.Clamp01((age - endAt) / Look.VanishTime);
-                }
-                float R = ball.Scale * 0.5f;
-                ring.Set(Mathf.Max(0f, R - w * 0.5f), w, A(fire, 0.9f * f));
-                fill.transform.localScale = Vector3.one * ball.Scale;
-                fill.color = A(fire, 0.10f * f);
-                core.transform.localScale = Vector3.one * baseSize * f;
-                return true;
-            });
-        }
-    }
-
-    // ================= 3.3 逃跑球 =================
-
-    public static void Flee(Ball ball)
-    {
-        var sr = ball.Renderer;
-        Color c = A(sr.color, 1f);
-        float size = ball.Scale;
-        Vector2 last = ball.transform.position;
-
-        if (Look.FleeFx == FxV.B)
-        {
-            // 先一惊：原地弹出一圈细环；跑的时候身后留一串越来越小的点
-            var alert = Ring("FleeAlert", last, 2);
-            Vector2 at = last;
-            FxRun.Go(alert.gameObject, age =>
-            {
-                float t = age / 0.38f;
-                alert.Set(size * 0.5f * Mathf.Lerp(1.1f, 2.6f, OutCubic(t)), 0.05f, A(c, 0.9f * (1f - t)));
-                return t < 1f;
-            });
-            float travelled = 0f;
-            FxRun.Go(Track(new GameObject("FleeDots")), age =>
-            {
-                if (ball == null || ball.CurrentState != Ball.BallState.Fleeing) return false;
-                Vector2 p = ball.transform.position;
-                travelled += Vector2.Distance(p, last);
-                last = p;
-                if (travelled >= 0.3f)
-                {
-                    travelled = 0f;
-                    var dot = Disc("FleeDot", p, size * 0.6f, A(c, 0.8f), 0);
-                    FxRun.Go(dot.gameObject, a2 =>
-                    {
-                        float k = 1f - a2 / 0.55f;
-                        dot.transform.localScale = Vector3.one * size * 0.6f * Mathf.Max(0f, k);
-                        return k > 0f;
-                    });
-                }
-                return true;
-            });
-        }
-        else
-        {
-            // 残影：身后跟着三个越来越淡的自己；停下来以后吐出一圈环，像喘了口气
-            var ghosts = new SpriteRenderer[3];
-            for (int i = 0; i < 3; i++) ghosts[i] = Disc("FleeGhost", last, size, A(c, 0.34f - i * 0.1f), 0);
-            var trail = new List<(float t, Vector2 p)>();
-            float stoppedAt = -1f;
-            bool moved = false;
-            FxRun.Go(Track(new GameObject("FleeGhosts")), age =>
-            {
-                bool gone = ball == null || ball.CurrentState != Ball.BallState.Fleeing;
-                if (!gone)
-                {
-                    Vector2 p = ball.transform.position;
-                    trail.Add((age, p));
-                    bool moving = ball.Body.linearVelocity.sqrMagnitude > 0.01f;
-                    if (moving) moved = true;
-                    if (moved && !moving && stoppedAt < 0f)
-                    {
-                        stoppedAt = age;
-                        var puff = Ring("FleePuff", p, 0);
-                        FxRun.Go(puff.gameObject, a2 =>
-                        {
-                            float t = a2 / 0.45f;
-                            puff.Set(size * 0.5f * Mathf.Lerp(1.05f, 1.9f, OutCubic(t)), 0.045f, A(c, 0.7f * (1f - t)));
-                            return t < 1f;
-                        });
-                    }
-                }
-                bool done = gone || (stoppedAt >= 0f && age - stoppedAt > 0.25f);
-                for (int i = 0; i < 3; i++)
-                {
-                    if (done) { Object.Destroy(ghosts[i].gameObject); continue; }
-                    float want = age - 0.045f * (i + 1);
-                    Vector2 gp = trail[0].p;
-                    for (int k = trail.Count - 1; k >= 0; k--) if (trail[k].t <= want) { gp = trail[k].p; break; }
-                    ghosts[i].transform.position = gp;
-                }
-                return !done;
-            });
-        }
-    }
-
-    // ================= 3.4 硬球碎壳 =================
-
-    public static void Crack(Ball ball)
-    {
-        var sr = ball.Renderer;
-        Color c = A(sr.color, 1f);
-        float r = ball.Scale * 0.5f;
-        Vector2 pos = ball.transform.position;
-
-        if (Look.CrackFx == FxV.B)
-        {
-            // 壳裂成三段弧飞开；之后那一秒不闪，球外一圈环像倒计时一样走完，走完才吃得进下一把火
-            for (int i = 0; i < 3; i++)
-            {
-                var arc = Ring("CrackArc", pos, 3);
-                float start = 20f + 120f * i;
-                FxRun.Go(arc.gameObject, age =>
-                {
-                    float t = age / 0.45f, e = OutCubic(t);
-                    arc.Set(r * Mathf.Lerp(1.0f, 2.0f, e), 0.055f, A(c, 1f - t), start + 30f * e, 96f, true);
-                    return t < 1f;
-                });
+                hole = Ring("PopHole", pos, sr.sortingOrder);
+                sr.enabled = false;
+                endAt = age;
             }
-            var clock = Ring("CrackClock", pos, 3);
-            FxRun.Go(clock.gameObject, age =>
+            float t = Mathf.Clamp01((age - endAt) / Look.VanishTime);
+            float R = ball.Scale * 0.5f;
+            switch (mode)
             {
-                if (ball == null || ball.CurrentState != Ball.BallState.Moving) return false;
-                float t = age / Ball.HardCooldown;
-                if (t >= 1f) return false;
-                clock.transform.position = ball.transform.position;
-                clock.Set(r * 1.55f, 0.05f, A(c, 0.85f), 90f, -360f * (1f - t), true);
-                return true;
-            });
-        }
-        else
-        {
-            // 壳不往外散，往里一收贴到球上；球一下子变浅，再用一秒慢慢回到本色（深浅就是"还要等多久"）
-            var shell = Ring("CrackShell", pos, 3);
-            FxRun.Go(shell.gameObject, age =>
-            {
-                float t = age / 0.2f;
-                if (ball != null) shell.transform.position = ball.transform.position;
-                shell.Set(r * Mathf.Lerp(1.7f, 1.0f, OutCubic(t)), 0.06f, A(c, 0.9f * (1f - t * t)));
-                return t < 1f;
-            });
-            Color light = Color.Lerp(c, Look.Backdrop, 0.68f);
-            FxRun.Go(Track(new GameObject("CrackTint")), age =>
-            {
-                if (ball == null || ball.CurrentState != Ball.BallState.Moving) return false;
-                float t = age / Ball.HardCooldown;
-                sr.color = Color.Lerp(light, c, Mathf.Clamp01(t * t));
-                return t < 1f;
-            });
-        }
-    }
-
-    // ================= 3.5 分裂球、火星 =================
-
-    /// <summary>分裂的那一下。B：母球处"啵"地一圈环；C：朝两个方向各闪一道短线</summary>
-    public static void SplitMoment(Vector2 pos, Vector2 a, Vector2 b, float size)
-    {
-        if (!Look.On || Look.SparkFx == FxV.A) return;
-        Color fire = Look.Fire;
-        if (Look.SparkFx == FxV.B)
-        {
-            var ring = Ring("SplitPulse", pos, 3);
-            FxRun.Go(ring.gameObject, age =>
-            {
-                float t = age / 0.3f;
-                ring.Set(size * 0.5f * Mathf.Lerp(1f, 2.4f, OutCubic(t)), 0.05f, A(fire, 0.9f * (1f - t)));
-                return t < 1f;
-            });
-        }
-        else
-        {
-            foreach (var d in new[] { a, b })
-            {
-                Vector2 dir = d;
-                var lr = Line("SplitStreak", 3, 0.06f, fire);
-                FxRun.Go(lr.gameObject, age =>
+                case FxV.B:
                 {
-                    float t = age / 0.22f;
-                    float head = size * 0.5f + Ball.FragmentSpeed * Mathf.Min(age, 0.22f);
-                    float tail = Mathf.Lerp(size * 0.5f, head, OutCubic(t));
-                    lr.SetPosition(0, pos + dir * tail);
-                    lr.SetPosition(1, pos + dir * head);
-                    lr.startColor = lr.endColor = A(fire, 0.8f * (1f - t));
-                    return t < 1f;
-                });
+                    // 中心先空，空洞往外长，最后只剩一圈边，然后没了
+                    float w = R * (1f - InOut(t));
+                    hole.Set(R - w * 0.5f, w, burn);
+                    break;
+                }
+                case FxV.D:
+                {
+                    float w = R * (1f - InOut(t));
+                    hole.Set(R - w * 0.5f, w, A(burn, burn.a * (1f - t) * (1f - t)));
+                    break;
+                }
+                case FxV.E:
+                {
+                    float w = R * (1f - 0.55f * OutCubic(t));
+                    hole.Set(R - w * 0.5f, w, A(burn, burn.a * (1f - t * t)));
+                    break;
+                }
+                default:
+                {
+                    float R2 = R * (1f + 0.07f * OutCubic(t));
+                    hole.Set(R2 * 0.5f, R2, A(burn, burn.a * (1f - t) * (1f - t)));
+                    break;
+                }
             }
+            return true;
+        });
+    }
+
+    // ================= 3.4 硬球掉一层壳 =================
+    // 第二轮：用户要"炸出碎石、带点小碎片飞溅"。壳本身由 HardShell 画，这里只管碎的那一下。
+    //   D 碎石四溅：壳沿着圆周裂成几块，朝四面弹开、打着转、越飞越小；夹着几粒更快的小碎屑。
+    //   E 碎石往下掉：弹出来以后带一点重量，划一道弧掉下去。
+    //   F 顺着火飞：碎石被火"崩"出去，都往背着火的那一边飞。
+    // A（默认）是原来那圈细线散开。
+
+    static readonly System.Random debrisRng = new System.Random(20261118);
+    static float Rnd(float a, float b) => a + (float)debrisRng.NextDouble() * (b - a);
+
+    /// <summary>一段壳（从 startDeg 起 sweepDeg 度、内外半径 inner / outer）碎掉。fire 是打它的火相对球心的方向</summary>
+    public static void ShellDebris(Vector2 center, float startDeg, float sweepDeg, float inner, float outer, Color color, Vector2 fire)
+    {
+        var mode = Look.CrackFx;
+        if (mode == FxV.A)
+        {
+            // 原来的样子：一圈（或一段）细线往外散开、变淡
+            var arc = Ring("CrackRing", center, 3);
+            float mid = (inner + outer) * 0.5f;
+            FxRun.Go(arc.gameObject, age =>
+            {
+                float t = age / 0.45f;
+                arc.Set(mid * Mathf.Lerp(1f, 2.1f, OutCubic(t)), 0.05f, A(color, 1f - t), startDeg, sweepDeg);
+                return t < 1f;
+            });
+            return;
+        }
+
+        Vector2 away = fire.sqrMagnitude > 0.0001f ? -fire.normalized : Vector2.up;
+        float thick = outer - inner, midR = (inner + outer) * 0.5f;
+        float arcLen = Mathf.Abs(sweepDeg) * Mathf.Deg2Rad * midR;
+        int chunks = Mathf.Clamp(Mathf.RoundToInt(arcLen / (thick * 2.4f)), 3, 8);
+        for (int i = 0; i < chunks; i++)
+        {
+            float deg = startDeg + sweepDeg * (i + Rnd(0.3f, 0.7f)) / chunks;
+            var dir = new Vector2(Mathf.Cos(deg * Mathf.Deg2Rad), Mathf.Sin(deg * Mathf.Deg2Rad));
+            Shard(center + dir * midR, dir, away, thick * Rnd(1.5f, 2.3f), color, mode, false);
+        }
+        int bits = chunks + 3;
+        for (int i = 0; i < bits; i++)
+        {
+            float deg = startDeg + sweepDeg * Rnd(0f, 1f);
+            var dir = new Vector2(Mathf.Cos(deg * Mathf.Deg2Rad), Mathf.Sin(deg * Mathf.Deg2Rad));
+            Shard(center + dir * outer, dir, away, thick * Rnd(0.5f, 0.85f), color, mode, true);
         }
     }
 
-    /// <summary>火星飞行时的样子。B：身后留一串越来越小的点；C：空心小环加两道速度线</summary>
-    public static void Spark(Ball f)
+    static void Shard(Vector2 pos, Vector2 radial, Vector2 away, float size, Color color, FxV mode, bool bit)
     {
-        var sr = f.Renderer;
-        Color fire = Look.Fire;
-        float size = f.Scale;
-        Vector2 last = f.transform.position;
+        // 一块不规则的四边形或三角形：棱角分明，不是圆的
+        int n = bit ? 3 : (debrisRng.Next(2) == 0 ? 4 : 5);
+        var pts = new Vector2[n];
+        float a0 = Rnd(0f, 360f);
+        for (int i = 0; i < n; i++)
+        {
+            float a = (a0 + 360f * i / n + Rnd(-18f, 18f)) * Mathf.Deg2Rad;
+            pts[i] = new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * size * 0.5f * Rnd(0.7f, 1.15f);
+        }
+        var mr = Shapes.Poly(null, bit ? "ShellBit" : "ShellShard", pts, color, 4);
+        Track(mr.gameObject);
+        mr.transform.position = pos;
 
-        if (Look.SparkFx == FxV.B)
+        Vector2 vel;
+        float life, drag, gravity = 0f;
+        float speed = bit ? Rnd(3.4f, 5.6f) : Rnd(1.9f, 3.4f);
+        var tangent = new Vector2(-radial.y, radial.x) * Rnd(-0.6f, 0.6f);
+        switch (mode)
         {
-            float travelled = 0.2f;
-            FxRun.Go(Track(new GameObject("SparkDots")), age =>
-            {
-                if (f == null || f.CurrentState != Ball.BallState.Moving) return false;
-                Vector2 p = f.transform.position;
-                travelled += Vector2.Distance(p, last);
-                last = p;
-                if (travelled >= 0.27f)
-                {
-                    travelled = 0f;
-                    var dot = Disc("SparkDot", p, size * 0.8f, A(fire, 0.9f), 0);
-                    FxRun.Go(dot.gameObject, a2 =>
-                    {
-                        float k = 1f - a2 / 0.6f;
-                        dot.transform.localScale = Vector3.one * size * 0.8f * Mathf.Max(0f, k);
-                        return k > 0f;
-                    });
-                }
-                return true;
-            });
+            case FxV.E:
+                vel = (radial + tangent * 0.5f) * speed * 0.8f + Vector2.up * Rnd(0.4f, 1.3f);
+                life = Rnd(0.7f, 0.95f); drag = 1.0f; gravity = 10f;
+                break;
+            case FxV.F:
+                vel = (radial * 0.45f + away * 1.25f + tangent * 0.4f) * speed;
+                life = Rnd(0.55f, 0.8f); drag = 3.4f;
+                break;
+            default:
+                vel = (radial + tangent) * speed;
+                life = Rnd(0.55f, 0.8f); drag = 3.4f;
+                break;
         }
-        else
+        if (bit) life *= 0.75f;
+        float spin = Rnd(-520f, 520f);
+        Vector2 p = pos;
+        float last = 0f;
+        FxRun.Go(mr.gameObject, age =>
         {
-            // 球自己那张实心贴图关掉，换成一圈线画的环（线宽固定，比贴图环清楚）；到点炸开时 Ball.Pop 会把贴图打开
-            sr.enabled = false;
-            var hollow = Ring("SparkRing", last, 2);
-            var l1 = Line("SparkLine", 0, 0.045f, fire);
-            var l2 = Line("SparkLine", 0, 0.045f, fire);
-            FxRun.Go(l1.gameObject, age =>
-            {
-                if (f == null || f.CurrentState != Ball.BallState.Moving)
-                {
-                    Object.Destroy(l2.gameObject); Object.Destroy(hollow.gameObject);
-                    return false;
-                }
-                hollow.transform.position = f.transform.position;
-                hollow.Set(size * 0.5f - 0.025f, 0.05f, fire);
-                Vector2 v = f.Body.linearVelocity;
-                if (v.sqrMagnitude < 0.01f) return true;
-                Vector2 d = v.normalized, n = new Vector2(-d.y, d.x), p = f.transform.position;
-                float near = size * 0.5f + 0.09f, len = Mathf.Min(0.42f, age * Ball.FragmentSpeed);
-                l1.SetPosition(0, p - d * near + n * 0.075f); l1.SetPosition(1, p - d * (near + len) + n * 0.075f);
-                l2.SetPosition(0, p - d * near - n * 0.075f); l2.SetPosition(1, p - d * (near + len) - n * 0.075f);
-                return true;
-            });
-        }
+            float dt = age - last; last = age;
+            vel.y -= gravity * dt;
+            vel *= Mathf.Exp(-drag * dt);
+            p += vel * dt;
+            float t = age / life;
+            mr.transform.position = p;
+            mr.transform.rotation = Quaternion.Euler(0f, 0f, spin * age);
+            // 前七成是实实在在的一块，最后三成缩小、淡掉
+            float k = Mathf.Clamp01((1f - t) / 0.3f);
+            mr.transform.localScale = Vector3.one * Mathf.Lerp(0.35f, 1f, k);
+            Shapes.SetColor(mr, A(color, k));
+            return t < 1f;
+        });
     }
 
     // ================= 3.7 开场 =================
@@ -462,7 +335,7 @@ public static class Fx
             {
                 float t = (age - delay) / Grow;
                 // 还没长完就被点着了：立刻交还给球自己（被 Burn 关掉显示的不要再打开）
-                if (ball.CurrentState != Ball.BallState.Moving) { if (Look.PopFx != FxV.C) sr.enabled = true; return false; }
+                if (ball.CurrentState != Ball.BallState.Moving) { sr.enabled = true; return false; }
                 if (t >= 1f) { sr.enabled = true; return false; }
                 proxy.transform.localScale = Vector3.one * (t <= 0f ? 0f : OutBack(t));
                 return true;
@@ -494,15 +367,22 @@ public static class Fx
                 foreach (var (pos, size) in burned) Afterglow.SpawnResidue(pos, size * 1.2f, Look.Fire, Look.Ink);
             Vector2 last = burned.Count > 0 ? burned[burned.Count - 1].pos : Vector2.zero;
             Afterglow.Celebrate(Look.WinFx, last);
-            if (Look.WinFx == FxV.B)
+            // B：一道大环从最后一颗球那里扫出去，扫到哪，哪里的环亮一下就被带走。
+            // 第二轮（用户：别用这么实的线，红圈饱和度调低）在 B 上改了三版：
+            //   D 细而淡：环细一半、颜色往底色里兑掉一大半。
+            //   E 不画大环：只有烧过的位置按远近依次亮一下，"扫过去"是看出来的，不是画出来的。
+            //   F 光带：一道很宽、很淡的带子扫过去，没有边线。
+            var mode = Look.WinFx;
+            if (mode == FxV.B || mode == FxV.D || mode == FxV.F)
             {
-                // 一道大环从最后一颗球那里扫出去，扫到哪，哪里的环亮一下就被带走
                 var big = Ring("WinSweep", last, -1);
-                Color fire = Look.Fire;
+                Color fire = mode == FxV.B ? Look.Fire : Color.Lerp(Look.Fire, Look.Backdrop, 0.45f);
+                float width = mode == FxV.B ? 0.07f : mode == FxV.D ? 0.035f : 0.9f;
+                float alpha = mode == FxV.B ? 0.75f : mode == FxV.D ? 0.5f : 0.16f;
                 FxRun.Go(big.gameObject, age =>
                 {
                     float r = Afterglow.SweepSpeed * age;
-                    big.Set(r, 0.07f, A(fire, 0.75f * Mathf.Clamp01(1f - r / 20f)));
+                    big.Set(Mathf.Max(width * 0.5f, r), width, A(fire, alpha * Mathf.Clamp01(1f - r / 20f)));
                     return r < 20f;
                 });
             }
@@ -516,21 +396,6 @@ public static class Fx
             if (ball == null || !ball.CountsForTarget) continue;
             if (ball.CurrentState != Ball.BallState.Moving && ball.CurrentState != Ball.BallState.Fleeing) continue;
             var b = ball;
-            if (Look.FailFx == FxV.B)
-            {
-                // 没收到的球褪成浅色：盖一片底色的半透明圆（跟着球走）
-                var go = new GameObject("FailVeil");
-                go.transform.SetParent(b.transform, false);
-                go.transform.localScale = Vector3.one * 1.06f;
-                var veil = go.AddComponent<SpriteRenderer>();
-                veil.sprite = SpriteHelper.Circle;
-                veil.sortingOrder = b.Renderer.sortingOrder + 1;
-                Color bg = Look.Backdrop;
-                veil.color = A(bg, 0f);
-                ending.Add(go);
-                FxRun.Go(go, age => { veil.color = A(bg, 0.62f * OutCubic(age / 0.5f)); return true; });
-            }
-            else
             {
                 // 没收到的球各被一圈细环圈出来：差的就是这几颗
                 var ring = RingLine.Create(new GameObject("FailMark"), b.transform.position, 3);

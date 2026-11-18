@@ -1,16 +1,16 @@
 using UnityEngine;
 
 /// <summary>
-/// 基准皮下的门（Look.Skin）：把门画成会动的造型，三种对应美术方案 2.6 / 3.6 的 A、B、C。
-///   A 伸缩门叶：关着是两片对上的门叶，开着各自缩回两侧只露一小截。
-///   B 百叶：关着是一排短条把门洞填满，开着全收到一侧叠成一摞。
-///   C 转门：一根横杆加一个轴，关着横在门洞上，开着转 90° 顺着通道立着。
+/// 基准皮下的门（Look.Skin）：把门画成会动的造型，对应美术方案 2.6 / 3.6 第二轮的三版（Look.DoorFx）。
+///   A 电梯门：两片门板在正中对上，开着各自缩回两侧只露一小截。（第一轮的 A，修掉了中间那道缝）
+///   D 伸缩门：一整片从门洞一头伸出来，开着缩回那一头。
+///   E 闸刀门：一头有轴，像扳电闸一样扳开 90°。
+/// 第一轮的百叶、转门已经删掉。
 /// 只是画面。门的碰撞体、开关逻辑、原来那 0.15 秒的缩放都还是 Door 自己管，这里只读 IsOpen。
 /// </summary>
 public class DoorSkin : MonoBehaviour
 {
     const float MoveTime = 0.2f;
-    int Slats = 6;             // 百叶的条数：门越长条越多，条的粗细大致不变
 
     Door door;
     SpriteRenderer baseRenderer;
@@ -35,7 +35,6 @@ public class DoorSkin : MonoBehaviour
         skin.thick = Mathf.Min(s.x, s.y);
         skin.open01 = door.IsOpen ? 1f : 0f;
         skin.color = Look.Door(door.Link != 0, Color.gray);
-        skin.Slats = Mathf.Clamp(Mathf.RoundToInt(skin.len / Mathf.Max(0.01f, skin.thick * 0.6f)), 5, 14);
         skin.Build();
         skin.Draw();
     }
@@ -56,33 +55,19 @@ public class DoorSkin : MonoBehaviour
 
     void Build()
     {
-        switch (Look.DoorFx)
+        // 三种都是一整块平头的门板，关着的时候把门洞填满、不留缝
+        parts = Look.DoorFx == FxV.A ? new[] { Part(thick, false), Part(thick, false) } : new[] { Part(thick, false) };
+        if (Look.DoorFx == FxV.E)
         {
-            case FxV.A:
-                parts = new[] { Part(thick, false), Part(thick, false) };
-                break;
-            case FxV.B:
-                parts = new LineRenderer[Slats];
-                for (int i = 0; i < Slats; i++) parts[i] = Part(len / Slats * 0.5f, true);
-                break;
-            default:
-                parts = new[] { Part(thick * 0.5f, true) };
-                var go = new GameObject("Pivot");
-                go.transform.SetParent(transform, false);
-                go.transform.localScale = Vector3.one * thick * 0.9f;
-                pivot = go.AddComponent<SpriteRenderer>();
-                pivot.sprite = SpriteHelper.Circle;
-                pivot.color = color;
-                pivot.sortingOrder = 4;
-                // 轴画成一颗带纸色芯的小圈，免得被看成一颗球
-                var hole = new GameObject("PivotHole");
-                hole.transform.SetParent(go.transform, false);
-                hole.transform.localScale = Vector3.one * 0.5f;
-                var hs = hole.AddComponent<SpriteRenderer>();
-                hs.sprite = SpriteHelper.Circle;
-                hs.color = Look.Backdrop;
-                hs.sortingOrder = 5;
-                break;
+            // 闸刀门的轴：门洞一头一颗小圆钉
+            var go = new GameObject("Pivot");
+            go.transform.SetParent(transform, false);
+            go.transform.localPosition = new Vector3(-len * 0.5f, 0f, 0f);
+            go.transform.localScale = Vector3.one * thick * 0.5f;
+            pivot = go.AddComponent<SpriteRenderer>();
+            pivot.sprite = SpriteHelper.Circle;
+            pivot.color = Look.Backdrop;
+            pivot.sortingOrder = 4;
         }
     }
 
@@ -100,39 +85,32 @@ public class DoorSkin : MonoBehaviour
     {
         Color c = door.Hovered ? Color.Lerp(color, Color.white, 0.3f) : color;
         float h = len * 0.5f;
+        float e = door.IsOpen ? Fx.OutCubic(open01) : 1f - Fx.OutCubic(1f - open01);
+        float stub = Mathf.Max(thick * 0.45f, len * 0.09f);
         switch (Look.DoorFx)
         {
             case FxV.A:
             {
-                // 两片平头的门叶：关着时在正中对上、留一道细缝；开着时各缩回去只露一小截
-                float e = Fx.OutCubic(open01);
-                float stub = Mathf.Max(thick * 0.45f, len * 0.09f);
-                float leaf = Mathf.Lerp(h - 0.025f, stub, door.IsOpen ? e : 1f - Fx.OutCubic(1f - open01));
+                // 电梯门：两片门板在正中对上（稍微叠一点，中间不留缝）；开的时候各自缩回墙里，只露一小截
+                float leaf = Mathf.Lerp(h + 0.004f, stub, e);
                 Seg(parts[0], new Vector2(-h, 0f), new Vector2(-h + leaf, 0f), c);
                 Seg(parts[1], new Vector2(h, 0f), new Vector2(h - leaf, 0f), c);
                 break;
             }
-            case FxV.B:
+            case FxV.D:
             {
-                float w = len / Slats * 0.5f, hy = Mathf.Max(0.001f, thick * 0.5f - w * 0.5f);
-                for (int i = 0; i < Slats; i++)
-                {
-                    // 离收拢那一侧越远的条越先动
-                    float lag = (Slats - 1 - i) * 0.06f;
-                    float e = Fx.InOut(Mathf.Clamp01(open01 * (1f + 0.06f * Slats) - (door.IsOpen ? lag : (i * 0.06f))));
-                    float closedX = -h + (i + 0.5f) * len / Slats;
-                    float openX = -h + w * 0.6f + i * w * 0.62f;
-                    float x = Mathf.Lerp(closedX, openX, e);
-                    Seg(parts[i], new Vector2(x, -hy), new Vector2(x, hy), c);
-                }
+                // 伸缩门：一整片从一头伸出来顶到另一头；开的时候缩回那一头，只露一小截
+                float leaf = Mathf.Lerp(len, stub, e);
+                Seg(parts[0], new Vector2(-h, 0f), new Vector2(-h + leaf, 0f), c);
                 break;
             }
             default:
             {
-                float e = door.IsOpen ? Fx.OutBack(open01) : 1f - Fx.OutBack(1f - open01);
-                float a = e * 90f * Mathf.Deg2Rad;
-                var d = new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * (h - thick * 0.25f);
-                Seg(parts[0], -d, d, c);
+                // 闸刀门：一头有轴，像扳电闸一样扳开 90°，开着时贴着门框立在一边（带一点回弹）
+                float eb = door.IsOpen ? Fx.OutBack(open01) : 1f - Fx.OutBack(1f - open01);
+                float a = eb * 90f * Mathf.Deg2Rad;
+                var hinge = new Vector2(-h, 0f);
+                Seg(parts[0], hinge, hinge + new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * len, c);
                 break;
             }
         }

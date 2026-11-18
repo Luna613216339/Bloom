@@ -71,6 +71,9 @@ public class GameManager : MonoBehaviour
     /// <summary>全局关卡号（1 起）</summary>
     public int GlobalLevel => currentLevel;
 
+    /// <summary>当前关卡的英文 id（无尽模式是 null）</summary>
+    public string LevelId => endlessMode || level == null ? null : level.Id;
+
     /// <summary>
     /// 球的配色。正式关卡锁死作者配色，无尽模式才用商店买的主题。
     /// SchoolSpawner 也从这里取。

@@ -72,6 +72,7 @@ public class Cage : MonoBehaviour
         sr.sprite = SpriteHelper.Square;
         sr.color = wallColor;
         sr.sortingOrder = 3;
+        if (Application.isPlaying) LevelBuilder.AddShadow(go.transform, transform);
 
         var rb = go.AddComponent<Rigidbody2D>();
         rb.bodyType = RigidbodyType2D.Static;

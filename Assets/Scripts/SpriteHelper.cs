@@ -19,6 +19,37 @@ public static class SpriteHelper
     /// 它的任务是在任何配色里都一眼认出"这颗不一样"，和逃跑球的条纹是同一个道理。
     /// 饱和度压到 0.8、明度 0.92，否则黄色那一瓣在白底上会飘。
     /// </summary>
+    private static Sprite _halves;
+    /// <summary>
+    /// 基准皮的分裂球（2.3 定 C「对半」）：一道透明的竖缝把正圆分成两半，右半赭黄、左半灰紫。
+    /// 用的时候把它转到"右半朝第一颗火星的方向"。
+    /// </summary>
+    public static Sprite Halves
+    {
+        get
+        {
+            if (_halves != null) return _halves;
+            const int res = 256;
+            ColorUtility.TryParseHtmlString("#E5A52E", out var right);
+            ColorUtility.TryParseHtmlString("#7A68B8", out var left);
+            var tex = new Texture2D(res, res, TextureFormat.RGBA32, true);
+            float center = res / 2f, radius = center - 1f, seam = res * 0.035f;
+            for (int y = 0; y < res; y++)
+                for (int x = 0; x < res; x++)
+                {
+                    float dist = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), new Vector2(center, center));
+                    float dx = x + 0.5f - center;
+                    var c = dx >= 0f ? right : left;
+                    c.a = Mathf.Clamp01(radius - dist) * Mathf.Clamp01(Mathf.Abs(dx) - seam);
+                    tex.SetPixel(x, y, c);
+                }
+            tex.Apply();
+            tex.filterMode = FilterMode.Trilinear;
+            _halves = Sprite.Create(tex, new Rect(0, 0, res, res), Vector2.one * 0.5f, res);
+            return _halves;
+        }
+    }
+
     private static Sprite _bands;
     /// <summary>基准皮的分裂球：正圆里五道横向色带（降了饱和度的五彩），颜色烤在贴图里</summary>
     public static Sprite Bands

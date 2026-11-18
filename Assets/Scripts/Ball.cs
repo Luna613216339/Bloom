@@ -62,6 +62,17 @@ public class Ball : MonoBehaviour
     private float splitAxisDeg2 = float.NaN;
     private float crackedAt = -1f;
     private readonly System.Collections.Generic.HashSet<int> spentSources = new System.Collections.Generic.HashSet<int>();
+    // ---- 硬球原型规则用（Look.HardRule，正式规则 Legacy 不读这些）----
+    private int hitsLeft = 2;                    // 还要挨几下才炸
+    private bool engulfed;                       // 「一场火一层」：现在是不是正被火围着
+    private int lastTouchFrame = -100;
+    private readonly bool[] sideGone = new bool[2];   // 「两面夹」：哪一侧的壳已经掉了
+    private HardShell shell;
+    /// <summary>硬球还要挨几下才炸（外观层读）</summary>
+    public int HitsLeft => hitsLeft;
+    // ---- 基准皮的小零件：错位影子、逃跑球的白点、分裂球的两半 ----
+    private SpriteRenderer shadow;
+    private GameObject eye, face;
     private float fuse;
 
     public static PhysicsMaterial2D bounceMat;
@@ -133,8 +144,28 @@ public class Ball : MonoBehaviour
         ball.reactionDuration = reactionDuration;
         ball.expandSpeed = expandSpeed;
 
+        if (Look.Skinned)
+        {
+            // 错位影子（1.2 定 B）：同形、平的、往下错开约 3 像素。着火时去掉
+            var sh = new GameObject("Shadow");
+            sh.transform.SetParent(go.transform, false);
+            sh.transform.localPosition = new Vector3(0f, -Look.ShadowDrop / Mathf.Max(0.01f, size), 0f);
+            ball.shadow = sh.AddComponent<SpriteRenderer>();
+            ball.shadow.sprite = SpriteHelper.Circle;
+            ball.shadow.color = Look.Shadow;
+            ball.shadow.sortingOrder = 0;
+        }
+
         GameManager.Instance.RegisterBall(ball);
         return ball;
+    }
+
+    /// <summary>着火 / 变成别的东西时，把基准皮的小零件（影子、白点、两半）收掉</summary>
+    void DropDecor()
+    {
+        if (shadow != null) { Destroy(shadow.gameObject); shadow = null; }
+        if (eye != null) { Destroy(eye); eye = null; }
+        if (face != null) { Destroy(face); face = null; }
     }
 
     public void SetAsGoldBall()
@@ -163,6 +194,19 @@ public class Ball : MonoBehaviour
     public void SetPreferredFleeDirection(Vector2 dir)
     {
         preferredFleeDir = dir.normalized;
+        if (!Look.Skinned) return;
+        // 回头的白点（2.1 定 C）：偏向它会逃走的那一边，像一只回头看的眼睛
+        if (eye == null)
+        {
+            eye = new GameObject("Eye");
+            eye.transform.SetParent(transform, false);
+            eye.transform.localScale = Vector3.one * 0.34f;
+            var er = eye.AddComponent<SpriteRenderer>();
+            er.sprite = SpriteHelper.Circle;
+            er.color = Look.Backdrop;
+            er.sortingOrder = sr.sortingOrder + 1;
+        }
+        eye.transform.localPosition = (Vector3)(preferredFleeDir * 0.24f);
     }
 
     /// <summary>
@@ -175,9 +219,26 @@ public class Ball : MonoBehaviour
         Kind = BallKind.Split;
         splitAxisDeg = axisDeg;
         splitAxisDeg2 = axisDeg2;
-        sr.sprite = Look.Skinned ? SpriteHelper.Bands : SpriteHelper.Rainbow;
-        sr.color = Color.white;
+        sr.sprite = Look.Skinned ? SpriteHelper.Circle : SpriteHelper.Rainbow;
+        sr.color = Look.Skinned ? Look.Backdrop : Color.white;
         sr.sortingOrder = 2;
+        if (Look.Skinned)
+        {
+            // 对半（2.3 定 C）：一道缝把球分成两半，两半各朝自己那颗火星要飞的方向。
+            // 两半画在一个子物体上（转的是它，球自己不转）；缝是透明的，露出下面这颗底色的圆
+            face = new GameObject("Halves");
+            face.transform.SetParent(transform, false);
+            var fr = face.AddComponent<SpriteRenderer>();
+            fr.sprite = SpriteHelper.Halves;
+            fr.sortingOrder = 3;
+            if (IsAimed)
+            {
+                AimDirections(out var a, out var b);
+                Vector2 across = a - b;                         // 两个方向"张开"的那条轴，缝垂直于它
+                if (across.sqrMagnitude < 0.0001f) across = a;
+                face.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(across.y, across.x) * Mathf.Rad2Deg);
+            }
+        }
         if (IsAimed && Look.AimLines) gameObject.AddComponent<AimLine>().Configure(this);
     }
 
@@ -204,9 +265,16 @@ public class Ball : MonoBehaviour
     public float FragmentSpawnOffset => currentScale * 0.5f;
 
     /// <summary>硬球：外面多一层壳。壳用贴图里的透明环表现，颜色仍是关卡配色</summary>
-    public void SetAsHardBall()
+    public void SetAsHardBall(int layers = 0)
     {
         Kind = BallKind.Hard;
+        hitsLeft = Look.HardHits(GameManager.Instance.LevelId, layers);
+        if (Look.HardOverlay)
+        {
+            // 原型规则 / 基准皮：芯就是一颗普通球（最后一下和普通球一样一碰就炸），带颜色的是外面那几层壳
+            shell = HardShell.Attach(this, hitsLeft, Look.Hard(sr.color));
+            return;
+        }
         sr.sprite = SpriteHelper.Shell;
         sr.color = Look.Hard(sr.color);
     }
@@ -222,8 +290,8 @@ public class Ball : MonoBehaviour
         f.sr.sprite = Look.Skinned ? SpriteHelper.Circle : SpriteHelper.Rainbow;
         if (Look.Skinned) f.sr.color = Look.Fire;
         f.sr.sortingOrder = 2;
-        if (Look.On && Look.SparkFx != FxV.A) Fx.Spark(f);
-        else f.AddTrail(Look.SparkTrail, 0.25f);
+        f.DropDecor();
+        f.AddTrail(Look.SparkTrail, 0.25f);
         // 火星从出生起就是"活着的火"，连锁要等它烧完才算结束
         GameManager.Instance.ReactionStarted();
         return f;
@@ -259,13 +327,16 @@ public class Ball : MonoBehaviour
 
         // 硬球碎壳后的那一秒里来的火都不算数。这段时间它一闪一闪（像别的游戏里刚挨过打的无敌时间），
         // 闪完了才吃得进第二把火 —— 不然玩家看着第二把火明明碰到了它却没炸，不知道为什么。
-        if (IsCracked && CurrentState == BallState.Moving && !(Look.On && Look.CrackFx != FxV.A))
+        if (IsCracked && CurrentState == BallState.Moving && Look.HardRule == HardRuleKind.Legacy)
         {
             float since = Time.time - crackedAt;
             float alpha = since < HardCooldown && Mathf.Repeat(since, CrackBlinkPeriod) < CrackBlinkPeriod * 0.5f ? 0.3f : 1f;
             var c = sr.color;
             if (!Mathf.Approximately(c.a, alpha)) sr.color = new Color(c.r, c.g, c.b, alpha);
         }
+
+        // 「一场火一层」：连着几帧没有火碰它，这一场火就算过去了
+        if (engulfed && Time.frameCount - lastTouchFrame > 2) engulfed = false;
 
         if (Kind == BallKind.Fragment && CurrentState == BallState.Moving)
         {
@@ -358,8 +429,7 @@ public class Ball : MonoBehaviour
         rb.linearVelocity = direction * fleeSpeed;
         col.enabled = true;
         AutoTest.Mark("flee");
-        if (Look.On && Look.FleeFx != FxV.A) Fx.Flee(this);
-        else AddTrail(sr.color, 0.4f);
+        AddTrail(sr.color, 0.4f);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -412,32 +482,82 @@ public class Ball : MonoBehaviour
         if (CurrentState != BallState.Moving && CurrentState != BallState.Fleeing) return;
         if (Kind == BallKind.Fragment) return;
 
-        if (Kind == BallKind.Hard)
-        {
-            if (crackedAt < 0f)
-            {
-                crackedAt = Time.time;
-                spentSources.Add(sourceId);
-                Crack();
-                return;
-            }
-            if (spentSources.Contains(sourceId)) return;
-            if (Time.time - crackedAt < HardCooldown)
-            {
-                spentSources.Add(sourceId);
-                return;
-            }
-        }
+        if (Kind == BallKind.Hard && !HardHit(sourceId, from)) return;
 
         Trigger(from);
     }
 
-    void Crack()
+    /// <summary>硬球挨了一把火。返回 true = 这一下把它炸了；false = 只掉了一层，或者这把火不算</summary>
+    bool HardHit(int sourceId, Vector2 from)
     {
-        sr.sprite = SpriteHelper.Circle;
+        switch (Look.HardRule)
+        {
+            case HardRuleKind.Count:
+                // 数层数：每一把火（一颗着火的球 / 点出的圈 / 一颗火星）打掉一层，同一把只算一次
+                if (!spentSources.Add(sourceId)) return false;
+                return TakeLayer(from, -1);
+
+            case HardRuleKind.Flame:
+                // 一场火一层：正被火围着的时候，再多的火也只算这一场；火全灭了，再来的才是下一场
+                lastTouchFrame = Time.frameCount;
+                if (engulfed) return false;
+                engulfed = true;
+                return TakeLayer(from, -1);
+
+            case HardRuleKind.Sides:
+            {
+                // 两面夹：壳沿缝分两片，火在缝的哪一侧就掉哪一片
+                float r = Look.HardSeamDeg * Mathf.Deg2Rad;
+                var normal = new Vector2(-Mathf.Sin(r), Mathf.Cos(r));
+                int side = Vector2.Dot(from - (Vector2)transform.position, normal) >= 0f ? 0 : 1;
+                if (sideGone[side]) return false;
+                sideGone[side] = true;
+                return TakeLayer(from, side);
+            }
+
+            default:
+                // 正式规则：第一把火打掉壳；打壳那一波（壳碎后 HardCooldown 秒内碰到它的每一把）都作废，之后再来的才炸
+                if (crackedAt < 0f)
+                {
+                    crackedAt = Time.time;
+                    spentSources.Add(sourceId);
+                    hitsLeft = 1;
+                    Crack(from, -1);
+                    return false;
+                }
+                if (spentSources.Contains(sourceId)) return false;
+                if (Time.time - crackedAt < HardCooldown)
+                {
+                    spentSources.Add(sourceId);
+                    return false;
+                }
+                if (shell != null) shell.Break(from, -1, true);
+                return true;
+        }
+    }
+
+    bool TakeLayer(Vector2 from, int side)
+    {
+        hitsLeft--;
+        if (crackedAt < 0f) crackedAt = Time.time;
+        if (hitsLeft <= 0)
+        {
+            if (shell != null) shell.Break(from, side, true);
+            return true;
+        }
+        Crack(from, side);
+        return false;
+    }
+
+    void Crack(Vector2 from, int side)
+    {
         AutoTest.Mark("crack");
-        if (Look.On && Look.CrackFx != FxV.A) Fx.Crack(this);
-        else ShellBurst.Create(transform.position, currentScale, sr.color);
+        if (shell != null) shell.Break(from, side, false);
+        else
+        {
+            sr.sprite = SpriteHelper.Circle;
+            ShellBurst.Create(transform.position, currentScale, sr.color);
+        }
         if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
     }
 
@@ -464,13 +584,9 @@ public class Ball : MonoBehaviour
         }
 
         // 着火的样子由外观层定：白模里换成强调色，彩色模式下是原色变半透明
+        DropDecor();
         restColor = sr.color;
-        if (Look.Skinned && Kind == BallKind.Split)
-        {
-            // 色带贴图的颜色是烤进去的，着火时换回纯圆才能染成火的颜色
-            sr.sprite = SpriteHelper.Circle;
-            restColor = Look.Ink;
-        }
+        if (Look.Skinned && Kind == BallKind.Split) restColor = Look.Ink;
         sr.color = Look.Burn(sr.color, GameManager.Instance.IsDarkBackground);
         Fx.Burn(this);
         GameManager.Instance.OnBallTriggered(this);
@@ -489,7 +605,6 @@ public class Ball : MonoBehaviour
         triggerTimer = reactionDuration;
         var trail = GetComponent<TrailRenderer>();
         if (trail != null) trail.emitting = false;
-        if (Look.On && Look.SparkFx == FxV.C) sr.enabled = true;   // C 版飞的时候是线画的空心环，炸的时候换回实心
         var c = sr.color;
         restColor = c;
         sr.color = new Color(c.r, c.g, c.b, 0.45f);
@@ -510,7 +625,6 @@ public class Ball : MonoBehaviour
             b = Rotate(forward, -SplitHalfAngleDeg);
         }
         AutoTest.Mark("split");
-        Fx.SplitMoment(pos, a, b, currentScale);
         CreateFragment(pos, a, currentScale, reactionDuration);
         CreateFragment(pos, b, currentScale, reactionDuration);
     }

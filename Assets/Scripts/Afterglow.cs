@@ -33,7 +33,7 @@ public class Afterglow : MonoBehaviour
     SpriteRenderer ring;
     float baseSize;
     Color tint;
-    Color tintFrom, tintTo;
+    Color tintFrom, tintTo, flashTint;
     float age;
 
     enum Phase { Spread, Residue, Flash, Fade }
@@ -94,8 +94,8 @@ public class Afterglow : MonoBehaviour
     public static void Celebrate() => Celebrate(FxV.A, Vector2.zero);
 
     /// <summary>
-    /// 过关的三版：A 从全场的中心往外依次亮；B 从最后一颗球（origin）扫出去，亮一下马上被带走；
-    /// C 全场一起慢慢长大、叠成花，再一起散。
+    /// A 从全场的中心往外依次亮；其余几版（B / D / E / F）都是从最后一颗球（origin）扫出去，亮一下马上被带走，
+    /// 区别在亮得多红、多重，以及 Fx.Result 里那道大环怎么画。
     /// </summary>
     public static void Celebrate(FxV mode, Vector2 origin)
     {
@@ -103,21 +103,28 @@ public class Afterglow : MonoBehaviour
         Vector2 c = Vector2.zero;
         foreach (var a in live) c += (Vector2)a.transform.position;
         c /= live.Count;
-        int i = 0;
+        bool sweep = mode != FxV.A;
         foreach (var a in live)
         {
-            float d = Vector2.Distance(mode == FxV.B ? origin : c, a.transform.position);
+            float d = Vector2.Distance(sweep ? origin : c, a.transform.position);
             a.flashTime = FlashTime; a.flashAlpha = FlashAlpha; a.flashGrow = FlashGrow; a.fadeTime = FadeTime;
             a.flashDelay = d / WaveSpeed;
-            if (mode == FxV.B)
+            a.flashTint = a.tintFrom;
+            if (sweep)
             {
                 a.flashDelay = d / SweepSpeed; a.flashTime = 0.22f; a.flashAlpha = 0.85f; a.flashGrow = 0.1f; a.fadeTime = 0.35f;
+                if (mode != FxV.B)
+                {
+                    // 第二轮的三版：亮起来的颜色往底色里兑一些，不那么红；亮得也轻一点、慢一点
+                    // 而且不是一圈线，是一片很淡的实心圆：像这一关又轻轻开了一次（用户：不要实心的线条）
+                    a.ring.sprite = SpriteHelper.Circle;
+                    a.flashTint = Color.Lerp(a.tintFrom, Look.Backdrop, 0.25f);
+                    a.tintTo = a.flashTint;      // 从头到尾都是这个淡红，不经过球的墨色（否则一片灰）
+                    a.flashAlpha = mode == FxV.E ? 0.3f : 0.2f;
+                    a.flashTime = mode == FxV.E ? 0.42f : 0.3f;
+                    a.flashGrow = 0.16f; a.fadeTime = 0.5f;
+                }
             }
-            else if (mode == FxV.C)
-            {
-                a.flashDelay = (i % 5) * 0.03f; a.flashTime = 1.5f; a.flashAlpha = 0.6f; a.flashGrow = 0.85f; a.fadeTime = 1.2f;
-            }
-            i++;
             a.sizeFrom = a.CurrentSize;
             a.fadeFrom = a.ring.color.a;
             a.phase = Phase.Flash;
@@ -182,7 +189,7 @@ public class Afterglow : MonoBehaviour
                 }
                 float bump = Mathf.Sin(t * Mathf.PI);                  // 亮起再回落
                 float grow = 1f - (1f - t) * (1f - t);                  // 一直往外长一点
-                tint = Color.Lerp(tintTo, tintFrom, bump);             // 亮起时短暂回到火的颜色
+                tint = Color.Lerp(tintTo, flashTint, bump);            // 亮起时短暂回到火的颜色
                 Apply(sizeFrom * (1f + flashGrow * grow), Mathf.Lerp(fadeFrom, flashAlpha, bump));
                 break;
             }

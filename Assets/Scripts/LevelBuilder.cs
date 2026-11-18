@@ -49,6 +49,7 @@ public class LevelBuilder
         sr.sprite = SpriteHelper.Square;
         sr.color = Look.Structure(WallColor);
         sr.sortingOrder = 3;
+        AddShadow(go.transform, Root.transform);
 
         var rb = go.AddComponent<Rigidbody2D>();
         rb.bodyType = RigidbodyType2D.Static;
@@ -57,6 +58,21 @@ public class LevelBuilder
         col.sharedMaterial = Ball.bounceMat;
 
         solidRects.Add((w.Center, w.Size * 0.5f, w.Rot));
+    }
+
+    /// <summary>基准皮的错位影子：一块同形的浅色矩形，往下错开一点，压在所有东西下面</summary>
+    public static void AddShadow(Transform of, Transform parent)
+    {
+        if (!Look.Skinned) return;
+        var go = new GameObject("Shadow");
+        go.transform.SetParent(parent, false);
+        go.transform.position = of.position + new Vector3(0f, -Look.ShadowDrop, 0f);
+        go.transform.rotation = of.rotation;
+        go.transform.localScale = of.lossyScale;
+        var sr = go.AddComponent<SpriteRenderer>();
+        sr.sprite = SpriteHelper.Square;
+        sr.color = Look.Shadow;
+        sr.sortingOrder = 0;
     }
 
     void BuildCage(CageDef c)
@@ -112,7 +128,7 @@ public class LevelBuilder
                 ball.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
                 idleBalls.Add(ball);
             }
-            ApplyKind(ball, b.Kind, b.SplitAxisDeg, b.SplitAxisDeg2);
+            ApplyKind(ball, b.Kind, b.SplitAxisDeg, b.SplitAxisDeg2, b.Layers);
         }
 
         if (def.Idle != null && def.Idle.Mode != IdleMode.None && idleBalls.Count > 0)
@@ -133,17 +149,17 @@ public class LevelBuilder
                 var vel = new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * speed;
                 var ball = Ball.Create(pos, vel, BallPalette.Cycle(palette, colorIndex++),
                     def.BallSize, def.ReactionMaxScale, def.ReactionDuration, def.ExpandSpeed);
-                ApplyKind(ball, sc.Kind, float.NaN, float.NaN);
+                ApplyKind(ball, sc.Kind, float.NaN, float.NaN, 0);
             }
         }
     }
 
-    static void ApplyKind(Ball ball, BallKind kind, float splitAxis, float splitAxis2)
+    static void ApplyKind(Ball ball, BallKind kind, float splitAxis, float splitAxis2, int layers)
     {
         switch (kind)
         {
             case BallKind.Split: ball.SetAsSplitBall(splitAxis, splitAxis2); break;
-            case BallKind.Hard: ball.SetAsHardBall(); break;
+            case BallKind.Hard: ball.SetAsHardBall(layers); break;
         }
     }
 
