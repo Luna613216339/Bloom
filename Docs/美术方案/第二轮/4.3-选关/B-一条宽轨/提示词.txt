@@ -1,0 +1,49 @@
+Image: 选关.png
+Tool: built-in image_gen
+
+Attempt 1 (rejected: visible texture and narrow track)
+
+Use case: ui-mockup.
+Create one finished, full-screen 16:9 landscape level-selection interface for the minimalist 2D chain-reaction puzzle game Bloom, designed on a 1600 x 900 canvas. This is a single interface, not a presentation, comparison, collage, or device mockup.
+
+Input image 1 is the visual style reference only: match its pale blue flat background, ink-colored perfectly circular flat balls, restrained geometry, and tiny crisp downward silhouette shadows. The requested new level-select screen replaces the reference gameplay field.
+
+Background: one perfectly uniform solid pale blue #E2ECF3, edge to edge. Absolutely no gradient, vignette, texture, lighting, glow or material effects.
+
+Main composition: a single broad, round-ended blue ribbon track, about 100 pixels wide, colored flat #CBD9E4. It enters from the left edge and exits at the right edge, flowing across the middle of the screen in one spacious smooth sideways S curve with a pronounced high crest and low trough. Approximate centerline: enters at (0,560), passes level 13 at (210,430), rises to level 14 at (445,300), descends past level 15 at (685,420) to level 16 at (925,590), then rises past level 17 at (1170,470) and level 18 at (1410,315), exits right at (1600,280). The path is broad and soft in color, never a dark stroke or thin line. From the left edge through levels 13 and 14 the ribbon is continuous and solid. Immediately after level 14 it changes into a single chain of evenly spaced circular dots following exactly the same smooth route, maintaining the same broad track width; all of this future track through levels 15,16,17,18 and out to the right edge is dotted, with clear gaps between the dots. No solid ribbon underneath the dotted future segment.
+
+Exactly SIX large level circles sit centered on this path. Each is a geometrically perfect circle about 112 pixels in diameter (one eighth of image height), except current level 14, which is slightly larger, about 124 pixels. Level 13 is a solid flat #1E2630 ink disc. Level 14 is a solid flat #F2472A vermilion disc, the only warm color anywhere. Levels 15, 16, 17 and 18 are empty pale-blue circles, with very thin subdued pale-ink outlines, approximately 2 pixels, low contrast and delicate. Their interiors match the background and mask the track behind them. They are visibly locked through this subdued hollow appearance, with no lock icons. The two solid discs may have an extremely subtle crisp same-shape #CBD9E4 silhouette directly 3 pixels below, never blurred. No highlights, shading, texture, irregular circles or 3D effects.
+
+Typography: tiny, thin geometric sans-serif in ink #1E2630, restrained and precisely spelled. Upper-left chapter heading reads exactly "Cages", around (96,82), about 22 pixels. Each level has one small number centered immediately above or below its circle, separated from the edge by about 20 pixels and clear of the track: "13", "14", "15", "16", "17", "18", appearing once each, ordered left to right. Numbers are outside the circles, not inside. These and "Cages" are the ONLY text anywhere.
+
+Bottom center: two small thin-line circular navigation buttons side by side, centered around (760,810) and (840,810), each about 48 pixels in diameter. Left button contains a simple left arrow icon, right button a right arrow icon. Fine subdued ink lines, background-color interiors. No other navigation or UI.
+
+Decoration: one quiet loose cluster of 5 or 6 small flat #CBD9E4 circles of varied sizes at the upper right, and another loose cluster of 5 or 6 at the lower left. They look like scattered balls, low contrast, modest in scale and unobtrusive, well separated from the six level circles, title and navigation. Large areas of calm negative space.
+
+Hard constraints: light flat background; all filled balls are perfectly circular flat color; no bright solid rings except the very delicate required locked-level outlines and navigation outlines. No flames, explosions, sparks, particles, smoke, neon, bloom, glow, gradients, shadows with blur, textures, faces, leaves, materials, watermark, border, labels, explanatory text, legend, extra words, extra level circles, grid or panels. Render only this one clean game interface.
+
+Attempt 2 (saved output; only permitted redraw)
+
+Use case: ui-mockup.
+Create one finished, full-screen 16:9 landscape level-selection interface for the minimalist 2D chain-reaction puzzle game Bloom, designed on a 1600 x 900 canvas. This is a single interface, not a presentation, comparison, collage, or device mockup.
+
+Input image 1 is the visual style reference only: match its pale blue flat background, ink-colored perfectly circular flat balls, restrained geometry, and tiny crisp downward silhouette shadows. The requested new level-select screen replaces the reference gameplay field.
+
+Background: one perfectly uniform solid pale blue #E2ECF3, edge to edge. Absolutely no gradient, vignette, texture, lighting, glow or material effects.
+
+Main composition: a single broad, round-ended blue ribbon track, about 100 pixels wide, colored flat #CBD9E4. It enters from the left edge and exits at the right edge, flowing across the middle of the screen in one spacious smooth sideways S curve with a pronounced high crest and low trough. Approximate centerline: enters at (0,560), passes level 13 at (210,430), rises to level 14 at (445,300), descends past level 15 at (685,420) to level 16 at (925,590), then rises past level 17 at (1170,470) and level 18 at (1410,315), exits right at (1600,280). The path is broad and soft in color, never a dark stroke or thin line. From the left edge through levels 13 and 14 the ribbon is continuous and solid. Immediately after level 14 it changes into a single chain of evenly spaced circular dots following exactly the same smooth route, maintaining the same broad track width; all of this future track through levels 15,16,17,18 and out to the right edge is dotted, with clear gaps between the dots. No solid ribbon underneath the dotted future segment.
+
+Exactly SIX large level circles sit centered on this path. Each is a geometrically perfect circle about 112 pixels in diameter (one eighth of image height), except current level 14, which is slightly larger, about 124 pixels. Level 13 is a solid flat #1E2630 ink disc. Level 14 is a solid flat #F2472A vermilion disc, the only warm color anywhere. Levels 15, 16, 17 and 18 are empty pale-blue circles, with very thin subdued pale-ink outlines, approximately 2 pixels, low contrast and delicate. Their interiors match the background and mask the track behind them. They are visibly locked through this subdued hollow appearance, with no lock icons. The two solid discs may have an extremely subtle crisp same-shape #CBD9E4 silhouette directly 3 pixels below, never blurred. No highlights, shading, texture, irregular circles or 3D effects.
+
+Typography: tiny, thin geometric sans-serif in ink #1E2630, restrained and precisely spelled. Upper-left chapter heading reads exactly "Cages", around (96,82), about 22 pixels. Each level has one small number centered immediately above or below its circle, separated from the edge by about 20 pixels and clear of the track: "13", "14", "15", "16", "17", "18", appearing once each, ordered left to right. Numbers are outside the circles, not inside. These and "Cages" are the ONLY text anywhere.
+
+Bottom center: two small thin-line circular navigation buttons side by side, centered around (760,810) and (840,810), each about 48 pixels in diameter. Left button contains a simple left arrow icon, right button a right arrow icon. Fine subdued ink lines, background-color interiors. No other navigation or UI.
+
+Decoration: one quiet loose cluster of 5 or 6 small flat #CBD9E4 circles of varied sizes at the upper right, and another loose cluster of 5 or 6 at the lower left. They look like scattered balls, low contrast, modest in scale and unobtrusive, well separated from the six level circles, title and navigation. Large areas of calm negative space.
+
+Hard constraints: light flat background; all filled balls are perfectly circular flat color; no bright solid rings except the very delicate required locked-level outlines and navigation outlines. No flames, explosions, sparks, particles, smoke, neon, bloom, glow, gradients, shadows with blur, textures, faces, leaves, materials, watermark, border, labels, explanatory text, legend, extra words, extra level circles, grid or panels. Render only this one clean game interface.
+
+CRITICAL FLAT-UI RENDERING REQUIREMENT: Every colored region must have mathematically constant uniform RGB fill, like a clean vector screenshot exported as PNG. The background must be exactly the same #E2ECF3 everywhere, with absolutely zero noise, mottling, paper grain, cloudy patches, texture, tonal variation, vignette, or gradient. The solid dark and red level discs must also each be a single unchanging color, absolutely no tonal variation, surface shading or texture. Ignore any photographic or tactile rendering instinct. This is flat digital game UI, not an artistic illustration or paper craft.
+IMPORTANT TRACK SCALE: The continuous ribbon must be approximately as thick as the diameter of level 13, roughly 100 to 112 pixels thick on a 1600x900 canvas, never a narrow 40-pixel line. The later dotted track retains that broad width as a single row of round flat blue dots with equal clear gaps. Level circles remain clearly distinguishable from path dots by color, outline and numbered labels.
+Keep Cages and level numbers modest and small, thin weight. All six level circles must be the same size except level 14 slightly larger. No texture anywhere.
+

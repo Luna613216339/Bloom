@@ -1,0 +1,47 @@
+Built-in image generation prompts (English, verbatim)
+
+33-螺旋.png — initial generation
+
+Use case: precise-object-edit.
+Asset type: a single finished in-game interface screen for Bloom, a minimalist 2D chain-reaction puzzle game.
+Input image: the supplied level 33 Spiral screenshot is the edit target, not loose inspiration.
+Primary request: preserve the entire supplied screenshot exactly and add only two small corner UI elements in the existing empty background.
+Canvas: 16:9 landscape, 1600 x 900 composition, full bleed.
+At the upper left, put the exact text "33  Spiral" on one line, with its left edge at x=48 and baseline at y=59 on a 1600x900 canvas. Use small 22 px light-weight geometric sans-serif lettering, ink #1E2630, restrained and unobtrusive. Preserve the two spaces between 33 and Spiral.
+At the upper right, add a small thin-line circular pause button centered at (1536, 51), outer diameter 32 px, 1 px stroke in #1E2630, containing two short thin parallel vertical lines. No fill other than the background. Keep this button delicate.
+Invariants: do not move, resize, remove, duplicate, recolor, regenerate, simplify or rearrange any game object. Every existing ball, red translucent expanding disk, pale disk/ring, silhouette shadow and all their overlaps must retain the precise positions, counts, dimensions, colors, opacity and shapes of the screenshot. Preserve the exact spiral composition and empty margins. The half-completed chain state is already present in the screenshot; do not interpret the metadata of 82 total and 27 collected as instructions to redraw balls.
+Style: uniform pale blue #E2ECF3 flat background, ink #1E2630 flat perfect circular balls, vermilion #F2472A flat translucent reaction disks, faint sharp flat silhouette shadows #CBD9E4 displaced downward by about 3 px. Retain the supplied image's colors and details faithfully. No gradients, textures, dark backgrounds, glow, bloom, lighting, materials, highlights, flames, explosions, sparks, particles or smoke. No strong outline rings on game effects. No new game objects.
+Text (verbatim): "33  Spiral". No other text, numbers, counters, labels, explanations, watermark, border, panels, legends or collage. This is one screen. Change only the two corner UI regions; preserve everything else.
+
+33-螺旋.png — one allowed redraw, selected output
+
+Use case: precise-object-edit. Edit the provided original screenshot of Bloom level 33. Output a single 16:9 landscape game screen.
+This is a strict UI overlay task on an existing flat digital screenshot. Preserve the original screenshot exactly, including every ball, disk, ring, overlap, shadow, pixel position, size, color and quantity. Do not repaint the gameplay. Do not restyle it.
+Make only these two additions:
+1. Top-left corner: exact text "33  Spiral", left margin 48 px, baseline 59 px in the original 1600x900 coordinates. Small 22 px thin geometric sans-serif, solid ink #1E2630, no bold.
+2. Top-right corner: a delicate pause button, centered at x1536 y51 in the original 1600x900 coordinates. A 32 px diameter circle with a very fine 1 px ink #1E2630 stroke, containing two short thin vertical strokes.
+CRITICAL: the entire background MUST be one perfectly uniform flat solid RGB color #E2ECF3. Absolutely zero texture, grain, noise, paper, mottling, shading, vignette, light falloff or gradient. The balls MUST be flat solid-color perfect circles with no surface shading, texture, gloss or highlights. Keep all exact existing shapes and overlaps unchanged. Existing shadows are pale sharp-edged flat silhouettes only, about 3 px downward; never soft or blurred.
+The screenshot already contains the exact correct halfway-burning Spiral arrangement: preserve it intact. Do not infer or add balls from metadata. Red reaction disks are flat translucent #F2472A, black balls #1E2630.
+No counters or extra numbers. Only text "33  Spiral". No other words. No watermark, frame, panels, labels, legend, collage, particles, flames, smoke, sparks, explosions, glow, neon, material effects or decorative elements. Only add the specified corner text and pause button to the untouched original.
+
+13-收网.png — initial generation
+
+Use case: precise-object-edit.
+Asset type: a single finished in-game UI screenshot for Bloom, minimalist flat 2D chain-reaction puzzle game, 16:9 landscape.
+Input image: the provided level 13 The Net game screenshot is the exact edit target.
+Primary request: add only small corner UI over the existing screenshot. Preserve the screenshot exactly.
+Top-left: the exact text "13  The Net", one line, left edge x=48 px, baseline y=59 px using the original 1600x900 coordinate system. Use small 22 px thin geometric sans-serif type, ink #1E2630, regular light weight, no bold, restrained. Two spaces between 13 and The.
+Top-right: one thin circular pause button centered at (1536,51), 32 px outer diameter, delicate 1 px ink #1E2630 outline, two short thin vertical strokes inside, background-colored interior. Match these UI placements on the 16:9 screen.
+Invariants: keep all original ten balls and all cage walls, door blocks, thin vertical guide lines, tiny existing blue-ball details, hard-edged offset shadows, empty space, colors and geometry exactly as supplied. Keep every object's position, count, size, shape and overlap unchanged. The rectangular ink cage with a bottom opening stays at its exact original location and dimensions; the blue and ink balls inside stay exactly as pictured. Do not recenter, enlarge, rearrange, remove or add any gameplay object. Level is waiting, do not add any reaction effect. Metadata of ten total and zero collected is not UI text.
+CRITICAL: flat solid pale blue #E2ECF3 backdrop, identical RGB color everywhere with absolutely no noise, grain, paper texture, shading, vignette or gradient. Flat perfect circular balls, ink #1E2630 or blue #2374E0 exactly as in the input. Flat ink straight thick right-angle cage walls, no rounded corners. Shadows are only the original pale #CBD9E4 sharp flat silhouettes about 3 px underneath. No blur, lighting, highlights, materials, textures, neon, glow, flames, explosions, sparks, particles, or smoke.
+Only text is "13  The Net". Do not add counts, labels, instructions, captions, watermark, border, panels, legend, comparison grid or collage. One full-bleed screen. Preserve every pixel of the original gameplay; change only the two empty corner regions to add the specified UI.
+
+13-收网.png — one allowed redraw, selected output
+
+Edit this exact game screenshot by adding only corner UI, keeping all existing artwork intact. Single 16:9 landscape image.
+Add small thin geometric sans-serif text "13  The Net" in #1E2630 at top-left, 48 px left margin, 59 px baseline (1600x900 coordinate system), font 22 px.
+Add a thin circular pause button at top-right, center (1536,51), diameter 32 px, 1 px #1E2630 stroke, with two thin short vertical lines inside.
+Do not redraw or restyle the screenshot. Preserve all ten original balls, blue details, cage, gates, lines, their exact positions, dimensions, counts, colors and sharp 3 px flat offset shadows.
+ABSOLUTE REQUIREMENT: pristine flat vector-like digital color fields. Background is uniform RGB(226,236,243) in every background pixel. Walls and black balls are uniform RGB(30,38,48) within each shape. Blue balls are uniform RGB(35,116,224), except their exact existing pale small circular details. Every ball is a mathematically perfect circle. No texture at all, no speckles, grain, mottling, paper, brushwork, gradients, lighting, shading, gloss, highlights, blur, glow, vignette or 3D. A clean flat 2D game screen like the attached original.
+Only text "13  The Net". Only the two specified corner UI additions. No other words, counters, decorative marks, borders, labels, watermark, panels, collage, flames, sparks, explosions, particles or smoke. Keep the original entire central gameplay region unchanged.
+

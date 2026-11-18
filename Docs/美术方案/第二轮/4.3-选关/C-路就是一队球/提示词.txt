@@ -1,0 +1,62 @@
+选关.png
+Built-in image generation. Final output: attempt 2.
+
+Attempt 1 (rejected: visible texture and strong locked-node outlines)
+
+Use case: ui-mockup.
+Create ONE finished full-screen level-selection interface for the minimalist 2D chain-reaction puzzle game Bloom, landscape 16:9, intended final size 1600 x 900. No device mockup, no frame, no panels, no comparison layout.
+
+The supplied image is a visual style reference: match its pale blue background, perfect flat ink circles, restrained geometry and tiny crisp downward silhouette shadows. This requested asset is a NEW level-selection page, with the wave layout described below.
+
+BACKGROUND: completely uniform solid pale blue #E2ECF3, no texture, no gradient, no vignette. Quiet generous negative space. Absolutely flat 2D vector-like raster artwork.
+
+MAIN COMPOSITION: the road IS a long single-file procession of small perfect circular balls. No connecting line. A continuous smooth sweeping sinusoidal path enters through the left edge, rises into a prominent crest, falls into a deep trough, rises into another crest, and exits through the right edge. Clearly dramatic vertical height differences, not a shallow arc or nearly horizontal row. Uniform tightly spaced beads, about 22.5 px diameter at 1600x900, with short equal gaps. Exactly SIX large circular level nodes replace beads along this one path, ordered left to right 13, 14, 15, 16, 17, 18. Between successive large nodes, show approximately six or seven small beads following the smooth curve. All large nodes centered exactly on the beaded path.
+Suggested geometry in 1600x900 coordinates: level 13 near (170,490), level 14 near (420,295), level 15 near (670,440), level 16 near (930,625), level 17 near (1180,460), level 18 near (1430,295). The path flows smoothly through these points, with no kinks, no crossings, no branches. Keep the whole page airy.
+
+LEVEL STATES:
+13: one perfect solid ink #1E2630 circle, diameter about 100 px, completed.
+14: one perfect solid vermilion #F2472A circle, slightly larger at about 112 px, current level. Behind it exactly one very pale translucent vermilion circular filled disc about 160 px diameter, uniform flat tint with a crisp edge; this is a subtle halo made of a flat translucent area, NOT a bright outline ring, blur or glow.
+15, 16, 17, 18: four perfect hollow circles about 100 px diameter, background-colored interiors and very thin faint muted ink outlines. They are locked; do NOT add padlocks.
+Before level 14 all small path beads are solid #1E2630. After level 14 all small path beads are very pale blue-gray #A3B4C2. The small beads stay distinct from the large level nodes.
+
+TEXT: small thin geometric sans-serif ink type. In the upper left at about (90,85), the chapter title exactly "Cages", quiet and small. Each of the six large nodes has exactly one small number centered directly BELOW it, separated from its bottom edge by about 22 px. The six numbers, left to right, are exactly "13", "14", "15", "16", "17", "18". Numbers are outside and below the circles, never inside them. These seven strings are the ONLY text in the entire image. No game title, no captions, no badges, no stars, no checkmarks.
+
+NAVIGATION: in the lower right, two small thin-outline circular buttons side by side, around (1415,815) and (1500,815), diameter about 48 px. Left button contains a simple thin left-pointing arrow icon; right button contains a simple thin right-pointing arrow icon. Restrained ink strokes.
+
+DECORATION: upper right corner and lower left corner each contain one very large, very subtle flat pale-blue #CBD9E4 circular arc/crescent area, most of its parent circle cropped outside the frame, like just a corner of a gigantic circle peeking into the screen. Broad quiet flat geometric areas, not conspicuous stroked rings. Keep these behind everything and away from legibility of nodes.
+
+SHADOWS: solid circles have only a very pale identical circular silhouette #CBD9E4 shifted straight downward about 3 px, crisp hard edges, no blur and no lighting effect.
+
+STRICT: all balls must be mathematically perfect circles, flat uniform fills; no highlights, no 3D, no materials, no fabric, no clay, no glass, no watercolor, no faces, no leaves. Vermilion is the only warm hue and appears only in the current level and its pale halo. No dark background, neon, glow, gradients, fire, explosion, sparks, particles, smoke, texture, watermarks, borders, labels, legends, extra text, extra large nodes or extra decorative balls. Generate exactly one interface image.
+
+Attempt 2 (final saved image; single permitted redraw)
+
+Use case: ui-mockup. Generate one 16:9 landscape 1600x900 minimalist flat 2D game level-selection screen for Bloom.
+
+CRITICAL FLATNESS: render like a clean digital vector drawing exported as PNG. EVERY region must have exactly one uniform color. Background must be one single solid hex #E2ECF3 everywhere except shapes. Absolutely ZERO texture, mottling, grain, noise, cloudy variation, shading, gradient, vignette, highlights, lighting, glossy areas, materials, paper or watercolor. Every ball is a uniformly filled mathematically perfect circle. This is a precise minimalist software interface, not a painting.
+
+The attached gameplay image is only a palette and flat-circle style reference for this NEW level-selection interface.
+
+Layout: one single wave-shaped trail made ONLY of many small round beads, entering through the left edge and exiting through the right edge. No line connects them. Beads diameter about 22 px, tightly evenly spaced, about six or seven beads between each neighboring pair of big circles. The wave has dramatic height differences. Exactly SIX large circular nodes on this smooth path, left to right:
+13 at approximately (170,490);
+14 at (420,295), a high crest;
+15 at (670,440);
+16 at (930,625), a deep trough;
+17 at (1180,460);
+18 at (1430,295), another crest.
+The single path flows smoothly through these nodes with no corners or branches. No bead overlaps another bead. Each numbered node replaces a bead, centered on the path.
+
+13 is one 100 px solid perfect circle, uniform ink #1E2630.
+14 is one 112 px solid perfect circle, uniform vermilion #F2472A. Behind 14 only, a single very pale uniform flat translucent vermilion circular disc, diameter 155 px, softly colored but with a SHARP clean geometric edge. No blur, no luminous glow, no outline on this halo.
+15,16,17,18 are four hollow 100 px perfect circles. Their interiors exactly match background #E2ECF3; each outline is very thin, 1.5 px, pale muted blue-gray #8297A7. These outline rings must look faint and restrained, never strong black.
+All small beads before 14 are solid ink #1E2630. All small beads after 14 are solid pale blue-gray #A3B4C2. All bead fills completely uniform.
+Solid shapes have an extremely subtle identical flat silhouette shadow #CBD9E4 offset straight down 3 px with sharp edges, ZERO blur.
+
+Typography: small thin geometric sans serif. Chapter name exactly "Cages" at top left, around x90,y85, font size about 26 px, very restrained. Each large node has a small ink number centered DIRECTLY BELOW it with about 22 px clear gap from the bottom of the circle, font size about 22 px. The six number strings from left to right are exactly "13", "14", "15", "16", "17", "18". Numbers outside the circles. Exactly these seven strings are allowed; no other lettering.
+
+Bottom right: two side-by-side small circular thin-outline buttons, diameter about 48 px, centers near (1415,815) and (1500,815). Contain simple left arrow icon and right arrow icon respectively, delicate ink strokes.
+
+Two very large, subtle flat pale blue #CBD9E4 circular areas are mostly cropped outside the screen: one peeks in from upper right corner, one from lower left corner. Only a corner of each huge circle is visible, its circular boundary forms a large gentle arc. These are uniform flat filled shapes, not textured, not outlined, not shaded. Generous empty pale blue space.
+
+No device frame, no panel, no border, no legend, no watermark, no extra nodes, no extra labels, no icons except two navigation arrows, no stars, no locks, no checks. No dark background, neon, fire, explosions, sparks, particles, smoke, leaves, faces or 3D. Vermilion is the only warm color and appears only on current node and its pale disc. Prioritize perfectly uniform flat colors and delicate pale outline circles. One full-screen interface, no collage.
+

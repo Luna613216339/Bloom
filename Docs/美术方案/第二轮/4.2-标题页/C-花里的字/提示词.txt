@@ -1,0 +1,36 @@
+标题页.png
+
+Initial generation prompt (English):
+
+Use case: ui-mockup.
+Create ONE finished 16:9 landscape title-screen image for the minimalist 2D chain-reaction puzzle game Bloom. Target 1600 x 900.
+Input reference images in order: image 1 supplies the idea of the two o letters as solid circular balls; image 2 supplies only the idea of overlapping circular flower geometry. Both use obsolete colors. Make a NEW centered composition with the palette and filled flower specified below, not a copy of either layout.
+
+Background: one perfectly uniform, flat pale blue #E2ECF3 across the entire canvas. Absolutely no texture, paper effect, gradient, vignette, lighting, or noise.
+Centered in the middle of the screen, a single very large word "Bloom", in a medium-weight geometric sans-serif, ink #1E2630. Keep it easily readable as B-l-o-o-m. The two lowercase o letters must be replaced by PERFECT SOLID DISKS, with no holes, rings, or outlines. The first o is a flat vermilion #F2472A circle; the second o is a flat ink #1E2630 circle. The disks fit naturally into the lowercase word at the same baseline and x-height. B, l, and m are geometric letterforms. The title should occupy roughly the central 55% of screen width, around y=440, with ample empty space on all sides.
+
+Behind the word, centered precisely on the FIRST red o, create ONE airy geometric flower made exclusively of overlapping perfectly circular translucent filled vermilion disks. About 8–12 disks of varied sizes, arranged like gently radiating circular petals, with individual uniform flat opacities of approximately 8–14%, and the outer disks lighter. Their circular intersections should visibly make the flower. Each disk is a uniform flat translucent area with a crisp edge, never an outline or stroke. NO concentric ring outlines and NO thin-line flower. NO radial gradients or blurred fading: outer disks are separate lighter flat fills. The flower sits behind all the letters, spreads across the middle of the screen, about 850 px wide by 600 px tall, and leaves broad uninterrupted pale-blue margins. It must remain quiet and faint so the large word is dominant.
+
+Directly beneath the word, center one horizontal row of three small, restrained, thin geometric sans-serif menu entries: "Play" in #F2472A, then "Endless" in #1E2630, then "Shop" in #1E2630. Equal generous spacing, at about y=650. These are simple text entries, no button rectangles, icons, or underlines.
+For the two solid title balls, allow only a very subtle flat matching silhouette shadow in #CBD9E4 displaced straight down by 3 pixels, with hard edges and zero blur. No dimensional rendering.
+
+The ONLY visible text is exactly: "Bloom", "Play", "Endless", "Shop". Spell all four correctly, each exactly once. No extra letters, captions, labels, frame, border, watermark, legend, or split panels. No dark background, neon, glow, gradients, highlights, texture, material rendering, leaves, faces, flames, explosions, sparks, particles, or smoke. All shapes must look like clean flat 2D game UI.
+
+Single redraw prompt (English, final saved image):
+
+Use case: ui-mockup.
+Create ONE finished 16:9 landscape title-screen image for the minimalist 2D chain-reaction puzzle game Bloom. Target 1600 x 900.
+Input reference images in order: image 1 supplies the idea of the two o letters as solid circular balls; image 2 supplies only the idea of overlapping circular flower geometry. Both use obsolete colors. Make a NEW centered composition with the palette and filled flower specified below, not a copy of either layout.
+
+Background: one perfectly uniform, flat pale blue #E2ECF3 across the entire canvas. Absolutely no texture, paper effect, gradient, vignette, lighting, or noise.
+Centered in the middle of the screen, a single very large word "Bloom", in a medium-weight geometric sans-serif, ink #1E2630. Keep it easily readable as B-l-o-o-m. The two lowercase o letters must be replaced by PERFECT SOLID DISKS, with no holes, rings, or outlines. The first o is a flat vermilion #F2472A circle; the second o is a flat ink #1E2630 circle. The disks fit naturally into the lowercase word at the same baseline and x-height. B, l, and m are geometric letterforms. The title should occupy roughly the central 55% of screen width, around y=440, with ample empty space on all sides.
+
+Behind the word, centered precisely on the FIRST red o, create ONE airy geometric flower made exclusively of overlapping perfectly circular translucent filled vermilion disks. About 8–12 disks of varied sizes, arranged like gently radiating circular petals, with individual uniform flat opacities of approximately 8–14%, and the outer disks lighter. Their circular intersections should visibly make the flower. Each disk is a uniform flat translucent area with a crisp edge, never an outline or stroke. NO concentric ring outlines and NO thin-line flower. NO radial gradients or blurred fading: outer disks are separate lighter flat fills. The flower sits behind all the letters, spreads across the middle of the screen, about 850 px wide by 600 px tall, and leaves broad uninterrupted pale-blue margins. It must remain quiet and faint so the large word is dominant.
+
+Directly beneath the word, center one horizontal row of three small, restrained, thin geometric sans-serif menu entries: "Play" in #F2472A, then "Endless" in #1E2630, then "Shop" in #1E2630. Equal generous spacing, at about y=650. These are simple text entries, no button rectangles, icons, or underlines.
+For the two solid title balls, allow only a very subtle flat matching silhouette shadow in #CBD9E4 displaced straight down by 3 pixels, with hard edges and zero blur. No dimensional rendering.
+
+The ONLY visible text is exactly: "Bloom", "Play", "Endless", "Shop". Spell all four correctly, each exactly once. No extra letters, captions, labels, frame, border, watermark, legend, or split panels. No dark background, neon, glow, gradients, highlights, texture, material rendering, leaves, faces, flames, explosions, sparks, particles, or smoke. All shapes must look like clean flat 2D game UI.
+
+CRITICAL CORRECTION FOR THIS SINGLE REDRAW: The prior attempt incorrectly added surface texture and shaded the balls. Deliver a strictly flat digital vector-style raster interface. Every pixel inside the red title disk must be the SAME #F2472A, and every pixel inside the black disk must be the SAME #1E2630 except edge antialiasing. The entire empty background must be the SAME #E2ECF3 without ANY mottling, grain, clouds, paper, or color variation. All translucent petal disks also have a single uniform fill each. They may overlap to form flat regions of different colors, but no petal itself has a gradient. The only shadow is a thin 3 px hard-edged #CBD9E4 silhouette directly below each solid ball, no large shadow offset. Menu text is smaller and quieter than in the reference, approximately 34 px tall at 1600 x 900. The word is medium-weight, with perfect filled circular o shapes. Keep the composition centered, flower behind the first red o, and broad pale blue negative space. Think of a perfectly clean exported vector game menu, with absolutely zero photographic or painterly rendering.
+

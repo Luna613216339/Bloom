@@ -1,0 +1,53 @@
+Image: 选关.png
+Method: built-in image_gen
+Final saved image: redraw (second generation)
+
+Initial generation prompt (English):
+
+Use case: ui-mockup.
+Create exactly ONE finished minimalist 2D level-selection game screen for Bloom, landscape 16:9, 1600 by 900 composition, full bleed. Reference image 1 is ONLY a visual style reference for the pale blue background, flat ink circles and tiny hard-edged shadows. This is a NEW level-selection layout, not a gameplay screenshot overlay; replace the radial gameplay arrangement with the six-node layout described below.
+
+BACKGROUND AND STYLE:
+Uniform solid pale blue #E2ECF3 across the entire canvas. Crisp flat vector-like shapes, calm, sparse, generous negative space. No texture, gradient, vignette, lighting, glow, blur, or dimensional material.
+Ink #1E2630. Only warm color is vermilion #F2472A, used for the current level only.
+Solid circles have a very subtle identical-shape hard-edged flat shadow #CBD9E4 offset straight down about 3px. Perfect circular geometry, no highlights.
+
+MAIN PATH:
+One single continuous smooth thin curving mountain-road line, approximately 3px wide at 1600x900, ink #1E2630 at approximately 25% opacity. It enters through the left canvas edge in the lower half, sweeps substantially up and down in two to three broad rounded undulations, then exits through the right canvas edge in the upper half. Both ends continue beyond the crop. Strong visible differences in height, elegant smooth curves, never straight or angular zigzags. The path stays thin and understated.
+Exactly SIX large circular level nodes in left-to-right sequence, spaced approximately evenly along the path, at visibly unequal heights. Approximate centers on the 1600x900 canvas: 13 at (220,565), 14 at (455,310), 15 at (690,555), 16 at (925,360), 17 at (1160,565), 18 at (1395,305). The path passes through the center of each node; hide the path underneath the circular node interiors, including hollow nodes, so their interiors remain clean background.
+Ordinary node diameter approximately 112px (one eighth of canvas height).
+Level 13: flat solid ink #1E2630 circle, completed.
+Level 14: flat solid vermilion #F2472A circle, slightly larger at approximately 124px diameter, current selected level. Behind it, one very faint uniformly filled translucent vermilion circular disk, approximately 174px diameter and approximately 8% opacity. This halo has a sharp edge, no outline and no radial fade.
+Levels 15, 16, 17, 18: four perfectly circular hollow nodes, background-colored interior, very thin pale ink outlines at approximately 25% opacity, approximately 2px stroke, locked. No lock symbols.
+Directly below each individual circle put its own small level number, horizontally centered, with approximately 22px gap below the circle: "13", "14", "15", "16", "17", "18". Numbers outside the circles, never inside. Small approximately 22px thin geometric sans-serif type. Ink, with a restrained lighter ink tone acceptable for locked numbers.
+
+OTHER UI:
+At the upper left around (86,78), small thin geometric sans-serif chapter title exactly "Cages", about 26px tall, ink. No subtitle.
+At the extreme left and right margins, vertically centered at y=450, one thin-outline circular navigation button each, about 46px diameter, with a tiny left-pointing or right-pointing arrow inside respectively. Understated thin ink outlines and strokes, circles fully visible very close to each side edge.
+
+DECORATION:
+Upper-right corner and lower-left corner each has one group of three or four very faint thin concentric circular arcs in pale blue #CBD9E4, partially cropped by the canvas edges, like quiet water ripples. These are understated flat thin lines, no highlights or glow. Keep them behind and away from the six nodes and title.
+
+TEXT RESTRICTION:
+The ONLY text anywhere in the image must be precisely "Cages" and the six numbers "13" "14" "15" "16" "17" "18", each once. Spelling must be correct. Arrow icons are graphical shapes, not text.
+No logo, watermark, border, captions, labels, legend, divider, panels, extra nodes, stars, checkmarks, badges, padlocks, gameplay balls, cages or walls. No flames, explosions, sparks, particles, smoke, neon, gradients, textures, photorealism, 3D, leaves or faces. Deliver one clean full-screen interface, never a comparison sheet.
+
+Redraw prompt (English, final saved image):
+
+Create ONE 16:9 landscape full-screen minimalist 2D game level selection UI, 1600x900 composition. Use the attached reference ONLY for the exact flat visual style and colors, not its radial gameplay layout. The result must look like a clean exported vector UI, with mathematically uniform solid-color regions. ABSOLUTELY NO TEXTURE OR MOTTLED NOISE anywhere. Every pixel in the empty background must be the same pale blue #E2ECF3. Every pixel inside each solid ball must be one single uniform fill color. No lighting, no shading, no paper, no grain, no watercolor, no cloudy variation, no gradients, no glossy edges, no highlights, no blur. Perfect circles only.
+
+A single very thin smooth mountain-road curve crosses the screen, entering off the left edge at y=620, with two broad up-and-down waves and then exiting off the right edge at y=260. The curve is flat ink #1E2630 at 25% opacity, about 3px stroke. Strong rounded rising and falling contours, never a straight line or zigzag. Both ends visibly continue beyond the crop.
+
+Exactly SIX level nodes in left-to-right order on this curve, evenly spaced horizontally and at alternating heights. Approximate center coordinates on 1600x900: (220,550), (450,310), (680,550), (920,360), (1150,560), (1380,310). Diameters about 112px, except the second node about 124px. The curve connects through their centers but is occluded by the interiors of all six circles.
+First node: perfectly circular flat solid ink #1E2630 fill. Directly beneath it the small thin sans-serif number "13".
+Second node: perfectly circular flat solid vermilion #F2472A fill. Directly beneath it the small thin sans-serif number "14". Behind this second circle, exactly one faint flat translucent vermilion disk about 174px diameter, only 8% opacity. The disk is a uniformly colored semitransparent shape with a sharp edge, NOT a glow or blurred halo.
+Remaining four nodes: perfectly circular hollow circles, empty pale blue #E2ECF3 interiors, extremely fine pale ink outlines, about 2px stroke at 25% opacity. Directly below them respectively the small thin sans-serif numbers "15", "16", "17", "18".
+All six numbers are outside and below their own circles, centered with about 22px gap, about 22px thin geometric sans-serif in ink. No other symbols on or in the nodes.
+Only beneath the two solid balls, a barely visible hard-edged flat same-circle silhouette #CBD9E4 offset exactly 3px down, no blur, no lighting or bevel. Do not put dimensional shadows on hollow nodes.
+
+Small restrained thin geometric sans-serif chapter title "Cages" in the upper left around (85,75), about 25px type. At the left and right edges, vertically centered, one fine outline circular navigation button each, about 46px diameter, centered around (46,450) and (1554,450), with a tiny graphic left arrow and right arrow inside. Thin and quiet.
+Upper-right and lower-left corners each contain three or four faint concentric circular arcs, thin flat pale #CBD9E4 strokes, partly cut off by the canvas edges, quiet water ripple decoration.
+
+The ONLY lettering permitted is exactly "Cages", "13", "14", "15", "16", "17", "18", each once. Absolutely no additional text, logo, watermark, frame, legend, labels, comparison panels or borders. No lock icons, stars, checkmarks, extra nodes, walls, cages, flames, explosions, sparks, smoke or particles. Large clean negative space. No neon or dark background. This is a crisp flat interface, not an illustration of a physical screen.
+Critical acceptance condition: background and solid circles must be completely uniform flat colors with zero visible texture, gradients, shading or material.
+

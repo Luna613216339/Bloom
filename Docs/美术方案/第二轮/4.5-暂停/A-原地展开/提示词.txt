@@ -1,0 +1,26 @@
+暂停.png
+
+Initial generation prompt (redrawn because the background was not fully flat and gameplay geometry drifted):
+
+Use case: precise-object-edit.
+Asset type: a single 16:9 landscape in-game pause screen for the minimalist 2D chain-reaction puzzle game Bloom, 1600 x 900.
+Input image 1 is the exact gameplay screenshot to edit, not a loose reference. Preserve the full screenshot precisely: same framing, pale blue #E2ECF3 flat background, and every existing dark circular ball, pale hard-edged shadow, overlapping translucent vermilion expansion disk, and faint ring in exactly the same position, size, number, color, shape, and opacity. Do not move, add, remove, or reinterpret any gameplay object. Keep the gameplay fully visible and equally bright.
+Change only the empty upper-right margin by adding a compact expanded pause menu, directly on the existing background. Exactly four equal-sized circular outline icon buttons in ONE vertical column, centered at approximately x=1504 with y=64, 134, 204, 274 in the 1600 x 900 canvas. Each button is a perfect circle of diameter 44 pixels with a delicate 1.5-pixel outline. No connecting line, panel, backdrop, container, overlay, scrim, or dimming. The top circle has vermilion #F2472A outline and a tiny centered right-pointing play triangle (Resume). The second circle has ink #1E2630 outline and a small delicate circular arrow (Restart). The third circle has ink #1E2630 outline and a precise 3 by 3 array of nine tiny ink dots (Levels). The fourth circle has ink #1E2630 outline and a small simple speaker icon (Sound). Center each icon in its circle, with restrained size and fine geometry. The first button occupies the original top-right pause-button position; the other three unfold directly below it. There is no additional pause button. Use only these four buttons.
+Style: exceptionally sparse, flat vector-like game UI. Delicate outlines on menu controls only. The source game's balls remain flat solid perfect circles, with their existing crisp faint shadows 3 pixels below. Preserve translucent expansion disks as flat translucent areas, never heavy outlined rings.
+Text: none at all. The action names above explain icon meanings only; DO NOT render any words or letters.
+Avoid: dark background, neon, glow, gradients, vignette, textures, blur, highlights, materials, flames, explosions, sparks, particles, smoke, leaves, faces, labels, captions, watermarks, borders, split screens, comparison layouts, extra UI, or any change to the reference gameplay. Output exactly one complete game screen.
+
+Final redraw prompt:
+
+Use case: precise-object-edit.
+Edit the provided gameplay screenshot into ONE minimalist Bloom pause interface, 16:9 landscape, 1600 by 900. Treat the screenshot as a locked original image. Copy the source pixels and geometry as faithfully as possible, modifying ONLY a small blank area at the extreme upper right. This is an additive UI edit, not a new rendering of the level.
+CRITICAL INVARIANTS: the background must be a perfectly uniform solid #E2ECF3 plane everywhere, with NO texture, noise, cloudy pattern, paper grain, gradients, vignette, or shading. Every source ball and expansion disk must remain in its exact original location, exact number, exact diameter, exact color and opacity. No change to the spiral or any overlap. All ink balls are perfectly circular uniform #1E2630 flat filled disks, with only the original very pale crisp flat silhouettes 3 pixels below them. All red areas are the source's flat translucent circular expansion disks; preserve their exact sizes, positions, overlap and opacity. Do not add surface shading or highlights. No movement, rescaling, cropping, rearrangement, deletion, or addition of gameplay elements.
+Add exactly four small matching circular icon buttons vertically in the empty upper-right margin: centers at x=1504, and y=64, 134, 204, 274, relative to the 1600 by 900 image. Each button is a perfect circle 44 pixels in diameter with a very fine 1.5 pixel outline and an empty interior showing the same flat background.
+Top: vermilion #F2472A circle outline, small centered right-pointing triangular play icon in vermilion (continue).
+Second: ink #1E2630 circle outline, small centered thin circular-arrow restart icon.
+Third: ink circle outline, exactly nine tiny ink dots in a regular 3 by 3 grid.
+Fourth: ink circle outline, small centered simple speaker icon.
+All four buttons have identical diameter, aligned centers, evenly spaced. The top is the unfolded pause button itself, so there is no fifth button. Buttons remain subtle and spare, with no shadows or heavy strokes.
+NO TEXT. No words, letters, numerals, captions, labels, legends, logo or watermark. Resume, Restart, Levels, and Sound describe the four actions but MUST NOT appear as words.
+The gameplay stays fully bright and fully visible. No overlay, dimming, panel, box, backdrop, connector, border, split screen, or comparison layout. No flame, explosion, spark, particle, smoke, glow, neon, texture, material, leaf, face, blur, or 3D appearance. Crisp flat 2D geometry, pure flat colors. Preserve the supplied scene exactly; add only the four specified UI circles and their icons.
+

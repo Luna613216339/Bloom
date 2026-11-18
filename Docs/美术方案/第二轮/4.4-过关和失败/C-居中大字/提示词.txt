@@ -1,0 +1,24 @@
+过关.png
+Built-in image_gen; one generation.
+
+Use case: precise-object-edit / ui-mockup.
+Asset type: one final 16:9 landscape results screen for the minimalist 2D chain-reaction puzzle game Bloom, 1600 x 900.
+Input image: the supplied screenshot is the edit target and an immutable full-canvas background.
+Primary request: preserve the entire original screenshot exactly and overlay only the specified results typography. Keep every existing translucent vermilion circle at its exact original position, size, opacity, color, overlap and clipping. Do not move, add, remove or rearrange any circle. Keep the pale blue #E2ECF3 backdrop completely flat and unchanged, without dimming.
+Overlay: place the exact word "Clear" in very large, elegant thin-weight geometric sans-serif, ink #1E2630, centered at canvas coordinates (800,450). The visible letters should be approximately 129 pixels high, one seventh of the canvas height. Place it directly over the screenshot, including any circles beneath it, with no panel or backing. Directly below the large word, put a single centered row of small restrained thin geometric sans-serif text buttons: "Next" in vermilion #F2472A on the left and "Retry" in ink #1E2630 on the right. Button text about 23 pixels high, row centered around y=557, with a modest clear horizontal gap. Text-only buttons, no outlines or containers.
+Text (verbatim, the only permitted text): "Clear", "Next", "Retry". Exact spelling and capitalization.
+Style: extremely minimal flat 2D graphic interface. Perfect circular geometry, flat translucent fills. Preserve the reference composition exactly.
+Avoid: other words, numbers, logos, watermarks, labels, legends, borders, panels, cards, grids, comparison layouts, textures, gradients, vignettes, lighting, glow, neon, material effects, highlights, flames, explosions, sparks, particles, smoke, decorative marks. Output a single complete game interface.
+
+失败.png
+Built-in image_gen; one generation.
+
+Use case: precise-object-edit / ui-mockup.
+Asset type: one final 16:9 landscape failure results screen for the minimalist 2D chain-reaction puzzle game Bloom, 1600 x 900.
+Input image: the supplied screenshot is the edit target and an immutable full-canvas background.
+Primary request: preserve the entire original screenshot exactly and overlay only the specified results typography. Keep exactly the four existing ink-colored balls and their surrounding thin rings in their original top-center vertical column. Keep their exact positions, sizes, colors, spacing and outlines: centers approximately (800,31), (800,108), (800,184), (800,261) on the 1600x900 canvas. Ball fill #1E2630, circle radius about 18 pixels, outer ring radius about 27 pixels. Copy their original appearance without alteration. No added balls or circles. Keep pale blue #E2ECF3 background a completely uniform solid flat color. Do not dim or recolor the screenshot.
+Overlay: place the exact text "19 / 23" in very large elegant thin-weight geometric sans-serif, ink #1E2630, at the exact center of the screen (800,450). The visible numerals should be approximately 129 pixels high, one seventh of the canvas height. Thin strokes, restrained geometric typography. Directly below, place the small text-only button "Retry" in vermilion #F2472A, thin geometric sans-serif with visible letters about 23 pixels high, centered around (800,557). No button shape, outline or container. No panel behind any text.
+Text (verbatim, the only permitted text): "19 / 23", "Retry". Include spaces on both sides of the slash; exact spelling and capitalization.
+Style: extremely minimal flat 2D graphic interface. Perfect circular geometry, solid flat fills. Preserve the reference composition exactly.
+Avoid: other words, extra numbers, logos, watermarks, labels, legends, borders, panels, cards, grids, comparison layouts, textures, gradients, vignettes, lighting, shadows on letters, glow, neon, material effects, highlights, flames, explosions, sparks, particles, smoke, decorative marks. Output a single complete game interface.
+
