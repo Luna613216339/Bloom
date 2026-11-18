@@ -10,7 +10,7 @@ using UnityEngine;
 public class DoorSkin : MonoBehaviour
 {
     const float MoveTime = 0.2f;
-    const int Slats = 6;
+    int Slats = 6;             // 百叶的条数：门越长条越多，条的粗细大致不变
 
     Door door;
     SpriteRenderer baseRenderer;
@@ -35,6 +35,7 @@ public class DoorSkin : MonoBehaviour
         skin.thick = Mathf.Min(s.x, s.y);
         skin.open01 = door.IsOpen ? 1f : 0f;
         skin.color = Look.Door(door.Link != 0, Color.gray);
+        skin.Slats = Mathf.Clamp(Mathf.RoundToInt(skin.len / Mathf.Max(0.01f, skin.thick * 0.6f)), 5, 14);
         skin.Build();
         skin.Draw();
     }
