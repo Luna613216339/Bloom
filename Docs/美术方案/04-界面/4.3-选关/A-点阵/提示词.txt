@@ -1,0 +1,47 @@
+Image: 选关.png
+Tool: built-in image_gen
+
+Initial generation prompt (redrawn once because of visible texture):
+
+Use case: ui-mockup.
+Create ONE finished full-screen level-selection screen for Bloom, a minimalist 2D chain-reaction puzzle game. Landscape 16:9, intended final size 1600 x 900. This is a game screen itself, not a device mockup, poster, comparison sheet or design presentation.
+
+BACKGROUND AND STYLE: perfectly uniform flat warm paper white #F7F4EE, all the way to every edge. No paper texture, no grain, no vignette, no gradient. Crisp flat 2D geometry. Every ball is a mathematically perfect circle with perfectly uniform flat fill, without highlights, shading, material or texture. Thin lightweight sans-serif typography, quiet and restrained, ink teal #465A58.
+
+LAYOUT: small lightweight text "Levels" near the upper-left corner, approximately x44 y44, 28 px. In the middle of the screen is exactly one regular six-row by six-column matrix of circular level buttons, exactly 36 buttons. Each row is one chapter. Circle diameter approximately 64 px (one fourteenth of screen height). Center-to-center spacing 128 px in both directions, so the clear space between adjacent circles equals one circle diameter. At 1600 x 900, column centers are x480, 608, 736, 864, 992, 1120; row centers are y130, 258, 386, 514, 642, 770. Keep the matrix centered on x800 y450. Do not add connecting lines, panels, tiles, dividers or background cards.
+
+CHAPTER LABELS: put one small lightweight English chapter name to the left of each row, right-aligned with the same right edge at x370, vertically centered on that row. Use approximately 19 px type. Exact names from top row to bottom row: "Chain", "Gates", "Cages", "Sparks", "Timing", "Locks".
+
+EXACT ROW CONTENTS, LEFT TO RIGHT:
+Chain: 1, 2, 3, 4, 5, 6.
+Gates: 7, 8, 9, 10, 11, 12.
+Cages: 13, 14, 15, 16, 17, 18.
+Sparks: 19, 20, 21, 22, 23, 24.
+Timing: 25, 26, 27, 28, 29, 30.
+Locks: 31, 32, 33, 34, 35, 36.
+Each numeral is extremely small lightweight sans-serif text, approximately 13 px, centered directly beneath its own circle, with the text center about 51 px below the circle center. Numerals are outside and below the circles, never inside them. Sequential numbering is continuous across rows, without omissions or duplicates.
+
+LEVEL STATES: Levels 1 through 13 are completed: exactly thirteen solid ink teal circles #465A58, all identical in diameter and color. Level 14, third row second column, is the current level: one solid vermilion circle #D9573F with one thin concentric vermilion ring separated from the solid disc by a narrow background-colored gap. Keep its disc the same diameter as all ordinary solid discs. Levels 15 through 36 are locked: exactly twenty-two pale gray-green #B9C4BD very thin outlined empty perfect circles, all the same 64 px outside diameter, with background-colored interiors. No lock symbols. Each SOLID disc, including level 14, has a very pale flat silhouette #E7E1D6 directly beneath it, offset downward only 3 px: a crisp hard-edged same-size circular copy, only a tiny lower sliver visible. This is a flat graphic offset, never a blurred shadow or lighting effect. Empty locked rings have no solid silhouette beneath them.
+
+ONLY ALLOWED TEXT: "Levels", "Chain", "Gates", "Cages", "Sparks", "Timing", "Locks", and the individual level numbers 1 through 36 below their respective circles. Spell everything exactly. Do not add any other text, title, game name, buttons, pause icon, navigation, progress counter, legend, labels, watermark, borders or frame. No extra circles or symbols. No gameplay obstacles or decorative elements. No glow, neon, flames, explosions, sparks, particles, smoke, leaves, faces, perspective, 3D rendering, gradients, materials, highlights or textures. Exactly one quiet, minimal game interface.
+
+Final redraw prompt:
+
+Use case: precise-object-edit.
+Edit the supplied Bloom level selection game screen. Preserve EXACTLY its existing layout, all 36 circle centers and sizes, all text positions, all 36 numbers, all six chapter labels, title, circle states and the thin ring around level 14. Fix only the rendering defect: eliminate every trace of texture, mottling, shading, cloudy paper, vignette, color variation and gradients. The result must look like a pure flat vector UI screenshot exported from a vector editor, not a photograph or scanned artwork.
+
+Replace the ENTIRE background with one perfectly uniform solid RGB hex #F7F4EE, identical at the corners, edges, middle and between shapes. Completely solid constant color. No noise, grain, paper fibers, warm patches, lighting or gradient anywhere.
+Make each completed circle 1 through 13 one perfectly uniform solid hex #465A58 disc, identical color at every interior pixel. No brushwork, mottled fill, facets, highlights, shading, textures or 3D. Make current disc 14 perfectly uniform solid #D9573F with its single thin same-colored ring and narrow background-colored gap. All disc boundaries are smooth, mathematically perfect circles.
+The only permitted depth cue is the tiny crisp flat pale #E7E1D6 same-size silhouette offset vertically down 3 pixels beneath each solid disc. Never blur it. No lighting or cast shadow.
+Keep the twenty-two locked circles 15 through 36 thin empty #B9C4BD circle outlines with exactly background-colored interiors.
+Preserve all existing typography as lightweight sans-serif, and keep it sharp and flat.
+Exact allowed text, unchanged:
+Levels
+Chain: 1 2 3 4 5 6
+Gates: 7 8 9 10 11 12
+Cages: 13 14 15 16 17 18
+Sparks: 19 20 21 22 23 24
+Timing: 25 26 27 28 29 30
+Locks: 31 32 33 34 35 36
+The colons here describe row assignment; do not add colons to the picture.
+One 16:9 landscape full-screen game interface. Nothing added or removed or rearranged. No other text, symbols, watermarks, borders or decorations. The sole change is perfectly flat, clean, uniform colors instead of the texture artifacts.

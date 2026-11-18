@@ -1,0 +1,22 @@
+Title screen — initial generation (selected image)
+
+Use case: ui-mockup.
+Create exactly one finished 16:9 landscape title-screen image for the minimalist 2D chain-reaction puzzle game Bloom, ideally 1600 by 900 pixels. This is one game screen, not a presentation or comparison sheet.
+Style reference: the supplied Bloom gameplay image is only a reference for restrained thin sans-serif typography, muted ink-teal circles and tiny flat offset silhouettes. Do not reproduce its gameplay composition, level name, pause button, rows of balls or dotted line.
+Background: perfectly uniform solid warm paper-white #F7F4EE across the entire canvas. No texture, grain, vignette or gradient.
+Composition: vast quiet negative space. Exactly ONE small ordinary ball, a perfect solid flat circle in ink teal #465A58, horizontally centered and slightly above the center of the screen. On a 1600x900 layout its center is (800,340), diameter 36 pixels. Its only layering is an identical crisp flat silhouette #E7E1D6 directly 3 pixels below it, showing a tiny pale crescent underneath, with no blur or lighting.
+Exactly ONE vermilion #D9573F thin unfilled circular expansion ring approaches from the left and is just externally tangent to the ball's left edge. On the same layout, ring center (650,340), radius 132 pixels, line thickness 1.5 pixels. Keep the ring truly circular, entirely unfilled, clean and flat; its rightmost point touches the ball at (782,340). No arrows or motion trails.
+Centered directly below the ball, the exact word "Bloom" in thin elegant sans-serif lettering, ink teal #465A58, approximately 42 pixels high with slightly generous letter spacing, baseline near y=455. Further below, centered, the exact word "Play" in the same thin sans-serif, very small, approximately 16 pixels high, baseline near y=525.
+Bottom right, two discreet tiny text navigation entries on one horizontal line, exactly "Endless" followed by "Shop", same thin sans-serif, ink teal, about 14 pixels high, with comfortable separation and margins of about 52 pixels from the right and 42 pixels from the bottom.
+Only these four words may appear: Bloom, Play, Endless, Shop. Spell each exactly with this capitalization. No other text, level number, labels or symbols. No button outlines or button backgrounds.
+All shapes must be flat geometric graphics with crisp edges. No highlights, texture, material, gradients, glow, neon, flames, explosions, sparks, particles, smoke, leaves, stems, faces, extra balls, walls, gates, decorative shapes, watermarks, borders, legends, panels or split-screen arrangements. Preserve the large empty background and understated visual hierarchy.
+
+Regeneration attempt — rejected: flat-fill correction remained unsuccessful and the offset silhouette changed into a separate dot.
+
+Use case: precise-object-edit.
+Correct this Bloom title-screen image. Keep its current composition, object positions, ring geometry, typography, all four correctly spelled words and all spacing unchanged. Output one 16:9 landscape screen.
+MANDATORY CORRECTION: remove ALL texture and surface shading. The previous image is invalid because its background has mottled paper texture and the ball has uneven coloration. Replace the entire background with one absolutely uniform digital flat fill RGB(247,244,238), hex #F7F4EE, identical at every background pixel. Replace the ball's interior with one absolutely uniform digital flat fill RGB(70,90,88), hex #465A58. The ball must be a geometrically perfect solid circle with no shading. Keep only a single tiny crisp-edged identical circle silhouette RGB(231,225,214), hex #E7E1D6, 3 pixels directly below the ball. That silhouette is flat, solid, sharp and not blurred.
+The unfilled thin circular ring must be one uniform vermilion #D9573F and remain to the left, just tangent to the ball. All typography must be one uniform ink teal #465A58.
+Exact existing text only: "Bloom", "Play", "Endless", "Shop".
+Render as a pristine flat 2D digital game UI export with mathematically clean circles and uniform solid color regions. No paper texture, no grain, no noise, no cloudy mottling, no lighting, no gradients, no vignette, no highlights, no material, no glow, no blurred shadows, no extra objects or text, no watermark or border. Do not change the layout.
+

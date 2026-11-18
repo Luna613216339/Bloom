@@ -1,0 +1,82 @@
+选关 — Initial generation prompt (not selected)
+
+Use case: ui-mockup.
+Create ONE finished minimal 2D game level-selection screen for Bloom. Landscape aspect ratio exactly 16:9. This is a single game screen, no device frame, comparison panels, captions, legend, watermark or border.
+
+Use the supplied image ONLY as a visual-style reference for the restrained typography, muted ink-teal circles, warm pale background, and small flat silhouette offsets. DO NOT copy its game layout, pause button, title, rainbow ball, dotted aiming line, or ball clusters. This is an entirely new level-selection composition.
+
+BACKGROUND: one perfectly uniform, flat warm paper-white color #F7F4EE over the entire canvas. Absolutely no texture, noise, paper grain, vignette, gradients or lighting.
+
+UI: small thin sans-serif text "Levels" in ink teal #465A58 at the upper left, matching the quiet typography scale and margins of the style reference. No pause button and no other navigation controls.
+
+MAIN DESIGN: one continuous extremely faint gray hairline solid path snakes left and right across the screen in FOUR horizontal runs connected by THREE smooth U-turns. It is ONE winding route, never four disconnected rows. Generous blank margins and airy spacing. Exactly THIRTY-SIX equal-size perfect circles sit with their centers on this route, in travel order from upper left. Count exactly NINE circles on each horizontal run: 9 + 9 + 9 + 9 = 36 total. Travel direction: top run left to right (levels 1-9); second run right to left (10-18); third run left to right (19-27); bottom run right to left (28-36). The circles should have the same modest visual size as the ordinary balls in the reference, about 36 pixels diameter on a 1600x900 canvas. Space centers equally along the route except slightly larger gaps at chapter boundaries. Keep the winding line subtle and visible between the circles, not through the solid circles.
+
+SIX CHAPTERS, SIX CIRCLES EACH, following the continuous travel direction:
+1-6: Chain
+7-12: Gates
+13-18: Cages
+19-24: Sparks
+25-30: Timing
+31-36: Locks.
+Place each chapter name ONCE in small, thin sans-serif ink-teal text, above the path in the slightly larger preceding gap. "Chain" sits above the short leading stretch before circle 1. "Gates" sits above the gap between 6 and 7 in the first run. "Cages" sits above the gap between 12 and 13 in the second run (remember travel is right to left). "Sparks" sits above the start of the third run before circle 19. "Timing" sits above the gap between 24 and 25 in the third run. "Locks" sits above the gap between 30 and 31 in the fourth run (travel right to left). The names must be exactly spelled: Chain, Gates, Cages, Sparks, Timing, Locks. The chapter names are understated small text, never large headings or boxed sections.
+
+PROGRESS, EXACT COUNTS: levels 1 through 13 are completed: exactly THIRTEEN solid flat ink-teal #465A58 circles, all identical. Level 14 is current: exactly ONE flat vermilion #D9573F solid circle, with a separate very thin vermilion outer ring and a narrow background-colored gap. Levels 15 through 36 are locked: exactly TWENTY-TWO pale gray-green thin-outline empty circles, interiors the same flat #F7F4EE background. Thus the top run has 9 teal solids; the second run, read RIGHT TO LEFT, has 4 teal solids, 1 red current circle, then 4 empty outline circles; the third and fourth runs each have 9 empty outline circles. All 36 ball bodies have identical diameters; only the current circle has the extra delicate outside ring. Perfect true circles, flat uniform fills. No glow, highlights, textures, materials, faces, leaves or stems.
+
+SHADOWS: each SOLID circle has only a matching sharp-edged flat silhouette in very pale #E7E1D6 offset exactly 3 pixels DOWN, directly beneath it, no horizontal offset. It is a simple flat shape, never blurred, realistic, shaded, or lit. Outline locked circles do not acquire a solid shadow.
+
+LEVEL NUMBERS: place a tiny thin sans-serif number just below ONLY the first circle of each chapter and the current circle. The exact seven visible numbers are "1", "7", "13", "14", "19", "25", "31", each once and at its correct circle. Do not number any other circle. Keep numbers outside circles so all fills remain clear and identical.
+
+ONLY ALLOWED TEXT IN THE ENTIRE IMAGE: Levels, Chain, Gates, Cages, Sparks, Timing, Locks, 1, 7, 13, 14, 19, 25, 31. No additional words or digits, no Bloom logo, no checkmarks, stars, locks, icons, counters, arrows, buttons or decorations. Never draw flames, explosions, sparks, particles, smoke, neon, light effects, gradients, texture or a dark background. This is a quiet precision flat game UI, with one winding path and exactly 36 perfect circular level nodes.
+
+选关 — One permitted redraw prompt (saved as 选关.png)
+
+Use case: ui-mockup. Generate ONE landscape 16:9 minimal flat 2D level-selection game screen, intended canvas 1600 x 900 pixels. Precisely follow the geometry and inventory below. The whole image must look like mathematically clean flat vector artwork, absolutely uniform solid-color areas, NOT hand-painted, NOT photorealistic, NOT textured. One screen, no borders, panels, captions, devices or watermark.
+
+BACKGROUND: exact single uniform warm off-white #F7F4EE filling EVERY background pixel. No gradient, noise, grain, fibers, mottling, vignette or lighting. This is a flat digital UI, not physical paper.
+
+Top-left title: "Levels" at (44,46), small 28px thin sans-serif font, color #465A58. All other lettering is the same restrained thin sans-serif, about 19px.
+
+MAIN ROUTE: ONE extremely faint gray solid hairline (1px, pale #D8DAD4) snakes through FOUR horizontal runs at y=220,400,580,760. Connect run 1 to run 2 with a smooth U-turn on the RIGHT; run 2 to run 3 with a smooth U-turn on the LEFT; run 3 to run 4 with a smooth U-turn on the RIGHT. This must visibly be one long winding route, three bends, not four separate routes. No arrowheads. Give the route generous margins. The route is behind the node circles, showing only between them. Do not show a line through the empty circles: mask their interiors with background color.
+
+EXACT NODE GEOMETRY: exactly 36 true circles total, nine per horizontal run. All node bodies are exactly 36px in diameter, perfect circles with no distortion. On EVERY run, the nine circle-center x coordinates from LEFT TO RIGHT are:
+240, 360, 480, 600, 720, 840, 1040, 1160, 1280.
+The larger gap between x840 and x1040 separates chapters on each straight run. Never add a circle inside a bend or inside a gap.
+
+Each row's travel order:
+Row 1 at y220, left to right: levels 1 2 3 4 5 6 7 8 9.
+Row 2 at y400, right to left: levels 10 11 12 13 14 15 16 17 18.
+Row 3 at y580, left to right: levels 19 20 21 22 23 24 25 26 27.
+Row 4 at y760, right to left: levels 28 29 30 31 32 33 34 35 36.
+These sequences are instructions for counting, DO NOT print them.
+
+EXACT FILLS, specified LEFT TO RIGHT to eliminate ambiguity:
+Row 1: teal, teal, teal, teal, teal, teal, teal, teal, teal.
+Row 2: empty, empty, empty, empty, RED, teal, teal, teal, teal.
+Row 3: empty, empty, empty, empty, empty, empty, empty, empty, empty.
+Row 4: empty, empty, empty, empty, empty, empty, empty, empty, empty.
+This yields exactly 13 teal solids, 1 red current node, 22 empty outline nodes. Do not turn the leftmost row-2 node into a solid.
+TEAL = exact uniform flat ink-teal #465A58 disk. RED = exact uniform flat vermilion #D9573F disk, at (720,400), level14, with an extra delicate 1.5px red outer ring separated from the disk by a 4px background-colored gap. EMPTY = pale gray-green #B9C4BD thin 1.5px outline circle, interior #F7F4EE; not a filled gray disk.
+Every solid disk has a same-size flat silhouette in pale #E7E1D6 shifted exactly 3px directly DOWN behind it. Its exposed edge is a narrow crisp solid crescent, NOT a blurry shadow. No horizontal offset. No shadow on outline nodes. All disks are absolute single-color uniform fills, with no highlights or darker patches.
+
+SIX CHAPTER NAMES, each printed exactly once in small thin teal sans-serif:
+"Chain" above the short leading line before level1, around (160,175).
+"Gates" above the larger gap between levels6 and7, around (940,175).
+"Cages" above the gap between levels12 and13 in row2, around (940,355).
+"Sparks" above the left entrance to row3 before level19, around (160,535).
+"Timing" above the gap between levels24 and25 in row3, around (940,535).
+"Locks" above the gap between levels30 and31 in row4, around (940,715).
+Each name is a SINGLE small line above the path, with no labels, badges or boxes. Chapters contain exactly six consecutive nodes following the snake: Chain 1-6, Gates 7-12, Cages 13-18, Sparks 19-24, Timing 25-30, Locks 31-36.
+
+VISIBLE LEVEL NUMBERS: print ONLY these seven tiny thin teal numbers below these exact circles, about 35px below center:
+"1" under (240,220);
+"7" under (1040,220);
+"13" under (840,400);
+"14" under (720,400);
+"19" under (240,580);
+"25" under (1040,580);
+"31" under (840,760).
+DO NOT print "13" or "31" at the left end of their rows. They belong at x840, the fourth node reached when moving from the right. All other nodes are unnumbered.
+
+The ONLY allowed visible text is: Levels, Chain, Gates, Cages, Sparks, Timing, Locks, 1, 7, 13, 14, 19, 25, 31. Spell every word exactly. No extra digits. No pause icon, lock icons, check marks, stars, logo, captions, menus, counters or controls.
+
+ABSOLUTE STYLE REQUIREMENTS: flat light background; strictly solid-color round nodes; sharp edges; extremely subtle hairline route; sparse quiet typography. No gradients of any kind anywhere. No textures of any kind anywhere. No glowing, neon, highlights, shadows with lighting, bevels, glass, clay, watercolor, felt, grain, roughness, flames, sparks, smoke or particles. Exactly one game screen with exactly 36 perfect circles.

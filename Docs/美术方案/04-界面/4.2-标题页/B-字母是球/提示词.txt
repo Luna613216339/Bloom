@@ -1,0 +1,30 @@
+标题页.png
+Built-in image generation.
+
+Initial generation prompt (discarded because of visible texture):
+
+Use case: ui-mockup.
+Create ONE finished title screen for the minimalist 2D chain-reaction puzzle game Bloom, as a clean, full-screen 16:9 landscape raster image, ideally 1600 by 900. No device, no mockup surround.
+
+Background: uniform warm paper-white #F7F4EE, completely flat edge to edge. Absolutely no paper texture, noise, gradients, vignette, lighting, glow, or material rendering.
+
+Composition: generous empty space surrounding one very large centered single-line title "Bloom". A moderately weighted geometric sans-serif, ink-teal #465A58, clean and quietly playful. The title sits centrally, with a small horizontal row of text menu entries centered below it. There is no level layout on this title screen.
+
+The title must read B-l-o-o-m, exactly "Bloom", with uppercase B and lowercase l and m. Replace BOTH lowercase o glyphs with TWO SOLID PERFECTLY CIRCULAR BALLS, integrated as the two o positions, not extra balls above or below the word. The first o is an expanding solid vermilion circle #D9573F, about 20 percent larger than the normal lowercase o diameter, with ONE fine vermilion circular outline just outside it, separated from the solid disc by a narrow background-colored gap. The second o is a stationary solid ink-teal #465A58 perfect circle, of normal lowercase o diameter. The first ball's right edge is just about to touch the second ball's left edge, leaving a tiny gap. Both balls have uniform flat fills, no holes, no highlights, no ellipses, no texture. Vertically align their centers with the lowercase x-height center. Maintain clear B, l, and m letterforms so the ball-letter word remains instantly readable as Bloom. Under each solid ball, a very pale same-circle silhouette #E7E1D6 is offset straight downward by just 3 pixels, with a sharp edge, no blur, no lighting, no cast-shadow perspective.
+
+Centered beneath the title, in one small, thin, refined sans-serif text row with generous even spacing: "Play" then "Endless" then "Shop". Play is vermilion #D9573F; Endless and Shop are ink-teal #465A58. These are simple text entrances, without boxes or button borders.
+
+The ONLY visible words anywhere are "Bloom", "Play", "Endless", "Shop". Spell each correctly, exactly once. No other text, level number, pause icon, labels, subtitles, slogans, captions, legend, watermark, border, decorative objects, extra balls, particles, flames, sparks, smoke, or panels. Single finished game screen, not a comparison sheet. Keep all geometry crisp, flat, and minimal.
+
+Single redraw prompt (saved final image):
+
+Use case: ui-mockup. Produce exactly ONE minimalist 2D game title screen, 16:9 landscape, 1600x900. This must look like a pixel-clean screenshot of flat vector UI artwork: absolutely uniform solid color regions with crisp edges. No photographic or handmade rendering.
+
+HARD REQUIREMENTS: The entire background is a SINGLE UNIFORM COLOR #F7F4EE. Every circle and letter is a SINGLE UNIFORM COLOR. No texture, grain, noise, mottling, shading, gradients, glow, highlights, blur, vignette, lighting, or simulated material anywhere. Balls must be mathematically perfect circles, equal width and height, never ovals.
+
+Center one large title reading "Bloom": capital B, lowercase l, then two ball-shaped o letters, then lowercase m. Set the B, l and m in a medium-weight geometric sans-serif in flat #465A58. Moderate stroke weight, not heavy bold. Replace the two o glyphs with filled circles, with no hole inside either disc. The first o is a solid #D9573F circle, 20 percent larger in diameter than the second o, with one thin #D9573F circular ring outside it, separated by a narrow #F7F4EE gap. The second o is a solid #465A58 circle. The red ball's right edge is almost touching the teal ball's left edge. Both circles share a horizontal centerline at the lowercase letter x-height center. Make the word immediately legible as "Bloom", with the circles occupying the two o positions within the single word. Do not print extra o letters. Under each solid ball, place an identical circular silhouette of flat #E7E1D6 offset vertically by only 3 pixels; sharp edge, no blur, a tiny sliver, not a large drop shadow.
+
+Centered below the title, place a single small, thin sans-serif menu text row: "Play" in #D9573F, then "Endless" in #465A58, then "Shop" in #465A58. Equal generous horizontal spacing. No button outlines. Plenty of empty background around the centered title and menu.
+
+Only these four words may appear, each once and correctly spelled: "Bloom", "Play", "Endless", "Shop". No other objects or text. No pause button, level number, extra balls, game board, decoration, flames, sparks, particles, smoke, watermark, border, labels, legend, frame, panels, or comparison layout. A single finished full-screen game UI. Strictly FLAT SOLID COLORS, perfect circles, and plain clean typography.
+

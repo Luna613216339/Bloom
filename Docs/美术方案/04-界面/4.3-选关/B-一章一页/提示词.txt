@@ -1,0 +1,43 @@
+选关.png
+Built-in image generation. First generation was redrawn once because the background showed subtle texture. The final saved image uses prompt 2.
+
+Prompt 1 (initial generation):
+Use case: ui-mockup.
+Create one finished full-screen 16:9 landscape level-selection screen for the minimalist 2D chain-reaction puzzle game Bloom. This is scheme B, "one chapter per page". Use the user-provided gameplay image ONLY as a reference for restrained typography, flat circular tokens, colors, and tiny flat offset silhouettes; do not copy its gameplay composition. This is a new selection-screen layout.
+
+Canvas: 1600 by 900 proportions, perfectly uniform solid warm paper white #F7F4EE from edge to edge. Absolutely NO paper texture, vignette, gradient, lighting, glow, or background variation.
+
+Layout in normalized 1600x900 coordinates:
+- At upper left, around (44,48), small thin sans-serif text "Levels" in ink teal #465A58.
+- At top center, small thin sans-serif "Chapter 3" centered at y=112. Below it, large delicate thin sans-serif "Cages", centered at y=175. Airy spacing, no embellishment.
+- Across the middle, EXACTLY SIX equally sized circular level thumbnails in ONE horizontal row. Each circle has a diameter of about 225 pixels, exactly one quarter of screen height. Centers approximately (175,450), (425,450), (675,450), (925,450), (1175,450), (1425,450). Very thin crisp circular outlines; circle interiors remain the same background color. No card panels.
+- The first circular frame (level 13) is ink teal #465A58. Inside it, a miniature playable arrangement of about 12 tiny perfectly circular solid ink-teal #465A58 balls forming a ring, plus one short dark-ink #37433F solid rounded wall bar. Directly beneath this circular frame at y=578, one tiny solid ink-teal completion dot. Center "13" beneath at y=618.
+- The second circular frame (level 14, current) is vermilion #D9573F, a thin red outline only. Inside, about 12 tiny solid ink-teal #465A58 perfect circles arranged as two separated curved clusters, with a short dark-ink #37433F rounded wall bar. Center "14" beneath at y=618 in ink teal. No completion dot on this level.
+- Third to sixth circular frames (levels 15,16,17,18) are locked: all four outlines and their miniature balls and walls are very pale gray-green #D4D9D3, low contrast. They still visibly contain about 12 small perfect round balls each in four different mini layouts: a compact grid with a short bar, two arcs with a short bar, a U arrangement with a short bar, and a diamond with a short bar. All four numbers "15", "16", "17", "18" directly centered below the corresponding circles at y=618, in the same pale gray-green. No padlock icons. No completion dots for 15-18.
+- At bottom center around y=808, EXACTLY SIX tiny chapter-pagination dots in a horizontal row with generous regular spacing, centered as a group. The THIRD dot is solid ink teal #465A58. The other five dots are tiny hollow thin pale-gray-green circles. These represent six chapters, but only chapter 3 is displayed.
+- All thumbnail balls are perfectly round, identical in size within the thumbnails, flat solid colors. No highlights or textures. Dark wall bars have fully rounded ends and width about 0.8 of a tiny ball's diameter.
+- Under each solid miniature ball and each solid miniature wall, a very subtle identical hard-edged flat silhouette #E7E1D6 offset straight down by 3 pixels at final 1600x900 size. No blur, no cast-shadow lighting. Frames and text do not have shadows. Keep pale locked miniatures very subdued.
+
+Typography: thin clean understated sans serif, matching the reference's quiet game UI feel. Exact visible text, and ONLY this text: "Levels", "Chapter 3", "Cages", "13", "14", "15", "16", "17", "18". Spell all exactly. Do not show the names of other chapters. Do not add chapter descriptions, navigation arrows, pause buttons, titles, logos, legends, labels, badges, borders, watermarks, or a comparison collage. One single game interface.
+
+Prompt 2 (final saved generation):
+Use case: ui-mockup.
+Create one finished full-screen 16:9 landscape level-selection screen for the minimalist 2D chain-reaction puzzle game Bloom. This is scheme B, "one chapter per page". Use the user-provided gameplay image ONLY as a reference for restrained typography, flat circular tokens, colors, and tiny flat offset silhouettes; do not copy its gameplay composition. This is a new selection-screen layout.
+
+Canvas: 1600 by 900 proportions, perfectly uniform solid warm paper white #F7F4EE from edge to edge. Absolutely NO paper texture, vignette, gradient, lighting, glow, or background variation.
+
+Layout in normalized 1600x900 coordinates:
+- At upper left, around (44,48), small thin sans-serif text "Levels" in ink teal #465A58.
+- At top center, small thin sans-serif "Chapter 3" centered at y=112. Below it, large delicate thin sans-serif "Cages", centered at y=175. Airy spacing, no embellishment.
+- Across the middle, EXACTLY SIX equally sized circular level thumbnails in ONE horizontal row. Each circle has a diameter of about 225 pixels, exactly one quarter of screen height. Centers approximately (175,450), (425,450), (675,450), (925,450), (1175,450), (1425,450). Very thin crisp circular outlines; circle interiors remain the same background color. No card panels.
+- The first circular frame (level 13) is ink teal #465A58. Inside it, a miniature playable arrangement of about 12 tiny perfectly circular solid ink-teal #465A58 balls forming a ring, plus one short dark-ink #37433F solid rounded wall bar. Directly beneath this circular frame at y=578, one tiny solid ink-teal completion dot. Center "13" beneath at y=618.
+- The second circular frame (level 14, current) is vermilion #D9573F, a thin red outline only. Inside, about 12 tiny solid ink-teal #465A58 perfect circles arranged as two separated curved clusters, with a short dark-ink #37433F rounded wall bar. Center "14" beneath at y=618 in ink teal. No completion dot on this level.
+- Third to sixth circular frames (levels 15,16,17,18) are locked: all four outlines and their miniature balls and walls are very pale gray-green #D4D9D3, low contrast. They still visibly contain about 12 small perfect round balls each in four different mini layouts: a compact grid with a short bar, two arcs with a short bar, a U arrangement with a short bar, and a diamond with a short bar. All four numbers "15", "16", "17", "18" directly centered below the corresponding circles at y=618, in the same pale gray-green. No padlock icons. No completion dots for 15-18.
+- At bottom center around y=808, EXACTLY SIX tiny chapter-pagination dots in a horizontal row with generous regular spacing, centered as a group. The THIRD dot is solid ink teal #465A58. The other five dots are tiny hollow thin pale-gray-green circles. These represent six chapters, but only chapter 3 is displayed.
+- All thumbnail balls are perfectly round, identical in size within the thumbnails, flat solid colors. No highlights or textures. Dark wall bars have fully rounded ends and width about 0.8 of a tiny ball's diameter.
+- Under each solid miniature ball and each solid miniature wall, a very subtle identical hard-edged flat silhouette #E7E1D6 offset straight down by 3 pixels at final 1600x900 size. No blur, no cast-shadow lighting. Frames and text do not have shadows. Keep pale locked miniatures very subdued.
+
+Typography: thin clean understated sans serif, matching the reference's quiet game UI feel. Exact visible text, and ONLY this text: "Levels", "Chapter 3", "Cages", "13", "14", "15", "16", "17", "18". Spell all exactly. Do not show the names of other chapters. Do not add chapter descriptions, navigation arrows, pause buttons, titles, logos, legends, labels, badges, borders, watermarks, or a comparison collage. One single game interface.
+
+CRITICAL FLATNESS REQUIREMENT FOR THIS FINAL GENERATION: render as a precise digital vector-style game UI screenshot with mathematically flat fills. The warm-white canvas is ONE SINGLE UNCHANGING HEX COLOR #F7F4EE everywhere, including every circle interior. Do not imitate the reference image's paper grain or photographic softness. All ball interiors are ONE SINGLE UNCHANGING solid hex color, without any shading, subtle mottling, speckling, noise, gradient, highlight, bevel, or surface texture. Shadows are separate flat hard-edged offset copies in #E7E1D6, not lighting. Absolutely no paper fibers, watercolor, scanned artwork, render noise, atmospheric variation, soft-focus, grain, or vignette. Perfect circles and clean antialiased contours. Preserve the exact six-circle chapter layout, all text and states specified above.
+

@@ -143,7 +143,9 @@ if ui_ready:
         toc[-1][2].append(it)
 
 all_items = [it for _, _, its in toc for it in its]
-ui_note = '' if ui_ready else '<li><b>四、界面</b>这一版还没有：给 GPT 的额度这一轮用完了，方案和提示词已经写好，额度恢复后补出，报告会更新。</li>'
+ui_missing = [it for it in UI if it not in ui_ready]
+ui_note = '' if not ui_missing else ('<li><b>四、界面</b>还差 ' + '、'.join(f"{it['id']} {it['name']}" for it in ui_missing)
+    + '：给 GPT 的额度这一轮用完了，方案和提示词已经写好，额度恢复后补出，报告会更新。</li>')
 
 nav = ''.join(f'<a href="#{gid}">{esc(t)}</a>' + ''.join(f'<a class="sub" href="#i{it["id"]}" data-nav="{it["id"]}">{it["id"]} {esc(it["name"])}</a>' for it in its)
               for gid, t, its in toc)
