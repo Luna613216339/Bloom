@@ -18,6 +18,16 @@ public static class Look
     /// </summary>
     public static bool AimLines = true;
 
+    /// <summary>
+    /// 余韵：球烧完不再缩成一个点，而是实心淡掉、留一圈细环；过关时满屏的环依次亮一下散掉。
+    /// 只是外观，判定和时间都不变。2026-11-18 加，等用户看。
+    /// </summary>
+    public static bool AfterglowEnabled = true;
+    public static bool Afterglow => AfterglowEnabled && On;
+
+    /// <summary>球烧完以后实心部分淡掉用的时间（原来是缩小，约 0.37 秒）</summary>
+    public const float VanishTime = 0.3f;
+
     /// <summary>瞄准虚线的颜色。朱红留给"着火"，虚线用灰</summary>
     public static Color Aim => new Color(0.42f, 0.42f, 0.42f, 0.55f);
 

@@ -73,6 +73,8 @@ public class Ball : MonoBehaviour
     private float maxScale;
     private float reactionDuration;
     private float triggerTimer;
+    private float vanishTimer = -1f;   // 余韵模式下实心部分淡掉的倒计时
+    private Color restColor;           // 着火前的颜色，余韵残留用它
 
     public static void SetupPhysics()
     {
@@ -279,11 +281,31 @@ public class Ball : MonoBehaviour
                 if (triggerTimer <= 0f)
                 {
                     CurrentState = BallState.Shrinking;
+                    if (Look.Afterglow)
+                    {
+                        Afterglow.Spawn(transform.position, currentScale, sr.color,
+                                       restColor.a > 0f ? restColor : BallPalette.WhiteboxStructure);
+                        vanishTimer = Look.VanishTime;
+                    }
                     GameManager.Instance.ReactionEnded();
                 }
                 break;
 
             case BallState.Shrinking:
+                if (vanishTimer >= 0f)
+                {
+                    // 余韵模式：不缩小，实心部分原地淡掉（细环由 Afterglow 接着画）
+                    vanishTimer -= Time.deltaTime;
+                    var vc = sr.color;
+                    float k = Mathf.Clamp01(vanishTimer / Look.VanishTime);
+                    sr.color = new Color(vc.r, vc.g, vc.b, Mathf.Min(vc.a, 0.72f * k * k));
+                    if (vanishTimer <= 0f)
+                    {
+                        GameManager.Instance.UnregisterBall(this);
+                        Destroy(gameObject);
+                    }
+                    break;
+                }
                 currentScale -= ShrinkSpeed * Time.deltaTime;
                 if (currentScale <= 0f)
                 {
@@ -429,6 +451,7 @@ public class Ball : MonoBehaviour
         }
 
         // 着火的样子由外观层定：白模里换成强调色，彩色模式下是原色变半透明
+        restColor = sr.color;
         sr.color = Look.Burn(sr.color, GameManager.Instance.IsDarkBackground);
         GameManager.Instance.OnBallTriggered(this);
         GameManager.Instance.ReactionStarted();
@@ -447,6 +470,7 @@ public class Ball : MonoBehaviour
         var trail = GetComponent<TrailRenderer>();
         if (trail != null) trail.emitting = false;
         var c = sr.color;
+        restColor = c;
         sr.color = new Color(c.r, c.g, c.b, 0.45f);
     }
 

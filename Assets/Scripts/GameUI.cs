@@ -147,6 +147,8 @@ public class GameUI : MonoBehaviour
 
     public void ShowResult(bool passed, int triggered, int target, bool hasNext)
     {
+        if (passed) Afterglow.Celebrate();   // 过关：满屏的余韵环从中心往外依次亮一下
+
         this.currentCount = triggered;
         this.targetCount = target;
         this.hasNextLevel = hasNext;

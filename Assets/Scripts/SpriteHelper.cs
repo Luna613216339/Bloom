@@ -12,6 +12,7 @@ public static class SpriteHelper
     private static Sprite _rainbow;
     private static Sprite _shell;
     private static Sprite _ring;
+    private static Sprite _thinRing;
 
     /// <summary>
     /// 分裂球 / 火星：六个色相扇区拼成的五彩球。颜色烤在贴图里，不跟关卡配色走 ——
@@ -50,6 +51,17 @@ public static class SpriteHelper
             if (_ring == null)
                 _ring = CreateRingSprite(256, 0.12f);
             return _ring;
+        }
+    }
+
+    /// <summary>更细的圆环：球烧完后留下的余韵（Afterglow）</summary>
+    public static Sprite ThinRing
+    {
+        get
+        {
+            if (_thinRing == null)
+                _thinRing = CreateRingSprite(256, 0.05f);
+            return _thinRing;
         }
     }
 

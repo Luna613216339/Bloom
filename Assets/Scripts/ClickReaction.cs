@@ -7,6 +7,7 @@ public class ClickReaction : MonoBehaviour
     private float timer;
     private bool shrinking;
     private int sourceId;
+    private float vanish = -1f;
 
     private const float ExpandSpeed = 5f;
     private const float ShrinkSpeed = 4f;
@@ -50,8 +51,23 @@ public class ClickReaction : MonoBehaviour
             if (timer <= 0f)
             {
                 shrinking = true;
+                if (Look.Afterglow)
+                {
+                    // 玩家点出来的圈也留一道余韵，和球一样：实心淡掉，细环外扩
+                    Afterglow.Spawn(transform.position, currentScale, BallPalette.Accent, BallPalette.Accent);
+                    vanish = Look.VanishTime;
+                }
                 GameManager.Instance.ReactionEnded();
             }
+        }
+        else if (vanish >= 0f)
+        {
+            vanish -= Time.deltaTime;
+            var sr = GetComponent<SpriteRenderer>();
+            var c = sr.color;
+            float k = Mathf.Clamp01(vanish / Look.VanishTime);
+            sr.color = new Color(c.r, c.g, c.b, Mathf.Min(c.a, 0.38f * k * k));
+            if (vanish <= 0f) Destroy(gameObject);
         }
         else
         {
