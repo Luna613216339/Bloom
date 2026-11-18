@@ -1,0 +1,72 @@
+34 Two Locks — initial generation
+
+Use case: precise-object-edit.
+Asset type: a single 16:9 landscape gameplay screen for the minimalist 2D chain-reaction puzzle game Bloom, color option C "Mist Blue Graphite".
+Edit the supplied reference image as a strictly registered palette-only edit. Preserve the entire composition, all object centers, counts, circle diameters, spacing, line geometry, wall and gate dimensions, and UI placement exactly. Do not recenter, rearrange, add, remove, crop or scale any object.
+Rendering: perfectly circular flat solid-color balls with crisp edges. Background must be a single perfectly uniform pale mist blue-white #EEF2F4 from edge to edge. Normal balls solid graphite blue-gray #3D4858, identical size and color. Active expanding balls solid amber orange #F0902F, NEVER red; spent balls leave only the same very faint thin rings tinted amber. Walls, cages and gates solid lighter gray-blue #8E9AA8, visibly lighter than balls. Escaping balls solid bright cyan-blue #35A7E0. Hard balls remain dark green #2F6B57: solid circular core, narrow background-colored gap, matching thin circular shell, outer diameter equal to normal ball diameter. Split ball remains a perfect circle with exactly five flat horizontal color bands: ochre yellow, coral, gray green, gray blue, gray purple. Keep its existing five band colors. Split-ball aiming line remains equally spaced small pale gray-green #B9C4BD dots. Team route remains a very faint gray hairline.
+Under every solid ball, wall, cage and gate show only a very pale flat same-shape silhouette #DCE3E8 offset downward by about 3 final-image pixels, sharp-edged, no blur and no lighting. UI text and pause outlines graphite blue-gray #3D4858, small thin sans-serif. Keep the thin circular pause button at the top right.
+No texture, mottling, paper grain, vignette, gradients, highlights, materials, dimensional shading, glow, bloom, neon, flame, explosion, sparks, particles, smoke, leaves, stems, faces, watermark, border, labels, arrows, explanation, legend, panels or comparison collage. One clean game screen only. Preserve everything except the specified palette and enforce the flat baseline rendering.
+Reference/edit target: the supplied level 34 image. Retain its exact asymmetrical bridge-like ball chain, including the small left arch and tall right arch; the two dark-green hard-ball locks on the horizontal dotted aiming line; the single five-band split ball at the exact center; and the two lower clusters of exactly seven normal balls each. Static, waiting for the click; no active expansion.
+Only text, verbatim at top left: "34  Two Locks". Preserve the reference font size, position and pause-button size. Output 16:9 landscape.
+
+================================================================
+
+34 Two Locks — single permitted redraw (saved result)
+
+Use case: precise-object-edit.
+Asset type: a single 16:9 landscape gameplay screen for the minimalist 2D chain-reaction puzzle game Bloom, color option C "Mist Blue Graphite".
+Edit the supplied reference image as a strictly registered palette-only edit. Preserve the entire composition, all object centers, counts, circle diameters, spacing, line geometry, wall and gate dimensions, and UI placement exactly. Do not recenter, rearrange, add, remove, crop or scale any object.
+Rendering: perfectly circular flat solid-color balls with crisp edges. Background must be a single perfectly uniform pale mist blue-white #EEF2F4 from edge to edge. Normal balls solid graphite blue-gray #3D4858, identical size and color. Active expanding balls solid amber orange #F0902F, NEVER red; spent balls leave only the same very faint thin rings tinted amber. Walls, cages and gates solid lighter gray-blue #8E9AA8, visibly lighter than balls. Escaping balls solid bright cyan-blue #35A7E0. Hard balls remain dark green #2F6B57: solid circular core, narrow background-colored gap, matching thin circular shell, outer diameter equal to normal ball diameter. Split ball remains a perfect circle with exactly five flat horizontal color bands: ochre yellow, coral, gray green, gray blue, gray purple. Keep its existing five band colors. Split-ball aiming line remains equally spaced small pale gray-green #B9C4BD dots. Team route remains a very faint gray hairline.
+Under every solid ball, wall, cage and gate show only a very pale flat same-shape silhouette #DCE3E8 offset downward by about 3 final-image pixels, sharp-edged, no blur and no lighting. UI text and pause outlines graphite blue-gray #3D4858, small thin sans-serif. Keep the thin circular pause button at the top right.
+No texture, mottling, paper grain, vignette, gradients, highlights, materials, dimensional shading, glow, bloom, neon, flame, explosion, sparks, particles, smoke, leaves, stems, faces, watermark, border, labels, arrows, explanation, legend, panels or comparison collage. One clean game screen only. Preserve everything except the specified palette and enforce the flat baseline rendering.
+Reference/edit target: the supplied level 34 image. Retain its exact asymmetrical bridge-like ball chain, including the small left arch and tall right arch; the two dark-green hard-ball locks on the horizontal dotted aiming line; the single five-band split ball at the exact center; and the two lower clusters of exactly seven normal balls each. Static, waiting for the click; no active expansion.
+Only text, verbatim at top left: "34  Two Locks". Preserve the reference font size, position and pause-button size. Output 16:9 landscape.
+CRITICAL CORRECTION: the initial edit still had cloudy tonal mottling within the balls and across the background. Remove ALL such mottling. This must look like a clean exported vector UI: every ball interior is ONE EXACT SOLID HEX COLOR, with absolutely no lighter or darker patches. Every background pixel away from shapes is EXACTLY #EEF2F4, no visual noise or shading whatsoever. Replace the currently oversized/dark drop silhouettes with very pale #DCE3E8 flat duplicate silhouettes extending only 3 pixels down at 1600x900. These are crisp flat duplicate shapes, not cast shadows. Keep every original location, size and number unchanged. Palette-only output.
+
+================================================================
+
+33 Spiral — initial generation
+
+Use case: precise-object-edit.
+Asset type: a single 16:9 landscape gameplay screen for the minimalist 2D chain-reaction puzzle game Bloom, color option C "Mist Blue Graphite".
+Edit the supplied reference image as a strictly registered palette-only edit. Preserve the entire composition, all object centers, counts, circle diameters, spacing, line geometry, wall and gate dimensions, and UI placement exactly. Do not recenter, rearrange, add, remove, crop or scale any object.
+Rendering: perfectly circular flat solid-color balls with crisp edges. Background must be a single perfectly uniform pale mist blue-white #EEF2F4 from edge to edge. Normal balls solid graphite blue-gray #3D4858, identical size and color. Active expanding balls solid amber orange #F0902F, NEVER red; spent balls leave only the same very faint thin rings tinted amber. Walls, cages and gates solid lighter gray-blue #8E9AA8, visibly lighter than balls. Escaping balls solid bright cyan-blue #35A7E0. Hard balls remain dark green #2F6B57: solid circular core, narrow background-colored gap, matching thin circular shell, outer diameter equal to normal ball diameter. Split ball remains a perfect circle with exactly five flat horizontal color bands: ochre yellow, coral, gray green, gray blue, gray purple. Keep its existing five band colors. Split-ball aiming line remains equally spaced small pale gray-green #B9C4BD dots. Team route remains a very faint gray hairline.
+Under every solid ball, wall, cage and gate show only a very pale flat same-shape silhouette #DCE3E8 offset downward by about 3 final-image pixels, sharp-edged, no blur and no lighting. UI text and pause outlines graphite blue-gray #3D4858, small thin sans-serif. Keep the thin circular pause button at the top right.
+No texture, mottling, paper grain, vignette, gradients, highlights, materials, dimensional shading, glow, bloom, neon, flame, explosion, sparks, particles, smoke, leaves, stems, faces, watermark, border, labels, arrows, explanation, legend, panels or comparison collage. One clean game screen only. Preserve everything except the specified palette and enforce the flat baseline rendering.
+Reference/edit target: the supplied level 33 spiral image. Keep the EXACT spiral path and EVERY circle in the same position with the same diameter as the reference, including all still balls and all active disks and circular outlines. The chain has burned outward from the center: keep the center empty except for its three extremely faint thin residual circles. Replace the FIVE currently red active circular disks, and their existing circular expansion outlines, with pure AMBER ORANGE #F0902F. They must clearly be orange, not red or coral. Outer and middle still balls must be solid graphite blue-gray #3D4858. Do not alter the active disks' varying radii, overlaps or circular rings. No extra rings.
+Only text, verbatim at top left: "33  Spiral". Preserve the reference font size, position and pause-button size.
+CRITICAL: this is a clean flat vector-style game screenshot. Every circle has a perfectly UNIFORM solid fill, with no mottling, texture, material or tonal shading. Every background pixel away from shapes is exactly #EEF2F4. Crisp pale duplicate silhouettes extend ONLY 3 pixels down at 1600x900, in #DCE3E8. Output 16:9 landscape.
+
+================================================================
+
+33 Spiral — single permitted redraw (saved result)
+
+Perform a precise flat-color cleanup on this supplied gameplay image. Do NOT redesign. Keep all geometry, object counts, all circle centers and radii, all line positions and UI exactly registered to this image. Replace each filled region with a PERFECTLY UNIFORM single color, as if using a flat paint-bucket fill with no texture:
+background = #EEF2F4;
+every dark normal ball = #3D4858;
+the five orange expanding disks and their existing thin outlines = #F0902F;
+the sharp duplicate silhouettes 3 pixels below solids = #DCE3E8;
+UI text and pause icon = #3D4858.
+The three already spent rings in the empty center should remain extremely faint amber outlines, no filled centers. Preserve all existing overlaps and all circle diameters. All inactive balls remain equal perfect circles. Keep the exact text "33  Spiral" at top left and the thin pause circle at top right. This must be a strictly flat vector-style raster screen with ZERO mottled color variation, ZERO texture, ZERO shading, ZERO gradients, ZERO blur. Especially remove the cloudy darker patches visible inside the dark balls and orange circles. Do not add any shapes, decoration, particles, glow, text, panels or border. Only flatten the color fills. One 16:9 landscape image.
+
+================================================================
+
+13 The Net — initial generation
+
+Use case: precise-object-edit. Edit the supplied Bloom level 13 reference into ONE 16:9 landscape flat 2D gameplay screen. This is a COLOR-ONLY variant; keep every shape's exact original position, count, size, and silhouette. Keep the downward-opening square cage, open gate with two tiny retracted leaves and clear center gap, and vertical queue of exactly TEN equal perfect circles: SEVEN normal circles followed by THREE escaping circles at the bottom. Keep the very faint hairline route, including its bend inside the cage and vertical segment down to the image edge.
+
+Recolor background to perfectly uniform #EEF2F4; seven normal balls to solid #3D4858; the three bottom escaping balls to solid bright cyan-blue #35A7E0; ALL cage walls and gate leaves to solid #8E9AA8 (lighter than the balls); interface text and pause button to #3D4858. A very pale #DCE3E8 crisp same-shape silhouette extends 3 pixels below every solid object. The cage and gate retain their reference geometry and openings exactly. The route remains very faint gray.
+
+REQUIRED FLATNESS: Every filled shape is a single uniform color. Replace the reference's cloudy mottling, uneven shading and grain with totally uniform solid fills. Background is one solid exact hex color. This should look like a clean exported flat vector UI, not a painted or photographed image. Absolutely NO texture, grain, gradient, lighting, highlights, blur, glow, neon, material, vignette, particles, smoke, sparks or flames. All balls are perfect circles. No redesign or rearrangement.
+Replace the top-left title with verbatim "13  The Net" in the same small thin sans-serif and position. Keep only that title and the thin circular pause button at top right. No other text, watermark, border, arrows, legend, label or collage. Output one 16:9 landscape screen.
+
+================================================================
+
+13 The Net — single permitted redraw (saved result)
+
+Perform a strict flat-color cleanup of the supplied 16:9 Bloom gameplay screen. Change only the coloring and remove ALL tonal variation within filled regions, preserving all geometry exactly.
+Keep the cage in the same position and dimensions, its open bottom gate and two tiny retracted door leaves, the faint thin route in the same place, and exactly TEN equal perfect circles on the vertical route, the upper SEVEN dark and lower THREE cyan. Do not move, resize, add or delete anything.
+Fill the entire background with one absolutely uniform #EEF2F4. Fill the whole cage and both gate leaves with one absolutely uniform #8E9AA8, lighter than the balls. Fill the seven normal balls uniformly #3D4858. Fill the three bottom balls uniformly #35A7E0. Crisp pale same-shape silhouettes #DCE3E8 extend only 3 pixels down, no blurry cast shadows. The route remains a very faint gray hairline.
+Keep the title verbatim "13  The Net" top left in small THIN sans-serif #3D4858 and the thin circular pause button top right.
+CRITICAL: remove the source image's mottled cloudy patches on the cage and all balls. Use perfectly smooth flat solid color fills like an exported vector UI; every shape interior must have zero color variation. No textures, grain, gradient, highlights, material, lighting, vignette, glow, blur, particles, flames, smoke, borders, extra words, labels, arrows, collage or watermark. One single game screen, 16:9 landscape.
+

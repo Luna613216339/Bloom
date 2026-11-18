@@ -1,0 +1,91 @@
+Built-in image generation. Three requested images; only level 24 was regenerated once.
+
+
+
+13-收网.png — actual prompt
+
+Use case: precise-object-edit.
+Asset: a single full-screen 16:9 landscape gameplay art comparison screenshot for the minimalist 2D chain-reaction puzzle game Bloom.
+Input image: /Users/luna/Desktop/Bloom/Docs/效果图/第四轮/26.png is the exact layout and style reference for level 13. Recreate this same composition, not a new arrangement. Keep every ball center, ball diameter, cage size, cage position, route, and UI placement unchanged. Only implement the specified retracting gate leaves; normalize surfaces to the flat baseline below and use the exact required title.
+
+BASELINE: uniform solid warm paper white #F7F4EE background, absolutely flat, no texture, vignette or gradient. Crisp simple flat 2D vector-like shapes. Ordinary balls are identical perfect solid circles of ink teal #465A58. The last three balls are identical perfect solid blue #4A7FB0 circles of the same diameter. Cage is solid dark ink #37433F, thick rounded bars matching the reference geometry. Immediately below each solid ball, cage and gate leaf, show a very pale #E7E1D6 duplicate silhouette displaced downward only 3 pixels at 1600x900 output, sharp edged, no blur, no lighting. No modeling, highlights or materials. Very pale gray hairline solid route. Small thin sans-serif ink-teal UI title at upper left: exactly "13  The Net". Thin ink-teal circular pause button with two fine vertical strokes in upper right, same placement and size as reference. No other text.
+
+EXACT LAYOUT, using a 1920x1080 design coordinate system to match the reference aspect ratio: the inverted U-shaped rectangular cage occupies x779 to1141 and y86 to500, rounded corners, interior x822 to1098 and y129 to457. Lower left arm ends at x888, lower right arm starts at x1032, and the opening between them is centered at x960 around y479. Preserve all this geometry, do not resize or reposition it. Exactly TEN balls, diameter about37, all centers at x960. Seven ordinary ink-teal balls at y218,272,327,381,435,489,543; three blue escape balls at y597,651,705. All separated, all solid, no triggered circles. The route is a fine vertical solid line x960 continuing down off the bottom edge; the fine route also runs from the first ball at (960,218) right to(1051,218), down to(1051,457), as visible in reference. Preserve it.
+
+THE ONLY DESIGN VARIABLE: the ordinary cage-mouth gate is OPEN. It is a horizontal two-leaf retracting gate with the same thickness as the cage wall. Both leaves are flat gray green #7C8985, lighter than the cage. Left leaf retracts into the left arm so only a short rounded tip projects just right of x888; right leaf retracts into the right arm so only a short rounded tip projects just left of x1032. Each visible tip roughly18 pixels long, y459 to499. The middle of the doorway is completely empty background except for the pre-existing ball and route passing through; no bridging bar, no outline across the gap, no frame around the empty opening. Clearly readable as OPEN at a glance. Do not add a second gate.
+
+Strict invariants: all objects keep their reference positions and sizes. Do not add, remove, enlarge, shrink or re-center balls or cage. Perfect circles and uniform flat fills only. No flames, explosions, sparks, particles, smoke, glow, neon, gradients, textures, leaf shapes, stems, faces, watermark, border, labels, arrows, explanatory text, legend, panels or montage. One idle gameplay screen only.
+
+
+
+07-闸.png — actual prompt
+
+Use case: ui-mockup, exact layout-preserving gameplay reskin.
+Asset: ONE full-screen 16:9 landscape screenshot of the minimalist 2D chain-reaction puzzle game Bloom, level 7, idle before interaction.
+Input image roles: Image 1 (/Users/luna/Desktop/Bloom/Docs/美术方案/参考/游戏-07-闸.png) is the EXACT LAYOUT reference. Image 2 (/Users/luna/Desktop/Bloom/Docs/效果图/第四轮/26.png) is ONLY a reference for the spare ink-teal palette, tiny thin UI and pale silhouette shadows; never borrow its cage or its composition. Recreate image 1 with every object at precisely the same relative coordinates, size and count, but replace its whitebox graphics with the baseline palette and the specified closed retracting gate. Do not redesign the level or center its contents.
+
+BASELINE ART: uniform solid warm paper-white #F7F4EE background. Clean flat 2D vector-style graphics, no textures, gradients, vignette, shading or lighting. Every ball is a perfect circular disk, identical diameter, uniform solid ink teal #465A58, no outline, no highlight, no texture. Wall is solid deep ink #37433F. Directly below each solid ball, wall segment and gate leaf, add a very pale #E7E1D6 duplicate flat silhouette offset downward 3 pixels at 1600x900 output, sharp edges, no blur or atmospheric shadow. A very faint gray hairline horizontal solid line is the team route. The only text is the small thin sans-serif ink-teal title at upper left, exactly "7  The Gate". At upper right is the same fine ink-teal circular pause button with two thin vertical strokes as in image 2. At 1280x720 design coordinates, title starts near(38,34) and pause circle is centered near(1234,34), radius14. Keep all other space empty.
+
+EXACT LAYOUT FROM IMAGE 1, in 1280x720 design coordinates (scale uniformly to 16:9 output):
+The route runs horizontally across the entire screen at y360, behind all objects.
+Exactly NINE ordinary balls on the left, diameter25, centers (21,375), (57,381), (93,367), (129,346), (165,339), (201,350), (237,371), (273,381), (309,373). This is the original left-side shallow wave; don't even its spacing or move it.
+Exactly SEVEN ordinary balls on the right, diameter25, centers (1014,307), (969,334), (1060,334), (1014,360), (969,386), (1060,386), (1014,413). Preserve this small cluster and its placement.
+Vertical wall centered x712, width22, from the top edge to y274 and from y446 to the bottom edge. Its middle opening is y274 through446, same position and size as the reference gate. Do not add a frame or support.
+
+GATE DESIGN A, CLOSED ORDINARY RETRACTING LEAVES: Fill the wall opening with one visibly closed vertical rounded bar made from two equal leaves, width exactly the same as the wall, x701 to723, overall y274 to446. Both leaves are uniform flat gray green #7C8985, one shade lighter than the dark wall. The upper leaf extends downward from the upper wall; the lower leaf extends upward from the lower wall. They meet at y360 with a single very thin HORIZONTAL background-colored seam across the bar's center, indicating the two touching leaves. The silhouette is a solid rounded bar that blocks passage; only the hairline seam separates the leaves. Do not draw diagonal stripes, hatch marks, wood grain, metal, a gate outline, a large open gap, handles or hinges. This gate must be instantly recognizable as CLOSED. Ordinary gate leaves must NOT be ochre.
+
+HARD INVARIANTS: preserve all original centers, sizes, counts and wall/gate dimensions; keep sixteen balls total, nine left and seven right. All balls perfectly round and flat filled. No blue balls, split balls, triggered expansion circles or burned rings in this level. No flames, explosion, sparks, particles, smoke, glow, neon, gradients, texture, materials, highlights, stems, leaves, faces, watermark, border, labels, arrows, explanatory text, legend, panels or comparison montage. Single quiet gameplay screen.
+
+
+
+24-分岔.png — final actual prompt (the only regeneration)
+
+Precisely reskin the attached game screenshot IN PLACE. This is a strict layout-preserving edit of level 24 of Bloom, not a composition exercise. Output one 16:9 landscape game screen. Treat the source image as an immutable coordinate map: every ball center and diameter, every gate rectangle and every aim-dot position stays where it is. Do not recenter, enlarge, shrink, spread out, or shift anything. Preserve the bottom-edge clipping. No added framing or margins.
+
+Change the whitebox artwork to this single consistent flat 2D baseline:
+- Background uniformly #F7F4EE warm paper white.
+- ALL ordinary gray balls become identical flat solid perfect circles of #465A58 ink teal. Retain the exact source diameters (28 source pixels) and exact source centers. Bottom balls are the SAME diameter as top and right balls. No material, texture, highlights, modeling, gradients, or outline.
+- The single rainbow pie at source (640,245) becomes a perfect circular disk with FIVE flat HORIZONTAL bands: ochre, coral, muted gray green, muted gray blue, muted gray purple, top to bottom. Exactly this one multicolored ball.
+- The vertical aim dots retain their source spacing and positions on x640; color #B9C4BD, tiny round dots. No solid aim line.
+- A very faint sharp-edged same-shape #E7E1D6 silhouette sits directly 3 output pixels below each filled ball and gate leaf. No blur or light effect.
+- Add small thin sans-serif #465A58 title "24  Fork" near the upper left (source x38,y34). Add a fine ink-teal circular pause button at the upper right (source center1234,34, radius14). No other text.
+
+Only gate design changes: the two gates are linked, so BOTH have flat ochre #C9983E leaves. Upper gate footprint remains EXACTLY source x597..683,y167..193. It is OPEN: replace its outlined whitebox rectangle with just TWO short retracting rounded tips, left tip x597..607,y167..193 and right tip x673..683,y167..193, with the entire middle left empty apart from the existing aim dots. No outline enclosing the empty gap, no rail, no wall. Lower gate remains EXACTLY source x597..683,y592..618. It is CLOSED: replace the horizontal stripes with one solid ochre horizontal rounded bar, two equal leaves meeting at x640 with ONE narrow vertical background-colored seam. No hatching, decorative stripes, hinge, handle, frame, support or connecting wire.
+
+Coordinate checksum on the original 1280x720 canvas, all MUST remain unchanged when uniformly scaling:
+Top five circles: (539,43),(589,43),(640,43),(690,43),(741,43).
+Split circle: (640,245).
+Rightward row of five: (705,245),(764,245),(823,245),(883,245),(942,245).
+Right cluster of seven: (1043,194),(999,220),(1087,220),(1043,245),(999,270),(1087,270),(1043,295).
+Bottom cluster of six: (640,640),(605,665),(674,665),(640,680),(619,706),(661,706).
+Exactly 24 balls total including the split ball, all have the same outer diameter of28 source pixels. The center vertical trajectory and both gates stay at EXACTLY 50% canvas width. Top-row y is 43/720 of canvas height; split-row y is245/720; gate midlines are180/720 and605/720. Keep these proportions, no optical centering.
+
+Everything must be perfectly flat and minimal. Light background only. No glow, neon, gradients, fire, explosion, sparks, particles, smoke, texture, material, highlights, leaves, stems, faces, watermark, border, arrows, labels, legend, extra words, panels, montage or comparison collage. Single idle gameplay screen.
+
+
+
+24-分岔.png — original first-pass prompt (discarded because object positions and sizes drifted)
+
+Use case: ui-mockup, exact layout-preserving gameplay reskin.
+Asset: one 16:9 landscape full-screen gameplay screenshot for Bloom, a minimalist 2D chain-reaction puzzle game, level 24, idle before the player clicks.
+Input roles: Image 1 (/Users/luna/Desktop/Bloom/Docs/美术方案/参考/游戏-24-分岔.png) is the exact spatial layout reference. Image 2 (/Users/luna/Desktop/Bloom/Docs/效果图/第四轮/26.png) supplies ONLY the sparse flat ink-teal visual vocabulary, pale silhouette shadows and small thin corner UI. Do NOT borrow its cage, arrangement or blue balls. Preserve image 1's composition with pixel-level care, including its intentionally low, bottom-edge-clipped cluster. Do not recenter the level, shift any ball, regularize the layout, or move objects away from screen edges.
+
+Style baseline: warm paper white #F7F4EE uniform flat background; no gradient, vignette or texture. Crisp flat solid vector-like shapes, absolutely no material or lighting. Ordinary balls are identical perfect filled ink-teal #465A58 circles, diameter28 in the 1280x720 design coordinate system below. Every solid shape (balls and gate leaves) has a very pale #E7E1D6 matching sharp-edged silhouette directly 3px below at 1600x900 output; no blur, no soft lighting shadow. Split ball is a perfect circle of the same diameter with FIVE horizontal flat color bands, top to bottom ochre, coral, muted gray green, muted gray blue, muted gray purple; exactly five clean horizontal stripes clipped by the circular silhouette. It is NOT a rainbow pie, not wedges, not a sphere. The vertical aim trajectory consists of equally spaced tiny circular dots in pale gray green #B9C4BD, never dashes or a solid line.
+UI consistent with image 2: top-left small light-weight thin sans-serif ink-teal text, exactly "24  Fork". At top-right a thin circular ink-teal pause button enclosing two thin upright strokes. At 1280x720 coordinates title begins near(38,34), pause button center(1234,34), radius14. No other text.
+
+EXACT FIXED GEOMETRY, 1280x720 design coordinates, scale uniformly to output without adding margins or rearranging:
+- Top row: FIVE ordinary circles centered (539,43), (589,43), (640,43), (690,43), (741,43).
+- ONE split ball centered (640,245).
+- To its right FIVE ordinary circles centered (705,245), (764,245), (823,245), (883,245), (942,245).
+- Right cluster: SEVEN ordinary circles centered (1043,194), (999,220), (1087,220), (1043,245), (999,270), (1087,270), (1043,295).
+- Bottom cluster: SIX ordinary circles centered (640,640), (605,665), (674,665), (640,680), (619,706), (661,706). Keep the bottom two at the exact bottom-edge placement, touching the bottom edge as in image 1; no upward shift. No additional ball behind the gate. Total screen ball count TWENTY-FOUR: 23 ordinary circles plus one split circle.
+- A single vertical dotted aim line at x640 extends from y9 down to about y583 with tiny round dots about6px diameter and18px spacing. It passes behind the top middle ball, the split ball and through the upper gate's open center, and ends above the lower closed gate. No horizontal aim line or route.
+- Upper gate's full original footprint is x597 to683, y167 to193.
+- Lower gate's full original footprint is x597 to683, y592 to618.
+There are no walls or cage in this level. Do not invent supports, frames or connecting wires.
+
+ONLY DESIGN VARIABLE: Design A, two RETRACTING LINKED GATES. Both linked gates' leaves are solid ochre #C9983E, the exact same color and matching flat shape family. This shared ochre color denotes linked operation. Upper gate is OPEN: only TWO short rounded leaf tips remain at the opposite ends of its ORIGINAL footprint, left tip within x597 to607 and right tip within x673 to683, both y167 to193. The large central opening x607 to673 is completely empty background except for the pre-existing aim dots; no rectangle outline, no bar bridging the opening, no rail, no additional wall. Lower gate is CLOSED: a horizontal rounded bar occupying x597 to683,y592 to618, made of two equal ochre leaves that meet at x640, with a single thin VERTICAL #F7F4EE central seam. Same 26px thickness as upper gate tips. Solid closed silhouette, not striped, not outlined, no large opening. Both states must read instantly: top is two retracted short tips with a wide gap, bottom is a full bar with a narrow center seam.
+
+Nonnegotiable: keep all reference positions, diameters, object counts, gate footprints and clipping exactly unchanged. All balls perfectly round, flat fills; five horizontal bands only on the one split ball. No fired balls, expansion circles, burned rings, blue escape balls, shells, flames, explosions, sparks, particles, smoke, neon, glow, gradients, highlights, textures, materials, leaves, stems, faces, watermark, border, labels, arrows, legend, explanatory copy, panels or comparison montage. A single quiet game screenshot.
+
+

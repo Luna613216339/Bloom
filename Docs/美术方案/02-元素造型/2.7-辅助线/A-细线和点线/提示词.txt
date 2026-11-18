@@ -1,0 +1,81 @@
+Bloom — 2.7 Auxiliary Guides — A: Hairlines and Dots
+Actual English image-generation prompts, verbatim.
+Generation count: 34 = 1; 04 = 2 (one redraw for shifted route geometry); 26 = 1.
+
+=== 34 — Two Locks — final ===
+
+Use case: precise-object-edit.
+Create ONE finished 16:9 landscape Bloom game screenshot, 1600x900 target. The attached image is the exact layout reference and visual baseline. Reproduce its composition, every ball center, count and diameter, special ball, UI size and placement exactly. Do not rearrange, rescale individual objects or reinterpret the layout. This is a single static idle game screen, before any chain reaction.
+
+Only design variable: aiming guide = equally spaced tiny perfect circular dots in flat pale gray-green #B9C4BD, dot diameter one sixth of a normal ball, on the same horizontal line from x=165 to1757 at y=539 in the reference's 1920x1080 coordinate system. No other guide or effect.
+
+Baseline rendering: perfectly uniform warm paper-white #F7F4EE background, no texture, gradient, vignette or illumination. All ordinary balls are mathematically perfect circles, uniform solid flat ink-teal #465A58, all identical diameter approximately43 reference pixels. No highlights or surface detail. Each solid object has a very pale #E7E1D6 matching flat silhouette directly underneath shifted DOWN by only 3 final-image pixels, crisp edges, no blur, lighting or 3D shading. Preserve the subtle flat layered look but remove the source's mottling and rounded shading.
+Hard balls at (540,539) and (1382,539): solid #2F6B57 circular cores with a narrow background-color gap and a thin #2F6B57 concentric shell ring, total outer diameter same as ordinary ball.
+Central split ball at (960,539): perfect circle divided into exactly FIVE flat horizontal bands, top to bottom ochre, coral, muted gray-green, gray-blue, gray-purple. No rainbow sectors, gloss or gradient. Keep reference diameter and center.
+
+Exact layout audit, coordinates measured in the 1920x1080 reference (scale the ENTIRE frame uniformly to output): ordinary bridge-chain centers (588,487),(658,455),(739,441),(820,455),(895,485),(1019,474),(1019,387),(1019,300),(1019,213),(1037,133),(1104,84),(1190,84),(1277,84),(1350,118),(1382,192),(1382,279),(1382,366),(1382,453). Lower left cluster EXACTLY7 balls: (496,610),(431,647),(562,647),(496,685),(431,722),(562,722),(496,760). Lower right cluster EXACTLY7: (1425,610),(1360,647),(1490,647),(1425,685),(1360,722),(1490,722),(1425,760). In total32 ordinary balls,2 hard balls and1 split ball. Do not add lines connecting bridge balls. No walls, no gates.
+
+UI: exact text "34  Two Locks" at upper left, small thin sans-serif, ink-teal #465A58, matching source. Upper right thin ink-teal circular pause button with two slim vertical strokes. No other text.
+Strict exclusions: no flames, explosions, particles, sparks, smoke, glow, neon, texture on balls, material, facial features, stems, leaves, gradients, watermark, borders, labels, arrows, legends, panels, comparison montage. Output exactly one full-frame game screen.
+
+=== 04 — Gears — final (redraw) ===
+
+Use case: precise-object-edit.
+STRICT GEOMETRY-PRESERVING RECOLOR of the ONE attached Gears screenshot. Output ONE16:9 landscape Bloom game frame, target1600x900. Repaint the attached image IN PLACE; keep all geometry pixel-aligned with the input, without shifting upward, spreading out, centering, enlarging or reinterpreting the scene. Source1280x720 scales uniformly across the entire frame to1600x900.
+
+CRITICAL LAYOUT LOCK: the left circular route center is(424,379), right is(856,379), each radius193, measured in the source1280x720. Thus at1600x900 the centers MUST be(530,473.75) and(1070,473.75), each radius241.25. The route TOP must be y232.5 and BOTTOM y715 at1600x900. Do not move them upward to fill space or to accommodate UI. Preserve their horizontal gap.
+Retain EXACTLY NINE balls on each route,18 total. Original1280x720 ball centers:
+Left:(366.6,195),(404,187.5),(442.3,187.5),(479.8,195),(515,209.5),(546.8,230.8),(573.9,257.9),(595.2,289.6),(609.7,324.9).
+Right:(670.3,324.9),(684.8,289.6),(706.1,257.9),(733.2,230.8),(765,209.5),(800.2,195),(837.7,187.5),(876,187.5),(913.4,195).
+Every ball diameter25 source pixels,31.25 at1600x900. Keep the route running directly under the ball centers. Do not alter original ball positions or sizes.
+
+CHANGE ONLY THE RENDERING FROM WHITE-BOX TO THIS BASELINE:
+Background = solid uniform warm paper-white #F7F4EE, flat with no gradient or texture.
+Ordinary balls = mathematically perfect circles filled with ONE completely uniform solid ink-teal #465A58. No highlights, mottling, surface texture or3D shading.
+Routes = very faint neutral gray #DDDCD7 continuous solid hairline circles, approximately1 final-image pixel wide. No dashes, dots, arrows, joints or extra connecting lines.
+Under every ball, matching pale #E7E1D6 circular flat silhouette directly3 final-image pixels downward, crisp and sharp, no blur. Do not use a large offset or rendered lighting.
+UI = small thin sans-serif ink-teal #465A58 at upper left, exact text "4  Gears". At1600x900, text begins near(44,30), approximate font30px. Upper-right thin ink-teal circular pause button centered(1546,50),diameter48, two thin pause bars. No other text.
+There are NO walls, doors, special balls, aiming guides or chain-reaction effects in this level.
+
+Absolute exclusions: dark background, neon, glow, gradients, ball texture, ball highlights, material, clay, watercolor, glass, fur, faces, stems, leaves, flames, explosions, sparks, particles, smoke, watermark, border, arrow, label, legend, extra text, panels, collage.
+Final layout must be an exact same-sized overlay of the source layout scaled uniformly from1280x720 to1600x900. Do not introduce any compositional improvement.
+
+=== 26 — Meteor — final ===
+
+Use case: precise-object-edit.
+Repaint the ATTACHED game screenshot in Bloom's baseline art direction. Produce ONE16:9 landscape static idle game frame, target1600x900.
+This is a STRICT GEOMETRY-PRESERVING RECOLOR, not a redesign. Keep the source composition pixel-aligned: retain every original circle center, circle diameter, count, wall bounding box and diagonal dotted line trajectory. Do NOT center the objects, move groups, or make space for the UI. Source1280x720 scales uniformly to final1600x900.
+
+BACKGROUND: uniform solid warm paper-white #F7F4EE, no paper texture, vignette, gradient or lighting.
+ORDINARY BALLS: recolor the gray balls to uniform flat ink-teal #465A58. Every ball must be a mathematically perfect circle with completely constant flat color, no highlights, texture, shading or material, diameter28 source pixels. Exactly19 ordinary balls, preserving source centers:
+Top cluster SIX balls: (784,31),(750,56),(818,56),(784,68),(763,97),(805,97).
+Lower-left cluster SIX balls: (496,530),(461,555),(530,555),(496,566),(475,595),(517,595).
+Vertical row SEVEN balls: (640,374),(640,424),(640,475),(640,525),(640,576),(640,626),(640,677).
+Keep these clusters as compact as in source, including close neighbor spacing.
+SPLIT BALL: preserve center(760,317) and diameter28 source pixels. Replace rainbow pie sectors with exactly FIVE horizontal flat color stripes clipped inside a perfect circle: ochre, coral, gray-green, gray-blue, gray-purple top to bottom.
+AIMING LINE: preserve the full source diagonal trajectory from(533,705) to(930,18), passing under the split ball center, with equal spacing. Tiny perfect circular dots, diameter one sixth of a normal ball, pale gray-green #B9C4BD. Do NOT draw a solid diagonal line, arrow, trail or particle effects.
+WALLS: preserve the two source vertical short wall bounds exactly: left x341..362,y274..360; right x917..938,y274..360 in1280x720. Deep ink #37433F solid bars, width approximately0.8 ball diameter. Very subtly rounded corners. No gates. Do not widen or elongate walls.
+SHADOW LAYER: directly under each solid ball and wall, matching pale #E7E1D6 flat silhouette displaced ONLY3 final pixels downward. Crisp edge, no blur or lighting, absolutely no rendered3D form.
+
+ADD ONLY the baseline UI without moving any game object: upper-left exact text "26  Meteor", small thin sans-serif ink-teal #465A58, top-left margin2.7% screen width and3.4% screen height, font height about3.5% screen height. Upper-right thin ink-teal pause circle centered at96.6% width,5.6% height, diameter5.2% screen height with two thin vertical pause strokes. No other text.
+The whole image must look like flat printed vector shapes on a light background. No flames, explosions, sparks, particles, smoke, glow, neon, gradients, dark backdrop, ball texture, glass, clay, watercolor, fur, faces, stems, leaves, watermarks, borders, arrows, labels, legends, panels or montage.
+Preserve ALL source gameplay geometry exactly, change only palette/flat baseline styling and the specified tiny pale aiming dots.
+
+=== 04 — Gears — initial generation, discarded due to layout shift ===
+
+Use case: ui-mockup.
+Generate ONE 16:9 landscape finished static idle screenshot for the minimalist 2D chain-reaction puzzle game Bloom, target1600x900.
+INPUT ROLES: first reference (gray balls on white, two circles) is the EXACT GEOMETRY AND LAYOUT blueprint. Second reference ("34 Two Locks") is ONLY a palette, UI and flat offset-shadow style reference; do NOT copy its scene layout, special balls or guides.
+Lock ALL ball centers, counts, diameters and the two circular route positions/sizes to the FIRST reference. Repaint the white-box objects in the baseline palette below. Do not add, remove, reposition, enlarge or shrink scene objects.
+
+Exact geometry in first reference's1280x720 coordinates, scale entire frame uniformly:
+Two perfect circular team routes, centers(424,379) and(856,379), radius193. They have a gap between them. Route stroke: extremely faint neutral gray #DDDCD7, approximately ONE PIXEL at final1600x900. Hairline continuous solid circle, NOT dashed or dotted, no arrowheads.
+EXACTLY NINE balls on each circle,18 total. Left centers:(366.6,195),(404,187.5),(442.3,187.5),(479.8,195),(515,209.5),(546.8,230.8),(573.9,257.9),(595.2,289.6),(609.7,324.9).
+Right centers:(670.3,324.9),(684.8,289.6),(706.1,257.9),(733.2,230.8),(765,209.5),(800.2,195),(837.7,187.5),(876,187.5),(913.4,195).
+All18 balls identical diameter25 source pixels, mathematically perfect solid flat circles, uniform ink-teal #465A58. No outlines on ordinary balls. Routes pass underneath their centers.
+
+Pure uniformly flat warm paper-white background #F7F4EE. Render shapes as clean digitally filled flat vector-style graphics, completely constant solid color within each ball, no mottling or material. Each ball has a matching crisp pale #E7E1D6 circular silhouette offset ONLY3 final pixels directly down, no blur or lighting. This is a tiny flat layered offset, not a 3D shaded sphere. Follow the second reference's understated colors and thin UI, while removing any source texture or spherical shading.
+UI: upper-left exact text "4  Gears", small thin sans-serif ink-teal #465A58, placed with the same margins/proportions as the second reference (roughly2.7% left and3.5% top). Upper-right thin ink-teal circular pause button, two slim vertical bars, same position/size as second reference. No other words or numbers.
+
+No walls, gates, split balls, hard balls or aiming dotted guides in this level. Only TWO hairline circular routes,18 solid balls and the two UI elements.
+Never use dark background, neon, glow, highlights, gradients, textures, fur, clay, watercolor, glass, leaves, stems, faces, flames, explosions, sparks, particles, smoke, watermark, border, arrows, labels, legend, extra text, panels or collage. Preserve the FIRST reference composition exactly. Output ONE full-frame game screen.
